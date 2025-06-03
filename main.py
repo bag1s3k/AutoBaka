@@ -32,8 +32,14 @@ time.sleep(2)
 driver.find_element(By.ID, "cphmain_linkchronologicky").click()
 time.sleep(1)
 
+# Get marks
 marks_line = driver.find_elements("xpath", "//tbody//tr[.//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]")
 
-for line in marks_line:
-    soup = BeautifulSoup(line.get_attribute("innerHTML"), "html.parser")
-    print(soup.prettify())
+subject = marks_line[0].find_elements(By.TAG_NAME, "td")
+
+mark = subject[1].text
+topic = subject[2].text
+weight = subject[5].text
+date = subject[6].text
+subject_name = subject[0].text
+print(f"S: {subject_name}\nM: {mark}\nT: {topic}\nW: {weight}\nD: {date}\nSN: {subject_name}")
