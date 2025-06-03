@@ -6,7 +6,6 @@ from selenium.webdriver.common.by import By
 import time
 import json
 from unidecode import unidecode
-import math
 
 options = Options()
 options.add_experimental_option("detach", True)
@@ -55,11 +54,6 @@ for single_line in marks_line:
         "date": date
     })
 
-subjectsJSON = json.dumps(subjects, indent=4, sort_keys=False)
-
-with open("marks.json", "w") as file:
-    file.write(subjectsJSON)
-
 # Calculate marks
 for subject, list_subject in subjects.items():
     marks = []
@@ -81,3 +75,10 @@ for subject, list_subject in subjects.items():
         weight_sum += float(mark[1])
 
     average = str(mark_times_weight / weight_sum)[:4]
+    subjects[subject].append({"avg": average})
+
+# Export to json file
+subjectsJSON = json.dumps(subjects, indent=4, sort_keys=False)
+
+with open("marks.json", "w") as file:
+    file.write(subjectsJSON)
