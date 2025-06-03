@@ -73,9 +73,17 @@ for subject, list_subject in subjects.items():
         elif not dict_mark["mark"].isdigit():
             continue
 
-        marks.append(tuple([dict_mark["mark"], dict_mark["weight"]]))
+        marks.append([dict_mark["mark"], dict_mark["weight"]])
+
+    print(marks)
+
+    mark_times_weight = 0
+    weight_sum = 0
 
     for mark in marks:
-        print(mark)
+        mark_times_weight += float(mark[0]) * float(mark[1])
+        weight_sum += float(mark[1])
 
+    average = str(mark_times_weight / weight_sum)[:4]
+    print(average)
     print("\n")
