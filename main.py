@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 import time
 import json
 from unidecode import unidecode
+import math
 
 # options = Options()
 # options.add_experimental_option("detach", True)
@@ -65,7 +66,16 @@ with open("marks.json", "r") as file:
 for subject, list_subject in subjects.items():
     marks = []
     for dict_mark in list_subject:
+        if "-" in dict_mark["mark"]:
+            text_to_num = [4.5, 3.5, 2.5, 1.5]
+            dict_mark["mark"] = dict_mark["mark"][::-1]
+            dict_mark["mark"] = text_to_num[int(dict_mark["mark"])]
+        elif not dict_mark["mark"].isdigit():
+            continue
+
         marks.append(tuple([dict_mark["mark"], dict_mark["weight"]]))
 
     for mark in marks:
         print(mark)
+
+    print("\n")
