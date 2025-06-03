@@ -7,6 +7,7 @@ import time
 from bs4 import BeautifulSoup
 import json
 from unidecode import unidecode
+from collections import defaultdict
 
 options = Options()
 options.add_experimental_option("detach", True)
@@ -43,14 +44,21 @@ for single_line in marks_line:
     subject = single_line.find_elements(By.TAG_NAME, "td")
 
     mark = subject[1].text
-    topic = subject[2].text
+    topic = unidecode(subject[2].text)
     weight = subject[5].text
     date = subject[6].text
-    subject_name = subject[0].text
+    subject_name = unidecode(subject[0].text)
 
-    subjects[unidecode(subject_name)] = {
+    subjects.setdefault(subject_name, []).append({
         "mark": mark,
-        "topic": unidecode(topic),
+        "topic": topic,
         "weight": weight,
         "date": date
-    }
+    })
+
+subjectsJSON = json.dumps(subjects, indent=4, sort_keys=False)
+
+print(subjectsJSON)
+
+with open("marks.json", "w") as file:
+    file.write(subjectsJSON)
