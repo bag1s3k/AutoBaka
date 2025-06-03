@@ -4,10 +4,8 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 import time
-from bs4 import BeautifulSoup
 import json
 from unidecode import unidecode
-from collections import defaultdict
 
 options = Options()
 options.add_experimental_option("detach", True)
@@ -57,8 +55,6 @@ for single_line in marks_line:
     })
 
 subjectsJSON = json.dumps(subjects, indent=4, sort_keys=False)
-
-print(subjectsJSON)
 
 with open("marks.json", "w") as file:
     file.write(subjectsJSON)
