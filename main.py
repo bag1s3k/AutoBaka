@@ -5,6 +5,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 import time
 from bs4 import BeautifulSoup
+import json
+from unidecode import unidecode
 
 options = Options()
 options.add_experimental_option("detach", True)
@@ -35,6 +37,8 @@ time.sleep(1)
 # Get marks
 marks_line = driver.find_elements("xpath", "//tbody//tr[.//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]")
 
+subjects = {}
+
 for single_line in marks_line:
     subject = single_line.find_elements(By.TAG_NAME, "td")
 
@@ -44,4 +48,9 @@ for single_line in marks_line:
     date = subject[6].text
     subject_name = subject[0].text
 
-    print(f"S: {subject_name}\nM: {mark}\nT: {topic}\nW: {weight}\nD: {date}\nSN: {subject_name}\n\n\n")
+    subjects[unidecode(subject_name)] = {
+        "mark": mark,
+        "topic": unidecode(topic),
+        "weight": weight,
+        "date": date
+    }
