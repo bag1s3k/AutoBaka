@@ -32,6 +32,8 @@ time.sleep(2)
 driver.find_element(By.ID, "cphmain_linkchronologicky").click()
 time.sleep(1)
 
-# table = driver.find_element("xpath", "//tbody[.//tr[.//td]]")
-#
-# print(table.get_attribute("innerHTML"))
+marks_line = driver.find_elements("xpath", "//tbody//tr[.//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]")
+
+for line in marks_line:
+    soup = BeautifulSoup(line.get_attribute("innerHTML"), "html.parser")
+    print(soup.prettify())
