@@ -35,11 +35,13 @@ time.sleep(1)
 # Get marks
 marks_line = driver.find_elements("xpath", "//tbody//tr[.//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]")
 
-subject = marks_line[0].find_elements(By.TAG_NAME, "td")
+for single_line in marks_line:
+    subject = single_line.find_elements(By.TAG_NAME, "td")
 
-mark = subject[1].text
-topic = subject[2].text
-weight = subject[5].text
-date = subject[6].text
-subject_name = subject[0].text
-print(f"S: {subject_name}\nM: {mark}\nT: {topic}\nW: {weight}\nD: {date}\nSN: {subject_name}")
+    mark = subject[1].text
+    topic = subject[2].text
+    weight = subject[5].text
+    date = subject[6].text
+    subject_name = subject[0].text
+
+    print(f"S: {subject_name}\nM: {mark}\nT: {topic}\nW: {weight}\nD: {date}\nSN: {subject_name}\n\n\n")
