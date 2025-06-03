@@ -4,11 +4,12 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 import time
-import json
 from unidecode import unidecode
+from configparser import ConfigParser
 
+# Setup
 options = Options()
-options.add_experimental_option("detach", True)
+options.add_experimental_option("detach", False)
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
                           options=options)
@@ -77,8 +78,17 @@ for subject, list_subject in subjects.items():
     average = str(mark_times_weight / weight_sum)[:4]
     subjects[subject].append({"avg": average})
 
-# Export to json file
-subjectsJSON = json.dumps(subjects, indent=4, sort_keys=False)
+# Sort
+subjects = dict(sorted(subjects.items()))
 
-with open("marks.json", "w") as file:
-    file.write(subjectsJSON)
+
+# Export
+config = ConfigParser()
+with open('config.ini', 'r', encoding='utf-8') as f:
+    config.read_file(f)
+
+path = config.get("PATHS", "result_path")
+
+with open(path, "w") as file:
+    for subject, marks in subjects.items():
+        file.write(f"{subject:30} {marks[-1]["avg"]}\n")
