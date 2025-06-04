@@ -6,6 +6,8 @@ from selenium.webdriver.common.by import By
 import time
 from unidecode import unidecode
 from configparser import ConfigParser
+from dotenv import load_dotenv
+import os
 
 # Setup
 options = Options()
@@ -16,9 +18,10 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
 
 driver.get("https://bakaweb.cichnovabrno.cz/login")
 
-with open("data.txt", "r", encoding="utf-8-sig") as file:
-    username = file.readline().strip()
-    password = file.readline().strip()
+# get data to login
+load_dotenv()
+username = os.getenv("BAKA_USERNAME")
+password = os.getenv("BAKA_PASSWORD")
 
 # Logging
 driver.find_element(By.NAME, "username").send_keys(username)
