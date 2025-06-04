@@ -1,10 +1,9 @@
-﻿from core.selenium_setup import setup_driver
+from core.selenium_setup import setup_driver
 from config.env_loader import load_credentials
 from core.navigation import login, navigate_to_marks
 from core.marks_processor import get_marks, process_marks
 from utils.export import export_results
 from config.config_manager import get_config
-
 
 def main():
     driver = setup_driver()
