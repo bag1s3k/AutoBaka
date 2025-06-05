@@ -3,3 +3,4 @@
 config.ini
 .env
 project_log.log
+__pycache__/
