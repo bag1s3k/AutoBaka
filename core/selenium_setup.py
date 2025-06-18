@@ -10,6 +10,18 @@ def setup_driver():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
+    prefs = {
+        "credentials_enable_service": False,
+        "profile.password_manager_enabled": False
+    }
+
+    options.add_experimental_option("prefs", prefs)
+
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option('useAutomationExtension', False)
+
+    options.add_argument("--ignore-certificate-errors")
+
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
                               options=options)
     return driver
