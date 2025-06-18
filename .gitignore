@@ -4,5 +4,3 @@ config.ini
 .env
 project_log.log
 __pycache__/
-page.html
-test-java-marks.txt
