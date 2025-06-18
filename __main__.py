@@ -4,6 +4,9 @@ from core.navigation import login
 from core.marks_processor import get_marks, process_marks
 from utils.export import export_results
 from config.config_manager import get_config
+from config.logging_conf import setup_logging
+
+setup_logging()
 
 def main():
     driver = setup_driver()

@@ -1,4 +1,7 @@
 ﻿from configparser import ConfigParser
+from config.logging_conf import setup_logging
+
+setup_logging()
 
 def get_config():
     config = ConfigParser()

@@ -2,6 +2,9 @@
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
+from config.logging_conf import setup_logging
+
+setup_logging()
 
 def setup_driver():
     options = Options()

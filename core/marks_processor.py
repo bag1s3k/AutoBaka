@@ -1,5 +1,8 @@
 ﻿from selenium.webdriver.common.by import By
 from unidecode import unidecode
+from config.logging_conf import setup_logging
+
+setup_logging()
 
 def get_marks(driver):
     marks_line = driver.find_elements("xpath",

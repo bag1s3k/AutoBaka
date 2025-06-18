@@ -1,5 +1,8 @@
 ﻿from selenium.webdriver.common.by import By
 import time
+from config.logging_conf import setup_logging
+
+setup_logging()
 
 def login(driver, username, password):
     driver.get("https://bakaweb.cichnovabrno.cz/login")
