@@ -21,7 +21,7 @@ def setup_logging():
     )
 
     # File handler
-    file_handler = logging.FileHandler(LOG_PATH, encoding="utf-8")
+    file_handler = logging.FileHandler(LOG_PATH, mode="w", encoding="utf-8")
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(formatter)
 
