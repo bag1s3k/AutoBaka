@@ -8,7 +8,7 @@ from paths import CONFIG_PATH
 setup_logging()
 logger = logging.getLogger(__name__)
 
-def get_config(section, option):
+def get_config(section: str, option: str):
     """
     Load configuration from the config.ini file
 
