@@ -1,10 +1,14 @@
-﻿from selenium import webdriver
+﻿import logging
+
+from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from config.logging_conf import setup_logging
 
+# Setup_logging
 setup_logging()
+logger = logging.getLogger(__name__)
 
 def setup_driver():
     options = Options()
