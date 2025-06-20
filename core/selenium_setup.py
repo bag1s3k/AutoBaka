@@ -6,7 +6,6 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from config.logging_conf import setup_logging
 
-# Setup_logging
 setup_logging()
 logger = logging.getLogger(__name__)
 
@@ -51,7 +50,7 @@ def setup_driver():
                                   options=options)
         logger.info("Chrome was successfully started")
         return driver
-    
+
     except Exception as e:
         logger.exception(f"Issue during installing or setup webdriver: {e}")
         raise e
