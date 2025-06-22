@@ -1,10 +1,20 @@
-﻿from selenium.webdriver.common.by import By
+﻿import logging
+
+from selenium.webdriver.common.by import By
 from unidecode import unidecode
 from config.logging_conf import setup_logging
 
 setup_logging()
+logger = logging.getLogger(__name__)
 
 def get_marks(driver):
+    """
+    Extraction marks from baka page
+    Args:
+        driver: instance of the browser
+    Returns:
+        dict: dictionary {subject: average}
+    """
     marks_line = driver.find_elements("xpath",
                                       "//tbody//tr[.//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]")
 
