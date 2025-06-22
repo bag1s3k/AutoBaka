@@ -4,3 +4,4 @@ config.ini
 .env
 project_log.log
 __pycache__/
+tests/json_export.py
