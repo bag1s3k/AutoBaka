@@ -1,4 +1,5 @@
-﻿import logging
+﻿# conflict maker
+import logging
 
 from selenium.webdriver.common.by import By
 from unidecode import unidecode
