@@ -20,30 +20,31 @@ def setup_driver():
 
         # Default configuration
         logger.debug("Setup chrome options")
-        # options.add_experimental_option("detach", False)
-        # options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        # options.add_experimental_option('useAutomationExtension', False)
-        #
-        # # Headless mode
-        # options.add_argument("--headless=new")
-        # logger.debug("Headless mode was activated")
-        #
-        # # Performance
-        # options.add_argument("--no-sandbox")
-        # options.add_argument("--disable-dev-shm-usage")
-        # options.add_argument("--disable-gpu")
-        # options.add_argument("--disable-extensions")
-        # options.add_argument("--disable-notifications")
-        # options.add_argument("--ignore-certificate-errors")
-        # logger.debug("Performance optimization")
-        #
-        # # Stop Chrome logs
-        # options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        # options.add_experimental_option('useAutomationExtension', False)
-        # options.add_argument("--disable-logging")
-        # options.add_argument("--log-level=3")
-        # options.add_argument("--silent")
-        # logger.debug("Chrome logs stopped")
+        options.add_experimental_option("detach", False)
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option('useAutomationExtension', False)
+
+        # Headless mode
+        options.add_argument("--headless=new")
+        logger.debug("Headless mode was activated")
+
+        # Performance
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-notifications")
+        options.add_argument("--ignore-certificate-errors")
+        options.add_argument("--window-size=1920,1080")
+        logger.debug("Performance optimization")
+
+        # Stop Chrome logs
+        options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        options.add_experimental_option('useAutomationExtension', False)
+        options.add_argument("--disable-logging")
+        options.add_argument("--log-level=3")
+        options.add_argument("--silent")
+        logger.debug("Chrome logs stopped")
 
         # Installation and setup chrome driver
         driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
