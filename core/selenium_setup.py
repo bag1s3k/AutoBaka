@@ -1,4 +1,3 @@
-﻿# conflict maker in
 import logging
 
 from selenium import webdriver
@@ -36,6 +35,7 @@ def setup_driver():
         options.add_argument("--disable-extensions")
         options.add_argument("--disable-notifications")
         options.add_argument("--ignore-certificate-errors")
+        options.add_argument("--window-size=1920,1080")
         logger.debug("Performance optimization")
 
         # Stop Chrome logs
