@@ -95,13 +95,6 @@ def login(driver, username: str, password: str) -> bool:
             logger.debug(f"Current title: {driver.title}")
             return False
 
-        # # driver.find_element(By.NAME, "username").send_keys(username)
-        # # driver.find_element(By.NAME, "password").send_keys(password)
-        # # driver.find_element(By.NAME, "login").click()
-        # # time.sleep(2)
-        # driver.get(get_config("URLS", "marks_url"))
-        # time.sleep(1)
-
     except Exception as e:
         logger.error(f"Error while going to marks page: {e}")
         return False
