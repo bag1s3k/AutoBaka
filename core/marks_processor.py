@@ -3,6 +3,7 @@ import logging
 from selenium.webdriver.common.by import By
 from unidecode import unidecode
 from config.logging_conf import setup_logging
+from utils.json_export import export_json
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -57,6 +58,10 @@ def get_marks(driver) -> dict:
 
             logger.info(f"Extracted: {mark} {topic} {weight} {date} {subject_name}")
 
+        # Export marks to json file
+        if export_json(subjects):
+            logger.warning("Exporting failed")
+
         return subjects
 
     except Exception as e:
@@ -110,7 +115,7 @@ def process_marks(subjects) -> dict:
             logger.info("Calculating completed successfully")
 
         except Exception as e:
-            logger.exception(f"Something happened during processing marks")
+            logger.exception(f"Something happened during processing marks: {e}")
             return {}
 
     logger.info("Subject is gonna be sorted and returned")
