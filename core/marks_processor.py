@@ -15,28 +15,51 @@ def get_marks(driver):
     Returns:
         dict: dictionary {subject: average}
     """
-    marks_line = driver.find_elements("xpath",
-                                      "//tbody//tr[.//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]")
 
-    subjects = {}
+    try:
+        logger.info("Looking for an element on page with marks")
+        marks_line = driver.find_elements("xpath",
+                                          "//tbody//tr[.//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]")
 
-    for single_line in marks_line:
-        subject = single_line.find_elements(By.TAG_NAME, "td")
+        # Load whole marks (date, mark, value...) it's line
+        if not marks_line:
+            logger.error("No mark found")
+            logger.debug(f"Current url: {driver.current_url}")
+            logger.debug(f"Current title: {driver.title}")
 
-        mark = subject[1].text
-        topic = unidecode(subject[2].text)
-        weight = subject[5].text
-        date = subject[6].text
-        subject_name = unidecode(subject[0].text)
+            return {}
 
-        subjects.setdefault(subject_name, []).append({
-            "mark": mark,
-            "topic": topic,
-            "weight": weight,
-            "date": date
-        })
+        logger.info("Marks found")
+        subjects = {}
 
-    return subjects
+        # Extract marks to a dict
+        logger.info("It's gonna extract marks to a list")
+        for single_line in marks_line:
+            subject = single_line.find_elements(By.TAG_NAME, "td")
+
+            if not subject:
+                logger.error("Error during extraction marks")
+
+            mark = subject[1].text
+            topic = unidecode(subject[2].text)
+            weight = subject[5].text
+            date = subject[6].text
+            subject_name = unidecode(subject[0].text)
+
+            subjects.setdefault(subject_name, []).append({
+                "mark": mark,
+                "topic": topic,
+                "weight": weight,
+                "date": date
+            })
+
+            logger.info("Mark extracted")
+
+        return subjects
+
+    except Exception as e:
+        logger.exception(f"Issue during getting marks: {str(e)}")
+        return {}
 
 def process_marks(subjects):
     for subject, list_subject in subjects.items():
