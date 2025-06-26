@@ -74,7 +74,7 @@ def main():
 
         # Finishing
         logger.info("Terminate webdriver")
-        driver.quit()
+        # driver.quit()
         logger.info("Drive was successfully terminated")
 
         return True

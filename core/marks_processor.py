@@ -36,6 +36,7 @@ def get_marks(driver) -> dict:
         logger.info("It's gonna extract marks to a list")
         for single_line in marks_line:
             subject = single_line.find_elements(By.TAG_NAME, "td")
+            print([s.text for s in subject])
 
             if not subject:
                 logger.error("Error during extraction marks")
