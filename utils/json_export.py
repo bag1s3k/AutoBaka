@@ -8,7 +8,7 @@ from config.logging_conf import setup_logging
 setup_logging()
 logger = logging.getLogger(__name__)
 
-def export_json(subjects) -> bool:
+def export_json(subjects, name) -> bool:
     """
     Export marks to marks.json
     Args:
@@ -25,7 +25,7 @@ def export_json(subjects) -> bool:
 
     # Get path
     project_root = Path(__file__).resolve().parent.parent # Absolut path
-    output_path = project_root / "marks.json"
+    output_path = project_root / name
 
     # Export
     logger.info("Exporting...")

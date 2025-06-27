@@ -59,7 +59,7 @@ def get_marks(driver) -> dict:
             logger.info(f"Extracted: {mark} {topic} {weight} {date} {subject_name}")
 
         # Export marks to json file
-        if not export_json(subjects):
+        if not export_json(subjects, "marks_raw.json"):
             logger.warning("Exporting failed")
 
         return subjects
@@ -92,15 +92,18 @@ def process_marks(subjects) -> dict:
             for dict_mark in list_subject:
                 if "-" in dict_mark["mark"]:
                     text_to_num = [4.5, 3.5, 2.5, 1.5]
-                    dict_mark["mark"] = dict_mark["mark"][::-1]
-                    dict_mark["mark"] = text_to_num[int(dict_mark["mark"])]
-                elif not dict_mark["mark"].isdigit():
+                    dict_mark["mark"] = dict_mark["mark"][::-1] # rotate num 2- (is not digit) -> -2 (is digit)
+                    dict_mark["mark"] = text_to_num[int(dict_mark["mark"])] # use ^^^ as an index
+                elif dict_mark["mark"].isdigit():
+                    dict_mark["mark"] = int(dict_mark["mark"])
+                else:
                     continue
 
                 marks.append([dict_mark["mark"], dict_mark["weight"]])
 
             logger.info(f"Processing completed successfully")
             logger.info("Calculating average")
+
             # Calculate averages
             mark_times_weight = 0
             weight_sum = 0
@@ -111,9 +114,13 @@ def process_marks(subjects) -> dict:
 
             average = 0
             if weight_sum != 0:
-                average = str(mark_times_weight / weight_sum)[:4]
+                average = round(mark_times_weight / weight_sum, 2)
                 logger.warning(f"{subject} has no average (0)")
             subjects[subject].append({"avg": average})
+
+            # Export marks to json file
+            if not export_json(subjects, "marks.json"):
+                logger.warning("Exporting failed")
 
             logger.info("Calculating completed successfully")
 
