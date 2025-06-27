@@ -1,5 +1,7 @@
 ﻿import os
 import logging
+import argparse
+import time
 
 from dotenv import load_dotenv
 from config.logging_conf import setup_logging
@@ -9,7 +11,32 @@ logger = logging.getLogger(__name__)
 
 def load_credentials() -> tuple:
     """
-    Load login details
+    Using argparse chose login details from file or from user
+    Returns:
+        - tuple: (username, password)
+    """
+
+    # Parser config
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--user", action="store_true")
+    parser.add_argument("--file", action="store_true")
+
+    args = parser.parse_args()
+
+    # User or file
+    if args.user:
+        logger.info("Selected user option")
+        return load_credentials_from_user()
+    elif args.file:
+        logger.info("Selected file option")
+        return load_credentials_from_file()
+    else:
+        logger.warning("Default option")
+        return load_credentials_from_file() # Default option is from file
+
+def load_credentials_from_file() -> tuple:
+    """
+    Load login details from file
         - tuple: (username, password)
     """
     try:
@@ -39,4 +66,20 @@ def load_credentials() -> tuple:
 
     except Exception as e:
         logger.exception(f"Issue while loading login details: {str(e)}")
+        return None, None
+
+def load_credentials_from_user() -> tuple:
+    """
+    Load login details from console
+    Returns:
+        - tuple: (username, password)
+    """
+    try:
+        logger.info("Loading login details from cmd")
+        time.sleep(3)
+        details = input("Enter login details in form: username, password\n> ").split(", ")
+
+        return tuple(x.strip() for x in details)
+    except Exception as e:
+        logger.exception(f"Issue while loading login details from console: {str(e)}")
         return None, None

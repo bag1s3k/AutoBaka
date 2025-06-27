@@ -27,7 +27,7 @@ def main():
         logger.info("Loading login details")
         username, password = load_credentials()
         if not username or not password:
-            logger.error("Missing loging details in .env file")
+            logger.error("Missing loging details")
             return False
         logger.info(f"Loading was successful for user: {username}")
 
@@ -103,7 +103,9 @@ if __name__ == "__main__":
 
     if success:
         logger.info("Program was completed successfully")
+        print(0)
         sys.exit(0)
     else:
         logger.error("Program was terminated with an error")
+        print(1)
         sys.exit(1)
