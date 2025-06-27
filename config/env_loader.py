@@ -1,10 +1,10 @@
 ﻿import os
 import logging
-import argparse
 import time
 
 from dotenv import load_dotenv
 from config.logging_conf import setup_logging
+from config.options import get_args
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -16,12 +16,7 @@ def load_credentials() -> tuple:
         - tuple: (username, password)
     """
 
-    # Parser config
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--user", action="store_true")
-    parser.add_argument("--file", action="store_true")
-
-    args = parser.parse_args()
+    args = get_args() # Get argparse options
 
     # User or file
     if args.user:

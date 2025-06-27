@@ -1,9 +1,12 @@
 import logging
 import sys
 
-from core import setup_driver, login, get_marks, process_marks
-from config import load_credentials, get_config, setup_logging
-from utils import export_results
+from core.marks_processor import get_marks, process_marks
+from core.navigation import login
+from core.selenium_setup import setup_driver
+from config.config_manager import get_config, setup_logging
+from config.env_loader import load_credentials
+from utils.export import export_results
 
 # Set up logging
 setup_logging()

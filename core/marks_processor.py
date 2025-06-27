@@ -112,6 +112,7 @@ def process_marks(subjects) -> dict:
             average = 0
             if weight_sum != 0:
                 average = str(mark_times_weight / weight_sum)[:4]
+                logger.warning(f"{subject} has no average (0)")
             subjects[subject].append({"avg": average})
 
             logger.info("Calculating completed successfully")
