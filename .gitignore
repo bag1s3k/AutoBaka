@@ -6,3 +6,4 @@ project_log.log
 __pycache__/
 temp/
 marks.json
+marks_raw.json
