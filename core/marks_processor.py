@@ -109,7 +109,9 @@ def process_marks(subjects) -> dict:
                 mark_times_weight += float(mark[0]) * float(mark[1])
                 weight_sum += float(mark[1])
 
-            average = str(mark_times_weight / weight_sum)[:4]
+            average = 0
+            if weight_sum != 0:
+                average = str(mark_times_weight / weight_sum)[:4]
             subjects[subject].append({"avg": average})
 
             logger.info("Calculating completed successfully")
