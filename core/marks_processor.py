@@ -59,7 +59,7 @@ def get_marks(driver) -> dict:
             logger.info(f"Extracted: {mark} {topic} {weight} {date} {subject_name}")
 
         # Export marks to json file
-        if export_json(subjects):
+        if not export_json(subjects):
             logger.warning("Exporting failed")
 
         return subjects

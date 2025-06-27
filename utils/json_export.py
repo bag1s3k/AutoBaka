@@ -1,6 +1,7 @@
 ﻿import json
 import logging
 import os
+from pathlib import Path
 
 from config.logging_conf import setup_logging
 
@@ -23,17 +24,19 @@ def export_json(subjects) -> bool:
         return False
 
     # Get path
-    output_path = os.path.join("autobaka", "marks.json")
+    project_root = Path(__file__).resolve().parent.parent # Absolut path
+    output_path = project_root / "marks.json"
 
     # Export
     logger.info("Exporting...")
 
     try:
-        subjects_json = json.dumps(subjects, indent=4, sort_keys=False)
+        json.dumps(subjects, indent=4, sort_keys=False)
         with open(output_path, "w", encoding="utf-8") as file:
             json.dump(subjects, file, indent=4)
     except Exception as e:
         logger.exception(f"Something happened during exporting: {str(e)}")
+        return False
 
     logger.info("Exporting was successfully finished")
 
