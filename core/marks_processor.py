@@ -84,16 +84,15 @@ def process_marks(subjects) -> dict:
 
     logger.info(f"Processing marks")
 
-    # 1- -> 1.5 or N -> don't add and Calculate average
+    # 1- -> 1.5 or N don't add and Calculate average
+    text_to_num = [4.5, 3.5, 2.5, 1.5]
     for subject, list_subject in subjects.items():
         logger.info(f"Processing subject: {subject}")
         try:
             marks = []
             for dict_mark in list_subject:
                 if "-" in dict_mark["mark"]:
-                    text_to_num = [4.5, 3.5, 2.5, 1.5]
-                    dict_mark["mark"] = dict_mark["mark"][::-1] # rotate num 2- (is not digit) -> -2 (is digit)
-                    dict_mark["mark"] = text_to_num[int(dict_mark["mark"])] # use ^^^ as an index
+                    dict_mark["mark"] = text_to_num[-int(dict_mark["mark"][0])] # take 1. element of '2-' => 2 and 2 * (-1) => -2 is index of a list
                 elif dict_mark["mark"].isdigit():
                     dict_mark["mark"] = int(dict_mark["mark"])
                 else:
