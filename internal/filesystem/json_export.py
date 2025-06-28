@@ -8,36 +8,36 @@ from internal.utils.logging_setup import setup_logging
 setup_logging()
 logger = logging.getLogger(__name__)
 
-def export_json(subjects, name) -> bool:
+def export_json(subjects) -> bool:
     """
-    Export marks to marks.json
+    Export marks to JSON file
+
     Args:
-        dict of marks
+        subjects: dict of marks
+
     Returns:
-        Boolean: successful or not
+        bool: True if successful, False otherwise
     """
 
     logger.info(f"Current directory: {os.getcwd()}")
 
     if not subjects:
-        logger.warning("Nothing in subjects")
+        logger.warning("No subjects to export")
         return False
 
     # Export
     logger.info("Exporting...")
 
     if not JSON_OUTPUT_PATH:
-        logger.error("Json output path is empty")
+        logger.error("JSON output path is empty or not set")
         return False
 
     try:
-        json.dumps(subjects, indent=4, sort_keys=False)
         with open(JSON_OUTPUT_PATH, "w", encoding="utf-8") as file:
-            json.dump(subjects, file, indent=4)
+            json.dump(subjects, file, indent=4, ensure_ascii=False)
+
+        logger.info(f"Data successfully exported to {JSON_OUTPUT_PATH}")
+        return True
     except Exception as e:
         logger.exception(f"Something happened during exporting: {str(e)}")
         return False
-
-    logger.info("Exporting was successfully finished")
-
-    return True
