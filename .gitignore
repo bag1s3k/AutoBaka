@@ -6,5 +6,5 @@ output/project_log.log
 __pycache__/
 temp/
 output/marks.json
-output/marks_raw.json
+output/raw_marks.json
 tests
