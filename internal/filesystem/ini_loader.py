@@ -3,7 +3,7 @@
 from configparser import ConfigParser
 
 from internal.utils.logging_setup import setup_logging
-from internal.utils.paths import CONFIG_PATH
+from internal.utils.paths_constants import CONFIG_PATH
 
 setup_logging()
 logger = logging.getLogger(__name__)

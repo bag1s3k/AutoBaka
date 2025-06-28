@@ -1,0 +1,470 @@
+{
+    "Zaklady elektrotechniky": [
+        {
+            "mark": "2",
+            "topic": "Hodnoceni ZEc",
+            "weight": "4",
+            "date": "20. 6. 2025"
+        },
+        {
+            "mark": "3",
+            "topic": "Pis.prezk. c.6-OPRAVA",
+            "weight": "6",
+            "date": "23. 5. 2025"
+        },
+        {
+            "mark": "X",
+            "topic": "Pisemne prezkouseni c.6",
+            "weight": "6",
+            "date": "8. 4. 2025"
+        },
+        {
+            "mark": "4",
+            "topic": "Pisemne prezkouseni c.5",
+            "weight": "4",
+            "date": "25. 2. 2025"
+        }
+    ],
+    "Nemecky jazyk": [
+        {
+            "mark": "2",
+            "topic": "Test 1.l.",
+            "weight": "5",
+            "date": "17. 6. 2025"
+        },
+        {
+            "mark": "1-",
+            "topic": "Geopredlozky",
+            "weight": "4",
+            "date": "20. 5. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Slovicka 1A",
+            "weight": "3",
+            "date": "15. 5. 2025"
+        },
+        {
+            "mark": "1-",
+            "topic": "Test 8.l.",
+            "weight": "5",
+            "date": "12. 3. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "MS, preteritum, slov.8.l.",
+            "weight": "5",
+            "date": "27. 2. 2025"
+        }
+    ],
+    "Anglicky jazyk": [
+        {
+            "mark": "1-",
+            "topic": "An email of complaint",
+            "weight": "3",
+            "date": "16. 6. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Vocabulary U10",
+            "weight": "4",
+            "date": "23. 5. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Test U9",
+            "weight": "8",
+            "date": "25. 4. 2025"
+        },
+        {
+            "mark": "5",
+            "topic": "Listening U9",
+            "weight": "4",
+            "date": "25. 4. 2025"
+        },
+        {
+            "mark": "3",
+            "topic": "Reading U9",
+            "weight": "4",
+            "date": "25. 4. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Writing",
+            "weight": "3",
+            "date": "14. 4. 2025"
+        },
+        {
+            "mark": "2",
+            "topic": "Writing",
+            "weight": "3",
+            "date": "14. 4. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Vocabulary U9",
+            "weight": "4",
+            "date": "4. 4. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Prace v hodine",
+            "weight": "2",
+            "date": "26. 3. 2025"
+        },
+        {
+            "mark": "2",
+            "topic": "Test on modal verbs",
+            "weight": "4",
+            "date": "20. 3. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Writing a review",
+            "weight": "3",
+            "date": "28. 2. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Listening U8",
+            "weight": "4",
+            "date": "28. 2. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Reading U8",
+            "weight": "4",
+            "date": "28. 2. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Test U8",
+            "weight": "8",
+            "date": "28. 2. 2025"
+        },
+        {
+            "mark": "2",
+            "topic": "Vocabulary U8",
+            "weight": "4",
+            "date": "26. 2. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Test on Reported speech",
+            "weight": "4",
+            "date": "6. 2. 2025"
+        }
+    ],
+    "Cesky jazyk a literatura": [
+        {
+            "mark": "2",
+            "topic": "Podstatna jmena",
+            "weight": "6",
+            "date": "10. 6. 2025"
+        },
+        {
+            "mark": "3",
+            "topic": "Pridavna jmena",
+            "weight": "6",
+            "date": "28. 5. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Domaci ukol",
+            "weight": "1",
+            "date": "23. 5. 2025"
+        },
+        {
+            "mark": "2",
+            "topic": "Pisemna prace",
+            "weight": "6",
+            "date": "14. 5. 2025"
+        },
+        {
+            "mark": "2",
+            "topic": "Pisemna prace",
+            "weight": "6",
+            "date": "11. 3. 2025"
+        },
+        {
+            "mark": "4",
+            "topic": "Pisemna prace",
+            "weight": "6",
+            "date": "10. 3. 2025"
+        }
+    ],
+    "Matematika": [
+        {
+            "mark": "4",
+            "topic": "Goniometrie",
+            "weight": "3",
+            "date": "6. 6. 2025"
+        },
+        {
+            "mark": "N",
+            "topic": "Iracionalni rovnice, mocn",
+            "weight": "3",
+            "date": "30. 5. 2025"
+        },
+        {
+            "mark": "4",
+            "topic": "Inverzni a logaritmicka f",
+            "weight": "3",
+            "date": "30. 5. 2025"
+        },
+        {
+            "mark": "2",
+            "topic": "Exponencialni funkce a ro",
+            "weight": "3",
+            "date": "1. 4. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Kvadraticka funkce a nero",
+            "weight": "3",
+            "date": "4. 3. 2025"
+        }
+    ],
+    "Fyzika": [
+        {
+            "mark": "3",
+            "topic": "Cocky",
+            "weight": "3",
+            "date": "6. 6. 2025"
+        },
+        {
+            "mark": "2",
+            "topic": "Zrcadla",
+            "weight": "3",
+            "date": "13. 5. 2025"
+        },
+        {
+            "mark": "3",
+            "topic": "Optika - uvod",
+            "weight": "3",
+            "date": "1. 4. 2025"
+        },
+        {
+            "mark": "3",
+            "topic": "Mechanicke kmitani",
+            "weight": "3",
+            "date": "4. 3. 2025"
+        }
+    ],
+    "Ekonomika a pravo": [
+        {
+            "mark": "2",
+            "topic": "DE",
+            "weight": "4",
+            "date": "5. 6. 2025"
+        },
+        {
+            "mark": "2",
+            "topic": "Socialni a zdravotni poj",
+            "weight": "3",
+            "date": "30. 5. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Danove priznani",
+            "weight": "4",
+            "date": "13. 5. 2025"
+        },
+        {
+            "mark": "2",
+            "topic": "Danova soustava",
+            "weight": "4",
+            "date": "4. 4. 2025"
+        },
+        {
+            "mark": "5",
+            "topic": "Vypocet danoveho zakladu",
+            "weight": "1",
+            "date": "21. 3. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "4ista mzda",
+            "weight": "4",
+            "date": "27. 2. 2025"
+        },
+        {
+            "mark": "2",
+            "topic": "Mzdy",
+            "weight": "4",
+            "date": "18. 2. 2025"
+        }
+    ],
+    "Programovani": [
+        {
+            "mark": "1",
+            "topic": "Pisemna prace",
+            "weight": "5",
+            "date": "4. 6. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Aktivita - souradnice",
+            "weight": "5",
+            "date": "21. 5. 2025"
+        }
+    ],
+    "Dejepis": [
+        {
+            "mark": "1",
+            "topic": "Prezentace",
+            "weight": "6",
+            "date": "3. 6. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Test c. 6",
+            "weight": "6",
+            "date": "22. 5. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Kolokvium",
+            "weight": "6",
+            "date": "15. 4. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Test c. 5",
+            "weight": "6",
+            "date": "4. 3. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Test c. 4",
+            "weight": "6",
+            "date": "27. 2. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Tymova prace",
+            "weight": "2",
+            "date": "4. 2. 2025"
+        }
+    ],
+    "Informacni site": [
+        {
+            "mark": "2",
+            "topic": "Test IPv4,6",
+            "weight": "3",
+            "date": "23. 5. 2025"
+        },
+        {
+            "mark": "3",
+            "topic": "Vrstvy ISO/OSI a TCP/IP",
+            "weight": "3",
+            "date": "17. 3. 2025"
+        },
+        {
+            "mark": "3",
+            "topic": "IP adresace v4",
+            "weight": "3",
+            "date": "17. 3. 2025"
+        }
+    ],
+    "Informacni site - cviceni": [
+        {
+            "mark": "1",
+            "topic": "Zasitovani domacnosti",
+            "weight": "2",
+            "date": "30. 4. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "P.T. DHCP servery",
+            "weight": "2",
+            "date": "14. 3. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Vyroba datoveho kabelu",
+            "weight": "2",
+            "date": "19. 2. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "prace s hardwarem",
+            "weight": "2",
+            "date": "22. 1. 2025"
+        }
+    ],
+    "Telesna vychova": [
+        {
+            "mark": "1",
+            "topic": " ",
+            "weight": "10",
+            "date": "1. 4. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": " ",
+            "weight": "10",
+            "date": "1. 4. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": " ",
+            "weight": "10",
+            "date": "1. 4. 2025"
+        },
+        {
+            "mark": "3",
+            "topic": " ",
+            "weight": "10",
+            "date": "27. 3. 2025"
+        }
+    ],
+    "Technicka anglictina": [
+        {
+            "mark": "1",
+            "topic": "Test on Input and output",
+            "weight": "6",
+            "date": "28. 3. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Vocabulary",
+            "weight": "2",
+            "date": "20. 3. 2025"
+        },
+        {
+            "mark": "2-",
+            "topic": "Presentation",
+            "weight": "8",
+            "date": "6. 2. 2025"
+        }
+    ],
+    "Operacni systemy": [
+        {
+            "mark": "1",
+            "topic": "Test",
+            "weight": "3",
+            "date": "26. 3. 2025"
+        }
+    ],
+    "Hardware": [
+        {
+            "mark": "1",
+            "topic": "Prez1",
+            "weight": "1",
+            "date": "14. 3. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Prez2",
+            "weight": "1",
+            "date": "14. 3. 2025"
+        },
+        {
+            "mark": "1",
+            "topic": "Prez3",
+            "weight": "1",
+            "date": "14. 3. 2025"
+        }
+    ]
+}

@@ -5,6 +5,7 @@ import time
 from dotenv import load_dotenv
 from internal.utils.logging_setup import setup_logging
 from internal.utils.options import get_args
+from internal.utils.paths_constants import ENV_PATH
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -38,7 +39,7 @@ def load_credentials_from_file() -> tuple:
         logger.info("Loading login details from .env file")
 
         # Loading .env file
-        env_loaded = load_dotenv()
+        env_loaded = load_dotenv(ENV_PATH)
 
         if not env_loaded:
             logger.warning(".env file cannot be load")

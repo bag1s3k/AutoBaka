@@ -1,5 +1,5 @@
 ﻿import logging
-from internal.utils.paths import LOG_PATH
+from internal.utils.paths_constants import LOG_PATH
 
 def setup_logging():
     """

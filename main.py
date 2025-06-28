@@ -7,6 +7,7 @@ from internal.utils.selenium_setup import setup_driver
 from internal.filesystem.ini_loader import get_config, setup_logging
 from internal.filesystem.env_loader import load_credentials
 from internal.filesystem.export import export_results
+from internal.utils.paths_constants import find_project_root
 
 # Set up logging
 setup_logging()
@@ -16,7 +17,13 @@ def main():
     """
     Main script func, Launch app
     """
+
     logger.info("Launching main func of baka an app")
+
+    # Find root folder
+    if not find_project_root():
+        logger.error("Root folder not found")
+        return False
 
     driver = None
 
