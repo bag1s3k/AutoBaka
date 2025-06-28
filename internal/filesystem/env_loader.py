@@ -3,8 +3,8 @@ import logging
 import time
 
 from dotenv import load_dotenv
-from config.logging_conf import setup_logging
-from config.options import get_args
+from internal.filesystem.logging_conf import setup_logging
+from internal.filesystem.options import get_args
 
 setup_logging()
 logger = logging.getLogger(__name__)

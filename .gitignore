@@ -1,9 +1,9 @@
 .idea/
 .venv/
-config.ini
-.env
-project_log.log
+config/config.ini
+config/.env
+output/project_log.log
 __pycache__/
 temp/
-marks.json
-marks_raw.json
+output/marks.json
+output/marks_raw.json

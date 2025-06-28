@@ -2,8 +2,8 @@
 
 from configparser import ConfigParser
 
-from config.logging_conf import setup_logging
-from paths import CONFIG_PATH
+from internal.filesystem.logging_conf import setup_logging
+from internal.utils.paths import CONFIG_PATH
 
 setup_logging()
 logger = logging.getLogger(__name__)
