@@ -1,7 +1,7 @@
 ﻿import json
 import logging
 import os
-from pathlib import Path
+from internal.utils.paths_constants import JSON_OUTPUT_PATH
 
 from internal.utils.logging_setup import setup_logging
 
@@ -23,16 +23,16 @@ def export_json(subjects, name) -> bool:
         logger.warning("Nothing in subjects")
         return False
 
-    # Get path
-    project_root = Path(__file__).resolve().parent.parent # Absolut path
-    output_path = project_root / name
-
     # Export
     logger.info("Exporting...")
 
+    if not JSON_OUTPUT_PATH:
+        logger.error("Json output path is empty")
+        return False
+
     try:
         json.dumps(subjects, indent=4, sort_keys=False)
-        with open(output_path, "w", encoding="utf-8") as file:
+        with open(JSON_OUTPUT_PATH, "w", encoding="utf-8") as file:
             json.dump(subjects, file, indent=4)
     except Exception as e:
         logger.exception(f"Something happened during exporting: {str(e)}")
