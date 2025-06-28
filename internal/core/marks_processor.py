@@ -114,7 +114,8 @@ def process_marks(subjects) -> dict:
             average = 0
             if weight_sum != 0:
                 average = round(mark_times_weight / weight_sum, 2)
-                logger.warning(f"{subject} has no average (0)")
+            else:
+                logger.warning(f"{subject} has no average weight is (0)")
             subjects[subject].append({"avg": average})
 
             # Export marks to json file

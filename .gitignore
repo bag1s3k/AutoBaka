@@ -7,3 +7,4 @@ __pycache__/
 temp/
 output/marks.json
 output/marks_raw.json
+tests
