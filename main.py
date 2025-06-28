@@ -15,13 +15,16 @@ logger = logging.getLogger(__name__)
 
 def main():
     """
-    Main script func, Launch app
+    Main application function
+
+    Returns:
+        bool: True if successful, False otherwise
     """
 
     logger.info("Launching main func of baka an app")
 
     # Find root folder
-    if not find_project_root():
+    if not find_project_root() or not find_project_root().exists():
         logger.error("Root folder not found")
         return False
 

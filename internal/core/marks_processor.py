@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from unidecode import unidecode
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.json_export import export_json
+from internal.utils.paths_constants import JSON_OUTPUT_PATH, JSON_RAW_OUTPUT_PATH
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -59,7 +60,7 @@ def get_marks(driver) -> dict:
             logger.info(f"Extracted: {mark} {topic} {weight} {date} {subject_name}")
 
         # Export marks to json file
-        if not export_json(subjects, "marks_raw.json"):
+        if not export_json(subjects, JSON_RAW_OUTPUT_PATH):
             logger.warning("Exporting failed")
 
         return subjects
@@ -70,10 +71,11 @@ def get_marks(driver) -> dict:
 
 def process_marks(subjects) -> dict:
     """
-    Processing marks (1- -> 1.5 or N -> don't add)
-    Calculate averages
+    Processing marks and calculate averages
+
     Args:
         subjects: dict of marks
+
     Returns:
         dict: sorted dict of processed marks
     """
@@ -119,7 +121,7 @@ def process_marks(subjects) -> dict:
             subjects[subject].append({"avg": average})
 
             # Export marks to json file
-            if not export_json(subjects, "marks.json"):
+            if not export_json(subjects, JSON_OUTPUT_PATH):
                 logger.warning("Exporting failed")
 
             logger.info("Calculating completed successfully")

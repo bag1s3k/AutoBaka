@@ -3,6 +3,7 @@
 def find_project_root(target_folder: str = "autobaka") -> Path:
     """
     This func finds project root folder
+
     Returns:
         - absolute path of the project root
     """
@@ -20,3 +21,4 @@ CONFIG_PATH = PROJECT_ROOT / "config" / "config.ini"
 LOG_PATH = PROJECT_ROOT / "output" / "project_log.log"
 ENV_PATH = PROJECT_ROOT / "config" / ".env"
 JSON_OUTPUT_PATH = PROJECT_ROOT / "output" / "marks.json"
+JSON_RAW_OUTPUT_PATH = PROJECT_ROOT / "output" / "raw_marks.json"
