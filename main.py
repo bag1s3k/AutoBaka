@@ -3,10 +3,10 @@ import sys
 
 from internal.core.marks_processor import get_marks, process_marks
 from internal.core.navigation import login
-from internal.core.selenium_setup import setup_driver
-from internal.filesystem.config_manager import get_config, setup_logging
+from internal.utils.selenium_setup import setup_driver
+from internal.filesystem.ini_loader import get_config, setup_logging
 from internal.filesystem.env_loader import load_credentials
-from internal.utils.export import export_results
+from internal.filesystem.export import export_results
 
 # Set up logging
 setup_logging()

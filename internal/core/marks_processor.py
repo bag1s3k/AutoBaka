@@ -2,8 +2,8 @@ import logging
 
 from selenium.webdriver.common.by import By
 from unidecode import unidecode
-from internal.filesystem.logging_conf import setup_logging
-from internal.utils.json_export import export_json
+from internal.utils.logging_setup import setup_logging
+from internal.filesystem.json_export import export_json
 
 setup_logging()
 logger = logging.getLogger(__name__)

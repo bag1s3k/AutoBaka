@@ -3,7 +3,7 @@ import logging
 import os
 from pathlib import Path
 
-from internal.filesystem.logging_conf import setup_logging
+from internal.utils.logging_setup import setup_logging
 
 setup_logging()
 logger = logging.getLogger(__name__)

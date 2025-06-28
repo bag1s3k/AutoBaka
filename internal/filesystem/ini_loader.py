@@ -2,7 +2,7 @@
 
 from configparser import ConfigParser
 
-from internal.filesystem.logging_conf import setup_logging
+from internal.utils.logging_setup import setup_logging
 from internal.utils.paths import CONFIG_PATH
 
 setup_logging()

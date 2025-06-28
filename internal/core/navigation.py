@@ -5,8 +5,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
-from internal.filesystem.config_manager import setup_logging, get_config
-from internal.filesystem.options import get_args
+from internal.filesystem.ini_loader import setup_logging, get_config
+from internal.utils.options import get_args
 
 setup_logging()
 logger = logging.getLogger(__name__)
