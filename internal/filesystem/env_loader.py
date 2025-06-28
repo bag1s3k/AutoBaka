@@ -32,31 +32,39 @@ def load_credentials() -> tuple:
 
 def load_credentials_from_file() -> tuple:
     """
-    Load login details from file
-        - tuple: (username, password)
+    Load login details from .env file
+
+    Returns:
+        - tuple: (username, password) or (None, None) if failed
     """
     try:
         logger.info("Loading login details from .env file")
+
+        # Does the file exist
+        if not ENV_PATH.exists():
+            logger.error(f".env file not found at: {ENV_PATH}")
+            return None, None
 
         # Loading .env file
         env_loaded = load_dotenv(ENV_PATH)
 
         if not env_loaded:
             logger.warning(".env file cannot be load")
-        else:
-            logger.info(".env file was successfully loaded")
+            return None, None
+
+        logger.info(".env file was successfully loaded")
 
         # Check variables
-        def check_env(var_name) -> str:
+        def check_env_var(var_name: str) -> str:
             value = os.getenv(var_name)
             if not value or not value.strip():
-                logger.error(f"Variable is not set or it's empty")
+                logger.error(f"Variable is not set or empty")
             if value:
                 logger.debug("Login details loaded successfully")
             return value
 
-        username = check_env("BAKA_USERNAME")
-        password = check_env("BAKA_PASSWORD")
+        username = check_env_var("BAKA_USERNAME")
+        password = check_env_var("BAKA_PASSWORD")
 
         return username, password
 
@@ -66,16 +74,18 @@ def load_credentials_from_file() -> tuple:
 
 def load_credentials_from_user() -> tuple:
     """
-    Load login details from console
+    Load login details from user input
+
     Returns:
-        - tuple: (username, password)
+        - tuple: (username, password) or (None, None) if failed
     """
     try:
-        logger.info("Loading login details from cmd")
+        logger.info("Loading login details from user input")
         time.sleep(3)
         details = input("Enter login details in form: username, password\n> ").split(", ")
 
         return tuple(x.strip() for x in details)
+
     except Exception as e:
-        logger.exception(f"Issue while loading login details from console: {str(e)}")
+        logger.exception(f"Error during user input: {str(e)}")
         return None, None
