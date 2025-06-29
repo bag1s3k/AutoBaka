@@ -17,7 +17,7 @@ def find_project_root(target_folder: str = "autobaka") -> Path:
     return path
 
 PROJECT_ROOT = find_project_root()
-CONFIG_PATH = PROJECT_ROOT / "config" / "config.ini"
+INI_PATH = PROJECT_ROOT / "config" / "config.ini"
 LOG_PATH = PROJECT_ROOT / "output" / "project_log.log"
 ENV_PATH = PROJECT_ROOT / "config" / ".env"
 JSON_OUTPUT_PATH = PROJECT_ROOT / "output" / "marks.json"
