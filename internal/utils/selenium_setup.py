@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from internal.utils.logging_setup import setup_logging
+from internal.filesystem.ini_loader import get_config
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -20,13 +21,20 @@ def setup_driver():
 
         # Default configuration
         logger.debug("Setup chrome options")
-        options.add_experimental_option("detach", False)
+        if bool(int(get_config("SETTINGS", "quit_driver"))):
+            options.add_experimental_option("detach", False)
+        else:
+            options.add_experimental_option("detach", True)
+
         options.add_experimental_option("excludeSwitches", ["enable-automation", "enable-logging"])
         options.add_experimental_option('useAutomationExtension', False)
 
         # Headless mode
-        options.add_argument("--headless=new")
-        logger.debug("Headless mode was activated")
+        if bool(int(get_config("SETTINGS", "headless_mode"))): # Turn on or off headless mode from config.ini
+            options.add_argument("--headless=new")
+            logger.debug("Headless mode was activated")
+        else:
+            logger.debug("Headless mode off")
 
         # Performance
         options.add_argument("--no-sandbox")

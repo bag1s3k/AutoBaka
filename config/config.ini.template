@@ -3,3 +3,9 @@ result_path = path\result.txt
 [URLS]
 login_url = https://bakaweb.cichnovabrno.cz/login
 marks_url = https://bakaweb.cichnovabrno.cz/next/prubzna.aspx?s=chrono
+
+[SETTINGS]
+timeout = 15
+headless_mode = True
+quit_driver = True
+export_format = json

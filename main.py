@@ -87,7 +87,9 @@ def main():
 
         # Finishing
         logger.info("Terminate webdriver")
-        driver.quit()
+        if bool(int(get_config("SETTINGS", "quit_driver"))): # let window open or close it
+            driver.quit()
+            logger.info("driver was successfully quit")
         logger.info("Drive was successfully terminated")
 
         return True

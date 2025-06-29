@@ -67,7 +67,7 @@ def login(driver, username: str, password: str) -> bool:
 
         # Wait until  username field load
         try:
-            username_field = WebDriverWait(driver, 10).until(
+            username_field = WebDriverWait(driver, int(get_config("SETTINGS", "timeout"))).until(
                 EC.presence_of_element_located((By.NAME, "username"))
             )
             logger.debug("Field for username found")
@@ -121,7 +121,7 @@ def login(driver, username: str, password: str) -> bool:
         logger.debug("Wait until page will load")
 
         try:
-            WebDriverWait(driver, 15).until(
+            WebDriverWait(driver, get_config("SETTINGS", "timeout")).until(
                 EC.presence_of_element_located((By.XPATH, "//tbody//tr[.//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]"))
             )
             logger.info("Page with marks was successfully load")

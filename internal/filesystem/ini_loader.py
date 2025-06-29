@@ -15,11 +15,14 @@ def get_config(section: str, option: str):
     2 Params:
         - section = enter name of the section
         - option = enter name of the option
+
+    Returns:
+        - string
     """
     try:
         logger.debug("Loading configParser")
 
-        # Does file exist
+        # Does the file exist
         if not CONFIG_PATH.exists():
             logger.error(f"Configuration file doesn't exist, wrong path: {CONFIG_PATH}")
             raise FileNotFoundError(f"Configuration file doesn't exist, wrong path: {CONFIG_PATH}")
