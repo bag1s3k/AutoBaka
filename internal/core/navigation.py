@@ -5,8 +5,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
-from internal.filesystem.ini_loader import setup_logging, get_config
+from internal.utils.logging_setup import setup_logging
 from internal.utils.options import get_args
+from internal.filesystem.ini_loader import config
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -32,8 +33,8 @@ def login(driver, username: str, password: str) -> bool:
 
         # --file
         if args.file:
-            driver.get(get_config("URLS", "login_url"))
-            marks_url = get_config("URLS", "marks_url")
+            driver.get(config.get_config("URLS", "login_url"))
+            marks_url = config.get_config("URLS", "marks_url")
 
         # --user
         elif args.user:
@@ -60,14 +61,14 @@ def login(driver, username: str, password: str) -> bool:
 
         # Default
         else:
-            driver.get(get_config("URLS", "login_url"))
-            marks_url = get_config("URLS", "marks_url")
+            driver.get(config.get_config("URLS", "login_url"))
+            marks_url = config.get_config("URLS", "marks_url")
 
         logger.debug("Website loaded")
 
         # Wait until  username field load
         try:
-            username_field = WebDriverWait(driver, int(get_config("SETTINGS", "timeout"))).until(
+            username_field = WebDriverWait(driver, config.get_config("SETTINGS", "timeout")).until(
                 EC.presence_of_element_located((By.NAME, "username"))
             )
             logger.debug("Field for username found")

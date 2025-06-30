@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from unidecode import unidecode
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.json_export import export_json
-from internal.utils.paths_constants import JSON_OUTPUT_PATH, JSON_RAW_OUTPUT_PATH
+from internal.filesystem.paths_constants import JSON_OUTPUT_PATH, JSON_RAW_OUTPUT_PATH
 
 setup_logging()
 logger = logging.getLogger(__name__)

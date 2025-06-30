@@ -4,10 +4,11 @@ import sys
 from internal.core.marks_processor import get_marks, process_marks
 from internal.core.navigation import login
 from internal.utils.selenium_setup import setup_driver
-from internal.filesystem.ini_loader import get_config, setup_logging
+from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_loader import load_credentials
 from internal.filesystem.export import export_results
-from internal.utils.paths_constants import find_project_root
+from internal.filesystem.paths_constants import find_project_root
+from internal.filesystem.ini_loader import config
 
 # Set up logging
 setup_logging()
@@ -26,6 +27,10 @@ def main():
     # Find root folder
     if not find_project_root() or not find_project_root().exists():
         logger.error("Root folder not found")
+        return False
+
+    if not config.read():
+        logger.error("Config loading failed")
         return False
 
     driver = None
@@ -77,17 +82,16 @@ def main():
 
         # Export results
         logger.info("Exporting results")
-        export_success = export_results(processed_marks, get_config("PATHS", "result_path"))
-
-        if not export_success:
+        if not export_results(processed_marks, config.get_config("PATHS", "result_path")):
             logger.error("Exporting failed")
             return False
+
 
         logger.info("Exporting was successful")
 
         # Finishing
         logger.info("Terminate webdriver")
-        if bool(int(get_config("SETTINGS", "quit_driver"))): # let window open or close it
+        if config.get_config("SETTINGS", "quit_driver"): # let window open or close it
             driver.quit()
             logger.info("driver was successfully quit")
         logger.info("Drive was successfully terminated")

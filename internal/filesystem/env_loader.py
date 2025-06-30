@@ -5,7 +5,7 @@ import time
 from dotenv import load_dotenv
 from internal.utils.logging_setup import setup_logging
 from internal.utils.options import get_args
-from internal.utils.paths_constants import ENV_PATH
+from internal.filesystem.paths_constants import ENV_PATH
 
 setup_logging()
 logger = logging.getLogger(__name__)
