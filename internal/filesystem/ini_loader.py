@@ -40,7 +40,9 @@ class IniConfigFile:
                 logger.exception(f"Configuration file doesn't exist, wrong path: {self.ini_path}")
                 return False
 
-            self.config.read(self.ini_path)
+            with open(self.ini_path, "r", encoding="utf-8") as f:
+                self.config.read_file(f)
+
             logger.info("config.ini have been successfully read")
 
             return True
