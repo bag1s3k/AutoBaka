@@ -29,7 +29,7 @@ def main():
         logger.error("Root folder not found")
         return False
 
-    if not config.read():
+    if not config.read:
         logger.error("Config loading failed")
         return False
 

@@ -122,7 +122,7 @@ def login(driver, username: str, password: str) -> bool:
         logger.debug("Wait until page will load")
 
         try:
-            WebDriverWait(driver, get_config("SETTINGS", "timeout")).until(
+            WebDriverWait(driver, config.get_config("SETTINGS", "timeout")).until(
                 EC.presence_of_element_located((By.XPATH, "//tbody//tr[.//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]"))
             )
             logger.info("Page with marks was successfully load")
