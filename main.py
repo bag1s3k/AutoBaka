@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 def main():
     """
-    Main application function
+    Main func
 
     Returns:
         bool: True if successful, False otherwise
