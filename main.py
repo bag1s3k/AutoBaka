@@ -14,15 +14,26 @@ from internal.filesystem.ini_loader import config
 setup_logging()
 logger = logging.getLogger(__name__)
 
-def main():
+def main(app: str) -> bool:
     """
     Main func
 
+    Args:
+        app (str):
+            - "cli" for addition print in cmd
+            - "gui" for gui
+
     Returns:
-        bool: True if successful, False otherwise
+        Bool: True if successful, False otherwise
     """
 
     logger.info("Launching main func of baka an app")
+
+    # CLI PRINT
+    def cli_print():
+        if app == "cli":
+            print(".", end="")
+    cli_print()
 
     # Find root folder
     if not find_project_root() or not find_project_root().exists():
@@ -41,6 +52,8 @@ def main():
         driver = setup_driver()
         logger.info("Initiation was successful")
 
+        cli_print()
+
         # Load login details
         logger.info("Loading login details")
         username, password = load_credentials()
@@ -48,6 +61,8 @@ def main():
             logger.error("Missing loging details")
             return False
         logger.info(f"Loading was successful for user: {username}")
+
+        cli_print()
 
         # Login to baka
         logger.info("Logging to baka")
@@ -58,6 +73,8 @@ def main():
             return False
 
         logger.info("Logging was successful")
+
+        cli_print()
 
         # Get marks
         logger.info("Getting raw marks")
@@ -70,6 +87,8 @@ def main():
 
         logger.info("Getting raw marks was successful")
 
+        cli_print()
+
         # Processing marks
         logger.info("Calculating averages")
         processed_marks = process_marks(raw_marks)
@@ -80,14 +99,17 @@ def main():
 
         logger.info("Calculating was successful")
 
+        cli_print()
+
         # Export results
         logger.info("Exporting results")
         if not export_results(processed_marks, config.get_config("PATHS", "result_path")):
             logger.error("Exporting failed")
             return False
 
-
         logger.info("Exporting was successful")
+
+        cli_print()
 
         # Finishing
         logger.info("Terminate webdriver")
@@ -95,6 +117,8 @@ def main():
             driver.quit()
             logger.info("driver was successfully quit")
         logger.info("Drive was successfully terminated")
+
+        print(".") # CLI PRINT
 
         return True
 
@@ -117,14 +141,10 @@ def main():
             except Exception as e:
                 logger.error(f"Error during terminating program: {str(e)}")
 
-if __name__ == "__main__":
-    success = main()
+def run(app: str):
+    success = main(app.lower().strip())
 
     if success:
         logger.info("Program was completed successfully")
-        print(0)
-        sys.exit(0)
     else:
         logger.error("Program was terminated with an error")
-        print(1)
-        sys.exit(1)
