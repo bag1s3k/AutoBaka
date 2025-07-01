@@ -1,5 +1,4 @@
 import logging
-import sys
 
 from internal.core.marks_processor import get_marks, process_marks
 from internal.core.navigation import login
@@ -16,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 def main(app: str) -> bool:
     """
-    Main func
+    Main base function
 
     Args:
         app (str):
@@ -29,7 +28,7 @@ def main(app: str) -> bool:
 
     logger.info("Launching main func of baka an app")
 
-    # CLI PRINT
+    # CLI PRINT func
     def cli_print():
         if app == "cli":
             print(".", end="")
@@ -46,6 +45,7 @@ def main(app: str) -> bool:
 
     driver = None
 
+    # Start of app
     try:
         # Initiation webdriver
         logger.info("Initiation webdriver")
@@ -118,7 +118,7 @@ def main(app: str) -> bool:
             logger.info("driver was successfully quit")
         logger.info("Drive was successfully terminated")
 
-        print(".") # CLI PRINT
+        cli_print()
 
         return True
 
@@ -142,9 +142,23 @@ def main(app: str) -> bool:
                 logger.error(f"Error during terminating program: {str(e)}")
 
 def run(app: str):
-    success = main(app.lower().strip())
+    """
+    Helper run func
+
+    Args:
+        app (str):
+            - "cli" for addition print in cmd
+            - "gui" for gui
+    """
+    app = app.lower().strip()
+    success = main(app)
 
     if success:
+        if app == "cli":
+            print(" Successfully")
+
         logger.info("Program was completed successfully")
     else:
+        if app == "cli":
+            print(" Error, results could be incomplete or wrong")
         logger.error("Program was terminated with an error")
