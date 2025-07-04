@@ -1,6 +1,8 @@
 ﻿from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_loader import set_env, load_credentials_from_file
+from internal.filesystem.ini_loader import config as config_file
 from main import run
+
 import logging
 
 setup_logging()
@@ -15,11 +17,10 @@ def config() -> bool:
 
     while True:
         command = input("root/config> ")
+        logger.info(f"Command: {command}")
 
         if "login-details" in command:
-
             if "--current" in command:
-                print("CURRENT:")
                 print(load_credentials_from_file())
             else:
                 username = input("username: ").strip()
@@ -35,10 +36,29 @@ def config() -> bool:
                             logger.error("Writing to .env failed")
                             status = False
                         else:
+                            logger.info("Successfully overwrite")
                             print(" Successfully overwrite")
                             status = True
-        elif command == "settings":
-            pass
+        elif "settings" in command:
+            if "--current" in command:
+                for section in config_file.config.sections():
+                    print(f"[{section}]")
+                    for key, value in config_file.config.items(section):
+                        print(f"{key}: {value}")
+            else:
+                value = input("Enter: 'section option value': ").split(" ")
+
+                try:
+                    if not config_file.set_new(value[0], value[1], value[2]):
+                        return False
+
+                    print(f"Set new config: {value}")
+                    logger.info(f"Set new config: {value}")
+
+                except Exception as e:
+                    logger.warning(f"Unexpected warning: {str(e)}")
+                    print(str(e))
+                    continue
         elif command == "help":
             pass
         elif command == "exit":
@@ -84,5 +104,8 @@ def run_app_loop() -> bool:
             return status
 
 if __name__ == "__main__":
-    run_app_loop()
+    if run_app_loop():
+        logger.info("Program was completed successfully")
+    else:
+        logger.error("Program was terminated with an error")
 

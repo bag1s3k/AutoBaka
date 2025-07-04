@@ -25,6 +25,26 @@ class IniConfigFile:
         self.config = ConfigParser()
         self.read = self._read_config()
 
+    def set_new(self, section: str, option: str, value: str) -> bool:
+        try:
+            if not self.config.has_section(section):
+                logger.error(f"No section: {section}")
+                return False
+            if not self.config.has_option(section, option):
+                logger.error(f"No option: {section} {option}")
+                return False
+
+            self.config.set(section, option, value)
+            with open(INI_PATH, "w", encoding="utf-8") as f:
+                self.config.write(f)
+
+            logger.info("Successfully changed")
+
+            return True
+        except Exception as e:
+            logger.exception(f"Unexpected error: {str(e)}")
+            return False
+
     def _read_config(self) -> bool:
         """
         Read config from file
@@ -74,7 +94,8 @@ class IniConfigFile:
 
         return self._auto_cast(config_item)
 
-    def _auto_cast(self, value: str):
+    @staticmethod
+    def _auto_cast(value: str):
         """
         Try to convert string to int, bool or keep as str
 
