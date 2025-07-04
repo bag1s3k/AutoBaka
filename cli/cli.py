@@ -118,7 +118,7 @@ def run_app_loop() -> bool:
 
         except Exception as e:
             logger.exception(f"Unexpected error: {str(e)}")
-            return status
+            return False
 
 if __name__ == "__main__":
     if run_app_loop():
