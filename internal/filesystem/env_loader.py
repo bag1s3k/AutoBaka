@@ -108,9 +108,11 @@ def set_env(key: str, value: str) -> bool:
 
     # Load lines from .env
     with open(ENV_PATH, "r", encoding="utf-8") as f:
+        logger.info(f"{ENV_PATH} opened")
         for line in f:
             if line.startswith(f"{key}="):
                 lines.append(f"{key}={value}\n")
+                logger.debug(f"New: {key}={value}")
                 found = True
             else:
                 lines.append(line)
@@ -120,6 +122,7 @@ def set_env(key: str, value: str) -> bool:
 
     # Set new lines to .env
     with open(ENV_PATH, "w", encoding="utf-8") as f:
+        logger.info(f"{ENV_PATH}: opened to set new values")
         f.writelines(lines)
 
     return True
