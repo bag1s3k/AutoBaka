@@ -158,12 +158,7 @@ def run(app: str) -> bool:
             print(" Successfully")
 
             logger.info("Program was completed successfully")
-
-            return True
         else:
             print(" Error, results could be incomplete or wrong")
 
             logger.error("Program was terminated with an error")
-            return False
-    else:
-        return True

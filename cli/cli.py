@@ -8,15 +8,13 @@ import logging
 setup_logging()
 logger = logging.getLogger(__name__)
 
-def config() -> bool:
+def config():
     """
-    Setup app using CLI and commands
+    Setup app using CLI and commands (infinite loop)
     """
-
-    status = None
 
     while True:
-        command = input("root/config> ")
+        command = input("root/config> ").strip()
         logger.info(f"Command: {command}")
 
         # if Login details continue with --
@@ -29,26 +27,23 @@ def config() -> bool:
             # set new login details
             else:
                 username = input("username: ").strip()
-                if not username == "exit":
-                    password = input("password: ").strip()
+                if username == "exit":
+                    continue
 
-                    if password == "exit":
-                        status = True
+                password = input("password: ").strip()
 
-                    # Successful?
-                    else:
+                if password == "exit":
+                    continue
 
-                        # Failed
-                        if not set_env("BAKA_USERNAME", username) or not set_env("BAKA_PASSWORD", password):
-                            print("Setting failed")
-                            logger.error("Writing to .env failed")
-                            status = False
+                # Failed
+                if not set_env("BAKA_USERNAME", username) or not set_env("BAKA_PASSWORD", password):
+                    print("Setting failed")
+                    logger.error("Writing to .env failed")
 
-                        # Successful
-                        else:
-                            logger.info("Successfully overwrite")
-                            print(" Successfully overwrite")
-                            status = True
+                # Successful
+                else:
+                    logger.info("Successfully overwrite")
+                    print(" Successfully overwrite")
 
         # If settings continue with --
         elif "settings" in command:
@@ -66,7 +61,7 @@ def config() -> bool:
 
                 try:
                     if not config_file.set_new(value[0], value[1], value[2]):
-                        return False
+                        continue
 
                     print(f"Set new config: {value}")
                     logger.info(f"Set new config: {value}")
@@ -79,20 +74,16 @@ def config() -> bool:
         elif command == "help":
             pass
         elif command == "exit":
-            return status
+            pass
         else:
             logger.warning(f"Unknown command: {command}")
             print(f"Unknown command: {command}, write 'help'")
             continue
 
-    return True
-
-def run_app_loop() -> bool:
+def run_app_loop():
     """
     Main loop function, it's infinite loop until user enter "exit"
     """
-
-    status = None
 
     while True:
         try:
@@ -100,17 +91,17 @@ def run_app_loop() -> bool:
             logger.info(f"Command choice: {command} ")
 
             if command == "config":
-                status = config()
+                config()
             elif command == "help":
                 print("config: configuration of app\nhelp: help menu\nrun: run main app (get averages)\nshow: show results\ndev: developer mode\nexit: exit app")
             elif command == "run":
-                status = run("cli")
+                 run("cli")
             elif command == "show":
                 pass
             elif command == "dev":
                 pass
             elif command == "exit":
-                return status
+                pass
             else:
                 logger.warning(f"Unknown command: {command}")
                 print(f"Unknown command: {command}, write 'help'")
