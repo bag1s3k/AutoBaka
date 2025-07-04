@@ -153,16 +153,17 @@ def run(app: str) -> bool:
     app = app.lower().strip()
     success = main(app)
 
-    if success:
-        if app == "cli":
+    if app == "cli":
+        if success:
             print(" Successfully")
 
-        logger.info("Program was completed successfully")
+            logger.info("Program was completed successfully")
 
-        return True
-    else:
-        if app == "cli":
+            return True
+        else:
             print(" Error, results could be incomplete or wrong")
 
-        logger.error("Program was terminated with an error")
-        return False
+            logger.error("Program was terminated with an error")
+            return False
+    else:
+        return True
