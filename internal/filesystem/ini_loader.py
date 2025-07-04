@@ -27,6 +27,8 @@ class IniConfigFile:
 
     def set_new(self, section: str, option: str, value: str) -> bool:
         try:
+
+            # Check input
             if not self.config.has_section(section):
                 logger.error(f"No section: {section}")
                 return False
@@ -34,6 +36,7 @@ class IniConfigFile:
                 logger.error(f"No option: {section} {option}")
                 return False
 
+            # Set new
             self.config.set(section, option, value)
             with open(INI_PATH, "w", encoding="utf-8") as f:
                 self.config.write(f)

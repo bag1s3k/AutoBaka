@@ -19,9 +19,14 @@ def config() -> bool:
         command = input("root/config> ")
         logger.info(f"Command: {command}")
 
+        # if Login details continue with --
         if "login-details" in command:
+
+            # show current login details
             if "--current" in command:
                 print(load_credentials_from_file())
+
+            # set new login details
             else:
                 username = input("username: ").strip()
                 if not username == "exit":
@@ -29,22 +34,33 @@ def config() -> bool:
 
                     if password == "exit":
                         status = True
+
+                    # Successful?
                     else:
-                        # Successful?
+
+                        # Failed
                         if not set_env("BAKA_USERNAME", username) or not set_env("BAKA_PASSWORD", password):
                             print("Setting failed")
                             logger.error("Writing to .env failed")
                             status = False
+
+                        # Successful
                         else:
                             logger.info("Successfully overwrite")
                             print(" Successfully overwrite")
                             status = True
+
+        # If settings continue with --
         elif "settings" in command:
+
+            # Show current config
             if "--current" in command:
                 for section in config_file.config.sections():
                     print(f"[{section}]")
                     for key, value in config_file.config.items(section):
                         print(f"{key}: {value}")
+
+            # Enter new config
             else:
                 value = input("Enter: 'section option value': ").split(" ")
 
@@ -59,6 +75,7 @@ def config() -> bool:
                     logger.warning(f"Unexpected warning: {str(e)}")
                     print(str(e))
                     continue
+
         elif command == "help":
             pass
         elif command == "exit":

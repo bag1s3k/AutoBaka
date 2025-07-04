@@ -116,6 +116,7 @@ def set_env(key: str, value: str) -> bool:
                 found = True
             else:
                 lines.append(line)
+
     if not found:
         logger.error(f"Write to {ENV_PATH} failed, wrong key")
         return False
