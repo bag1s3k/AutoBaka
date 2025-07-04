@@ -1,5 +1,5 @@
 ﻿from internal.utils.logging_setup import setup_logging
-from internal.filesystem.env_loader import set_env
+from internal.filesystem.env_loader import set_env, load_credentials_from_file
 from main import run
 import logging
 
@@ -16,18 +16,27 @@ def config() -> bool:
     while True:
         command = input("root/config> ")
 
-        if command == "login-details":
-            username = input("username: ").strip()
-            password = input("password: ").strip()
+        if "login-details" in command:
 
-            # Successful?
-            if not set_env("BAKA_USERNAME", username) or not set_env("BAKA_PASSWORD", password):
-                print("Setting failed")
-                logger.error("Writing to .env failed")
-                status = False
+            if "--current" in command:
+                print("CURRENT:")
+                print(load_credentials_from_file())
             else:
-                print(" Successfully overwrite")
-                status = True
+                username = input("username: ").strip()
+                if not username == "exit":
+                    password = input("password: ").strip()
+
+                    if password == "exit":
+                        status = True
+                    else:
+                        # Successful?
+                        if not set_env("BAKA_USERNAME", username) or not set_env("BAKA_PASSWORD", password):
+                            print("Setting failed")
+                            logger.error("Writing to .env failed")
+                            status = False
+                        else:
+                            print(" Successfully overwrite")
+                            status = True
         elif command == "settings":
             pass
         elif command == "help":
