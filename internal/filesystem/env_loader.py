@@ -89,3 +89,37 @@ def load_credentials_from_user() -> tuple:
     except Exception as e:
         logger.exception(f"Error during user input: {str(e)}")
         return None, None
+
+def set_env(key: str, value: str) -> bool:
+    """
+    Set new variables in .env file
+
+    Args:
+        key (str): key in .env
+        value (str): value in .env which is gonna be change
+
+    Returns:
+         Bool: True if successful, False otherwise
+    """
+
+    logger.info(f"Changing variables in {ENV_PATH}")
+    lines = []
+    found = False
+
+    # Load lines from .env
+    with open(ENV_PATH, "r", encoding="utf-8") as f:
+        for line in f:
+            if line.startswith(f"{key}="):
+                lines.append(f"{key}={value}\n")
+                found = True
+            else:
+                lines.append(line)
+    if not found:
+        logger.error(f"Write to {ENV_PATH} failed, wrong key")
+        return False
+
+    # Set new lines to .env
+    with open(ENV_PATH, "w", encoding="utf-8") as f:
+        f.writelines(lines)
+
+    return True

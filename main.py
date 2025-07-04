@@ -141,7 +141,7 @@ def main(app: str) -> bool:
             except Exception as e:
                 logger.error(f"Error during terminating program: {str(e)}")
 
-def run(app: str):
+def run(app: str) -> bool:
     """
     Helper run func
 
@@ -158,7 +158,11 @@ def run(app: str):
             print(" Successfully")
 
         logger.info("Program was completed successfully")
+
+        return True
     else:
         if app == "cli":
             print(" Error, results could be incomplete or wrong")
+
         logger.error("Program was terminated with an error")
+        return False
