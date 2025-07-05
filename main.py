@@ -1,4 +1,5 @@
 import logging
+import sys
 
 from internal.core.marks_processor import get_marks, process_marks
 from internal.core.navigation import login
@@ -140,6 +141,12 @@ def main(app: str) -> bool:
                 logger.info("Webdriver was successfully terminated")
             except Exception as e:
                 logger.error(f"Error during terminating program: {str(e)}")
+
+if __name__ == "__main__":
+    if main(""):
+        sys.exit(0)
+    else:
+        sys.exit(1)
 
 def run(app: str) -> bool:
     """
