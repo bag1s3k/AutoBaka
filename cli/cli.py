@@ -72,9 +72,15 @@ def config():
                     continue
 
         elif command == "help":
-            pass
+            print("login-details: set new login details\n"
+                  "\tWhen u asked to enter details, u can enter exit to stop\n"
+                  "\t--current: option to show current login details\n"
+                  "settings: set new settings in .ini file\n"
+                  "\tto stop the app enter wrong input\n"
+                  "\t--current: option to show current content of the .ini file"
+                  "exit: exit from root/config> to root/")
         elif command == "exit":
-            pass
+            break
         else:
             logger.warning(f"Unknown command: {command}")
             print(f"Unknown command: {command}, write 'help'")
@@ -93,7 +99,11 @@ def run_app_loop():
             if command == "config":
                 config()
             elif command == "help":
-                print("config: configuration of app\nhelp: help menu\nrun: run main app (get averages)\nshow: show results\ndev: developer mode\nexit: exit app")
+                print("config: configuration of app\n"
+                      "help: help menu\nrun: run main app (get averages)\n"
+                      "show: show results\n"
+                      "dev: developer mode\n"
+                      "exit: exit app")
             elif command == "run":
                  run("cli")
             elif command == "show":
@@ -101,7 +111,7 @@ def run_app_loop():
             elif command == "dev":
                 pass
             elif command == "exit":
-                pass
+                return True
             else:
                 logger.warning(f"Unknown command: {command}")
                 print(f"Unknown command: {command}, write 'help'")
