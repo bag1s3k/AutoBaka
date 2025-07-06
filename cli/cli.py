@@ -105,7 +105,7 @@ def run_app_loop():
                       "dev: developer mode\n"
                       "exit: exit app")
             elif command == "run":
-                 run("cli")
+                 run()
             elif command == "show":
                 pass
             elif command == "dev":

@@ -14,14 +14,9 @@ from internal.filesystem.ini_loader import config
 setup_logging()
 logger = logging.getLogger(__name__)
 
-def main(app: str) -> bool:
+def main() -> bool:
     """
     Main base function
-
-    Args:
-        app (str):
-            - "cli" for addition print in cmd
-            - "gui" for gui
 
     Returns:
         Bool: True if successful, False otherwise
@@ -29,11 +24,7 @@ def main(app: str) -> bool:
 
     logger.info("Launching main func of baka an app")
 
-    # CLI PRINT func
-    def cli_print():
-        if app == "cli":
-            print(".", end="")
-    cli_print()
+    print(".", end="", flush=True) # CLI PRINT
 
     # Find root folder
     if not find_project_root() or not find_project_root().exists():
@@ -53,7 +44,7 @@ def main(app: str) -> bool:
         driver = setup_driver()
         logger.info("Initiation was successful")
 
-        cli_print()
+        print(".", end="", flush=True) # CLI PRINT
 
         # Load login details
         logger.info("Loading login details")
@@ -63,7 +54,7 @@ def main(app: str) -> bool:
             return False
         logger.info(f"Loading was successful for user: {username}")
 
-        cli_print()
+        print(".", end="", flush=True) # CLI PRINT
 
         # Login to baka
         logger.info("Logging to baka")
@@ -75,7 +66,7 @@ def main(app: str) -> bool:
 
         logger.info("Logging was successful")
 
-        cli_print()
+        print(".", end="", flush=True) # CLI PRINT
 
         # Get marks
         logger.info("Getting raw marks")
@@ -88,7 +79,7 @@ def main(app: str) -> bool:
 
         logger.info("Getting raw marks was successful")
 
-        cli_print()
+        print(".", end="", flush=True) # CLI PRINT
 
         # Processing marks
         logger.info("Calculating averages")
@@ -100,7 +91,7 @@ def main(app: str) -> bool:
 
         logger.info("Calculating was successful")
 
-        cli_print()
+        print(".", end="", flush=True) # CLI PRINT
 
         # Export results
         logger.info("Exporting results")
@@ -110,7 +101,7 @@ def main(app: str) -> bool:
 
         logger.info("Exporting was successful")
 
-        cli_print()
+        print(".", end="", flush=True) # CLI PRINT
 
         # Finishing
         logger.info("Terminate webdriver")
@@ -119,7 +110,7 @@ def main(app: str) -> bool:
             logger.info("driver was successfully quit")
         logger.info("Drive was successfully terminated")
 
-        cli_print()
+        print(".", end="", flush=True) # CLI PRINT
 
         return True
 
@@ -142,13 +133,8 @@ def main(app: str) -> bool:
             except Exception as e:
                 logger.error(f"Error during terminating program: {str(e)}")
 
-if __name__ == "__main__":
-    if main(""):
-        sys.exit(0)
-    else:
-        sys.exit(1)
 
-def run(app: str) -> bool:
+def run() -> bool:
     """
     Helper run func
 
@@ -157,15 +143,19 @@ def run(app: str) -> bool:
             - "cli" for addition print in cmd
             - "gui" for gui
     """
-    app = app.lower().strip()
-    success = main(app)
+    success = main()
 
-    if app == "cli":
-        if success:
-            print(" Successfully")
+    if success:
+        print(" Successfully")
 
-            logger.info("Program was completed successfully")
-        else:
-            print(" Error, results could be incomplete or wrong")
+        logger.info("Program was completed successfully")
+    else:
+        print(" Error, results could be incomplete or wrong")
 
-            logger.error("Program was terminated with an error")
+        logger.error("Program was terminated with an error")
+
+if __name__ == "__main__":
+    if run():
+        sys.exit(0)
+    else:
+        sys.exit(1)
