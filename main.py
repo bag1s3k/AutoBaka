@@ -1,5 +1,6 @@
 import logging
 import sys
+import argparse
 
 from internal.core.marks_processor import get_marks, process_marks
 from internal.core.navigation import login
@@ -46,9 +47,15 @@ def main() -> bool:
 
         print(".", end="", flush=True) # CLI PRINT
 
-        # Load login details
+        # Load login details and create main_parser
         logger.info("Loading login details")
-        username, password = load_credentials()
+        main_parser = argparse.ArgumentParser(
+            prog=__name__,
+            description="main parser for main file",
+        )
+
+        username, password = load_credentials(main_parser)
+
         if not username or not password:
             logger.error("Missing loging details")
             return False

@@ -2,33 +2,38 @@
 import logging
 import time
 
+from click import argument
 from dotenv import load_dotenv
 from internal.utils.logging_setup import setup_logging
-from internal.utils.options import get_args
+from internal.utils.options import create_agr_parser
 from internal.filesystem.paths_constants import ENV_PATH
 
 setup_logging()
 logger = logging.getLogger(__name__)
 
-def load_credentials() -> tuple:
+def load_credentials(parser) -> tuple:
     """
-    Using argparse chose login details from file or from user
+    Using argparse load login details
     Returns:
         - tuple: (username, password)
     """
 
-    args = get_args() # Get argparse options
+    arg = create_agr_parser(
+        parser,
+        arg_name=["--login", "-l"],
+        nargs=2,
+        default=load_credentials_from_file(),
+        help_text="enter login details as USERNAME PASSWORD",
+        metavar=("USERNAME", "PASSWORD"),
+        dest="login_details",
+    )
 
-    # User or file
-    if args.user:
-        logger.info("Selected user option")
-        return load_credentials_from_user()
-    elif args.file:
-        logger.info("Selected file option")
-        return load_credentials_from_file()
-    else:
-        logger.warning("Default option")
-        return load_credentials_from_file() # Default option is from file
+    if not arg:
+        logger.error("arg is None")
+        return None, None
+
+    logger.info("successfully returned login details")
+    return arg.login_details
 
 def load_credentials_from_file() -> tuple:
     """
@@ -70,24 +75,6 @@ def load_credentials_from_file() -> tuple:
 
     except Exception as e:
         logger.exception(f"Issue while loading login details: {str(e)}")
-        return None, None
-
-def load_credentials_from_user() -> tuple:
-    """
-    Load login details from user input
-
-    Returns:
-        - tuple: (username, password) or (None, None) if failed
-    """
-    try:
-        logger.info("Loading login details from user input")
-        time.sleep(3)
-        details = input("Enter login details in form: username, password\n> ").split(", ")
-
-        return tuple(x.strip() for x in details)
-
-    except Exception as e:
-        logger.exception(f"Error during user input: {str(e)}")
         return None, None
 
 def set_env(key: str, value: str) -> bool:

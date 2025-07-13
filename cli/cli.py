@@ -91,9 +91,18 @@ def run_app_loop():
     Main loop function, it's infinite loop until user enter "exit"
     """
 
+    print("""
+   _____          __        __________         __            
+  /  _  \  __ ___/  |_  ____\______   \_____  |  | _______   
+ /  /_\  \|  |  \   __\/  _ \|    |  _/\__  \ |  |/ /\__  \  
+/    |    \  |  /|  | (  <_> )    |   \ / __ \|    <  / __ \_
+\____|__  /____/ |__|  \____/|______  /(____  /__|_ \(____  /
+        \/                          \/      \/     \/     \/ 
+    """)
+
     while True:
         try:
-            command = input("root> ").strip().lower()
+            command = input("> ").strip().lower()
             logger.info(f"Command choice: {command} ")
 
             if command == "config":
@@ -126,4 +135,3 @@ if __name__ == "__main__":
         logger.info("Program was completed successfully")
     else:
         logger.error("Program was terminated with an error")
-

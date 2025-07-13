@@ -6,7 +6,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from internal.utils.logging_setup import setup_logging
-from internal.utils.options import get_args
 from internal.filesystem.ini_loader import config
 
 setup_logging()
@@ -25,44 +24,9 @@ def login(driver, username: str, password: str) -> bool:
         bool: Was the login successful?
     """
     try:
-        args = get_args()
         logger.info("Finding website")
-
-        marks_url = ""
-        login_url = ""
-
-        # --file
-        if args.file:
-            driver.get(config.get_config("URLS", "login_url"))
-            marks_url = config.get_config("URLS", "marks_url")
-
-        # --user
-        elif args.user:
-            try:
-                # Get login url
-                logger.info("Loading login url from cmd")
-                login_url = input("Enter login url form: https://...\n> ").strip()
-                driver.get(login_url)
-
-                # Get marks url
-                logger.info("Loading marks url from cmd")
-                marks_url = input("Enter marks url form: https://...\n> ").strip()
-
-                # Check if it's empty
-                if not marks_url or not login_url:
-                    logger.error("One of urls is empty")
-                    return False
-
-                logger.info("Both of urls were successfully load")
-
-            except Exception as e:
-                logger.exception(f"Issue while loading login url from console: {str(e)}")
-                return False
-
-        # Default
-        else:
-            driver.get(config.get_config("URLS", "login_url"))
-            marks_url = config.get_config("URLS", "marks_url")
+        driver.get(config.get_config("URLS", "login_url"))
+        marks_url = config.get_config("URLS", "marks_url")
 
         logger.debug("Website loaded")
 

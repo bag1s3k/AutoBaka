@@ -16,5 +16,12 @@ The user enters their login credentials into a `.env` file. The app uses Seleniu
 - Calculate and display averages in terminal
 - Fast and minimalistic
 
-### UI Mode
-- Planned (or: Coming soon!)
+## Planned
+- complete CLI
+- desktop version (windows, ubuntu, macOS?)
+- mobile version (android, IOS?)
+- absence planner
+- baka clone
+- API
+- server
+- don't be like bot...
