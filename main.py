@@ -1,3 +1,5 @@
+# v1.2.0
+
 import logging
 import sys
 import argparse
