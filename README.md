@@ -55,9 +55,8 @@ The user enters their login credentials to Bakaláři system. The app uses Selen
 | Windows 11| ✅ | ❌ | ✅ | ✅ | 1.2.0 |
 | Android | ❌ | ❌ | ❌ | ❌ | 0 |
 | Website | ❌ | ❌ | ❌ | ❌ | 0 |
-| Only main script| ✅ | ❌ | ❌ | ❌ | 1.2.0 |
 
-- UI destop (windows/linux/macOS) Soon!
+- UI desktop (windows/linux/macOS) Soon!
 - CLI (windows/linux/macOS) Soon!
 - Mobile (android/IOS) Soon!
 - Website <https://autobaka.cz>
