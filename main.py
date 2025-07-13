@@ -23,7 +23,7 @@ def main() -> bool:
         Bool: True if successful, False otherwise
     """
 
-    logger.info("Launching main func of baka an app")
+    logger.info("Launching main func of a baka app")
 
     print(".", end="", flush=True) # CLI PRINT
 
