@@ -68,11 +68,15 @@ The user enters their login credentials to Bakaláři system. The app uses Selen
 
 To try the app, download the repository from <https://github.com/bag1s3k/AutoBaka>
 
+---
+
 ## Installation
 
 ```bash
 git clone https://github.com/bag1s3k/AutoBaka.git
 ```
+
+---
 
 ## Requirements
 
@@ -82,6 +86,8 @@ You can try others, but compatibility is not guaranteed. **(I have never tried)*
 ![Static Badge](https://img.shields.io/badge/Python-3.13.3-blue)
 ![Static Badge](https://img.shields.io/badge/Pip-24.3.1-orange)  
 ![Static Badge](https://img.shields.io/badge/Windows_11-24H2-lightblue)
+
+---
 
 ## Usage
 
@@ -164,6 +170,8 @@ Just get your average grades without any interface
           python main.py --login username password # --login or -l to use login details from cmd
           ```
 
+---
+
 ## Examples
 
 ```bash
@@ -191,22 +199,32 @@ DevTools listening on ws://127.0.0.1:xxxxx/devtools/browser/xxxxxxxx-xxxx-xxxx-x
 (.venv) PS C:\local\work\autobaka>
 ```
 
+---
+
 ## Features
 
 - [x] Your average grades
 - [x] Absence calculator
 - [x] Impleneted AI chatbot
 
+---
+
 ## Contributing
 
 Contributions are welcome! Open an issue, fork the repository, make improvements, and create a pull request.
+
+---
 
 ## Known Issues
 
 - [ ] while running only a main script it shows `DevTools listening on ws://127.0.0.1:xxxxx/devtools/browser/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`, and there is 1 dot before this message, I wanna delete it
 - [ ] there are for sure a lot of improvements and issues in the repository, but I'm still adding new features, I'm not interested in finding bugs and improvements
 
+---
+
 ## FAQ
+
+---
 
 ## License
 
@@ -224,12 +242,16 @@ See [LICENSE](LICENSE) for details.
   
 </div>
 
+---
+
 ## Changelog
 
 - **1.0.0** - initial release
 - **1.1.0** - added functional headless mode
 - **1.1.1** - added logs `project_log.log`
 - **1.2.1** - added options `--file` or `--user`
+
+---
 
 ## Planned
 
