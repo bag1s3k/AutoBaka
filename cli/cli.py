@@ -1,8 +1,11 @@
-﻿from internal.utils.logging_setup import setup_logging
+﻿# v1.0.0
+
+from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_loader import set_env, load_credentials_from_file
 from internal.filesystem.ini_loader import config as config_file
 from main import run
 
+import json
 import logging
 
 setup_logging()
@@ -107,6 +110,7 @@ def run_app_loop():
 
             if command == "config":
                 config()
+
             elif command == "help":
                 print("config: configuration of app\n"
                       "help: help menu\nrun: run main app (get averages)\n"
@@ -115,10 +119,24 @@ def run_app_loop():
                       "exit: exit app")
             elif command == "run":
                  run()
-            elif command == "show":
-                pass
+
+            elif "show" in command:
+                command_separate = command.split(" ")
+                try:
+                    text = ""
+                    with open(f"../output/{command_separate[1]}", "r", encoding="utf-8") as f:
+                        text = f.read()
+
+                    if ".json" in command:
+                        text = json.dumps(text, indent=4, ensure_ascii=False)
+                    print(text)
+                except Exception as e:
+                    logger.exception(f"Issue while trying print marks: {str(e)}")
+
+            # Soon!
             elif command == "dev":
                 pass
+
             elif command == "exit":
                 return True
             else:
