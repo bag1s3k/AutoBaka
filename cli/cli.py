@@ -91,7 +91,7 @@ def run_app_loop():
     Main loop function, it's infinite loop until user enter "exit"
     """
 
-    print("""
+    print(r"""
    _____          __        __________         __            
   /  _  \  __ ___/  |_  ____\______   \_____  |  | _______   
  /  /_\  \|  |  \   __\/  _ \|    |  _/\__  \ |  |/ /\__  \  
