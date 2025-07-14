@@ -12,6 +12,9 @@ def var_message(var: any, var_name: str, level: str = "error", error_message: st
         level (string): invalid logger level
         error_message (string): message which is printed if the variable is invalid
         right_message (string): message which is written into .log file
+
+    Returns:
+        var (any): input variable
     """
 
     formate_message = f"Variable: {var_name!r} | {var} | {type(var)}" # formate output of the variable status
@@ -21,3 +24,5 @@ def var_message(var: any, var_name: str, level: str = "error", error_message: st
         log_fn(f"{error_message}: {formate_message}")
     else:
         logger.info(f"{right_message}: {formate_message}")
+
+    return var
