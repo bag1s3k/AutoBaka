@@ -22,13 +22,13 @@ def message(error_message: str = "Function failed", right_message: str = "Functi
 
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            print(f"{func.__name__} started")
+            logger.info(f"Function {func.__name__!r} launching")
 
             value = func(*args, **kwargs)
 
             if not value:
                 log_fn = getattr(logger, level.lower(), logger.error)
-                log_fn(error_message)
+                log_fn(f"{error_message}  | Function: {func.__name__!r} Returned: {str(value)!r} Args/kwargs: {args} | {kwargs}")
             else:
                 logger.info(right_message)
 
