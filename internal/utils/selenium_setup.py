@@ -4,12 +4,13 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
-from internal.utils.logging_setup import setup_logging
 from internal.filesystem.ini_loader import config
+from internal.utils.decorators import message
+from internal.utils.var_validator import var_message
 
-setup_logging()
 logger = logging.getLogger(__name__)
 
+@message("Webdriver setup failed", "Webdriver setup successfully completed", "error")
 def setup_driver():
     """
     Setup chrome driver with optimization and settings
@@ -23,8 +24,10 @@ def setup_driver():
         logger.debug("Setup chrome options")
         if config.get_config("SETTINGS", "quit_driver"):
             options.add_experimental_option("detach", False)
+            logger.debug("Detach False")
         else:
             options.add_experimental_option("detach", True)
+            logger.debug("Detach True")
 
         options.add_experimental_option("excludeSwitches", ["enable-automation", "enable-logging"])
         options.add_experimental_option('useAutomationExtension', False)

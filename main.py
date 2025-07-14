@@ -44,12 +44,10 @@ def main() -> bool:
 
     driver = None
 
-    # Start of app
+    # Start of app # TODO START
     try:
         # Initiation webdriver
-        logger.info("Initiation webdriver")
         driver = setup_driver()
-        logger.info("Initiation was successful")
 
         print(".", end="", flush=True) # CLI PRINT
 
