@@ -73,15 +73,9 @@ def main() -> bool:
         print(".", end="", flush=True) # CLI PRINT
 
         # Get marks
-        logger.info("Getting raw marks")
         raw_marks = get_marks(driver)
-
-        if not raw_marks:
-            logger.error("There is not any marks in the list")
-            logger.error("Website might be changed")
+        if not var_message(raw_marks, "raw_marks", "critical", "get marks failed", "get marks successful"):
             return False
-
-        logger.info("Getting raw marks was successful")
 
         print(".", end="", flush=True) # CLI PRINT
 
@@ -89,11 +83,8 @@ def main() -> bool:
         logger.info("Calculating averages")
         processed_marks = process_marks(raw_marks)
 
-        if not processed_marks:
-            logger.error("Calculating marks failed")
+        if not var_message(processed_marks, "processed_marks", "warning", "no marks to process"):
             return False
-
-        logger.info("Calculating was successful")
 
         print(".", end="", flush=True) # CLI PRINT
 

@@ -2,13 +2,14 @@ import logging
 
 from selenium.webdriver.common.by import By
 from unidecode import unidecode
-from internal.utils.logging_setup import setup_logging
 from internal.filesystem.json_export import export_json
 from internal.filesystem.paths_constants import JSON_OUTPUT_PATH, JSON_RAW_OUTPUT_PATH
+from internal.utils.decorators import message
+from internal.utils.var_validator import var_message
 
-setup_logging()
 logger = logging.getLogger(__name__)
 
+@message("Get marks failed", "Get marks successful", "critical")
 def get_marks(driver) -> dict:
     """
     Extraction marks from baka page
@@ -24,23 +25,17 @@ def get_marks(driver) -> dict:
                                           "//tbody//tr[.//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]")
 
         # Load whole marks (date, mark, value...) it's line
-        if not marks_line:
-            logger.error("No mark found")
-            logger.debug(f"Current url: {driver.current_url}")
-            logger.debug(f"Current title: {driver.title}")
-
+        if not var_message(marks_line, "marks_line", "warning", f"Marks not found url: {driver.current_url} title: {driver.title}", f"Marks found url {driver.current_url} title: {driver.title}"):
             return {}
 
-        logger.info("Marks found")
         subjects = {}
 
         # Extract marks to a dict
-        logger.info("It's gonna extract marks to a list")
+        logger.info("It will extract marks to a list")
         for single_line in marks_line:
             subject = single_line.find_elements(By.TAG_NAME, "td")
 
-            if not subject:
-                logger.error("Error during extraction marks")
+            var_message(subject, "subject")
 
             mark = subject[1].text
             topic = unidecode(subject[2].text)
@@ -60,8 +55,7 @@ def get_marks(driver) -> dict:
             logger.info(f"Extracted: {mark} {topic} {weight} {date} {subject_name}")
 
         # Export marks to json file
-        if not export_json(subjects, JSON_RAW_OUTPUT_PATH):
-            logger.warning("Exporting failed")
+        export_json(subjects, JSON_RAW_OUTPUT_PATH)
 
         return subjects
 
@@ -69,6 +63,7 @@ def get_marks(driver) -> dict:
         logger.exception(f"Issue during getting marks: {str(e)}")
         return {}
 
+@message("Processing marks failed", "Processing marks successful", "critical")
 def process_marks(subjects) -> dict:
     """
     Processing marks and calculate averages
@@ -80,8 +75,7 @@ def process_marks(subjects) -> dict:
         dict: sorted dict of processed marks
     """
 
-    if not subjects:
-        logger.warning("No marks to process")
+    if not var_message(subjects, "subjects", "warning", "No marks to process"):
         return {}
 
     logger.info(f"Processing marks")
@@ -121,8 +115,7 @@ def process_marks(subjects) -> dict:
             subjects[subject].append({"avg": average})
 
             # Export marks to json file
-            if not export_json(subjects, JSON_OUTPUT_PATH):
-                logger.warning("Exporting failed")
+            export_json(subjects, JSON_OUTPUT_PATH)
 
             logger.info("Calculating completed successfully")
 
@@ -130,5 +123,5 @@ def process_marks(subjects) -> dict:
             logger.exception(f"Something happened during processing marks: {e}")
             return {}
 
-    logger.info("Subject is gonna be sorted and returned")
+    logger.info("Subject will sorted and returned")
     return dict(sorted(subjects.items()))
