@@ -3,7 +3,7 @@
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_loader import set_env, load_credentials_from_file
 from internal.filesystem.ini_loader import config as config_file
-from main import run
+from main import main
 
 import json
 import logging
@@ -118,7 +118,7 @@ def run_app_loop():
                       "dev: developer mode\n"
                       "exit: exit app")
             elif command == "run":
-                 run()
+                 main()
 
             elif "show" in command:
                 command_separate = command.split(" ")
