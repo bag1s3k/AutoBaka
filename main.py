@@ -12,11 +12,14 @@ from internal.filesystem.env_loader import load_credentials
 from internal.filesystem.export import export_results
 from internal.filesystem.paths_constants import find_project_root
 from internal.filesystem.ini_loader import config
+from internal.utils.decorators import message
+from internal.utils.var_validator import var_message
 
 # Set up logging
 setup_logging()
 logger = logging.getLogger(__name__)
 
+@message("Main function (brain) failed", "Main function (brain) successfully completed", "critical")
 def main() -> bool:
     """
     Main base function
@@ -25,14 +28,10 @@ def main() -> bool:
         Bool: True if successful, False otherwise
     """
 
-    logger.info("Launching main func of a baka app")
-
     print(".", end="", flush=True) # CLI PRINT
 
     # Find root folder
-    if not find_project_root() or not find_project_root().exists():
-        logger.error("Root folder not found")
-        return False
+    var_message(find_project_root().exists(), "find_project_root().exist()", "error", "project root doesn't exist", "Project root folder exist") # TODO ADD RETURN TRUE OR FALSE
 
     if not config.read:
         logger.error("Config loading failed")
@@ -119,7 +118,7 @@ def main() -> bool:
             logger.info("driver was successfully quit")
         logger.info("Drive was successfully terminated")
 
-        print(".", end="", flush=True) # CLI PRINT
+        print(". Successfully", flush=True) # CLI PRINT
 
         return True
 
@@ -142,24 +141,8 @@ def main() -> bool:
             except Exception as e:
                 logger.error(f"Error during terminating program: {str(e)}")
 
-
-def run() -> bool:
-    """
-    Helper run func
-    """
-    success = main()
-
-    if success:
-        print(" Successfully")
-        logger.info("Program was completed successfully")
-        return True
-    else:
-        print(" Error, results could be incomplete or wrong")
-        logger.error("Program was terminated with an error")
-        return False
-
 if __name__ == "__main__":
-    if run():
+    if main():
         sys.exit(0)
     else:
         sys.exit(1)

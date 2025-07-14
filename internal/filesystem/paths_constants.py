@@ -1,5 +1,7 @@
 ﻿from pathlib import Path
+from internal.utils.decorators import message
 
+message("No project root found", "Project root found", "error")
 def find_project_root(target_folder: str = "autobaka") -> Path:
     """
     This func finds project root folder
