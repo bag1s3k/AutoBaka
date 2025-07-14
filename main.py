@@ -31,10 +31,11 @@ def main() -> bool:
     print(".", end="", flush=True) # CLI PRINT
 
     # Find root folder
-    var_message(find_project_root().exists(), "find_project_root().exist()", "error", "project root doesn't exist", "Project root folder exist") # TODO ADD RETURN TRUE OR FALSE
+    if not var_message(find_project_root().exists(), "find_project_root().exist()", "error", "project root doesn't exist", "Project root folder exist"):
+        return False
 
-    if not config.read:
-        logger.error("Config loading failed")
+    # Read config
+    if not var_message(config.read, "config.read", "critical"):
         return False
 
     driver = None
