@@ -43,6 +43,4 @@ def setup_logging():
     logging.getLogger("requests").setLevel(logging.WARNING)
     logging.getLogger("urllib3.connectionpool").setLevel(logging.WARNING)
 
-    logging.info("Logging setup was successful")
-
-setup_logging()
+    logging.info("Logging setup was successfully completed")
