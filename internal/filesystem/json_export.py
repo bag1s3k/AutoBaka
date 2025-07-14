@@ -2,11 +2,12 @@
 import logging
 import os
 
-from internal.utils.logging_setup import setup_logging
+from internal.utils.var_validator import var_message
+from internal.utils.decorators import message
 
-setup_logging()
 logger = logging.getLogger(__name__)
 
+@message("Exporting failed", "Exporting successful", "warning")
 def export_json(subjects, path) -> bool:
     """
     Export marks to JSON file
@@ -21,23 +22,20 @@ def export_json(subjects, path) -> bool:
 
     logger.info(f"Current directory: {os.getcwd()}")
 
-    if not subjects:
-        logger.warning("No subjects to export")
+    if not var_message(subjects, "subjects", "warning", "No subjects to export", "Exporting successful"):
         return False
 
     # Export
     logger.info("Exporting...")
 
-    if not path:
-        logger.error("JSON output path is empty or not set")
+    if not var_message(path, "path", "critical", "Wrong path"):
         return False
 
     try:
         with open(path, "w", encoding="utf-8") as file:
             json.dump(subjects, file, indent=4, ensure_ascii=False)
-
-        logger.info(f"Data successfully exported to {path}")
         return True
+
     except Exception as e:
         logger.exception(f"Something happened during exporting: {str(e)}")
         return False
