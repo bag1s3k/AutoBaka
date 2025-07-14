@@ -60,10 +60,8 @@ def main() -> bool:
 
         username, password = load_credentials(main_parser)
 
-        if not username or not password:
-            logger.error("Missing loging details")
+        if not var_message(username or password, "username | password", "critical"):
             return False
-        logger.info(f"Loading was successful for user: {username}")
 
         print(".", end="", flush=True) # CLI PRINT
 
