@@ -1,5 +1,6 @@
 ﻿import functools
 import logging
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -21,13 +22,16 @@ def message(error_message: str = "Function failed", right_message: str = "Functi
         def wrapper(*args, **kwargs):
             logger.info(f"Function {func.__name__!r} launching")
 
+            t1 = time.time()
             value = func(*args, **kwargs)
+
+            formate_message = f"| Function: {func.__name__!r} Returned: {str(value)!r} Args/kwargs: {args} | {kwargs} Time: {round(time.time() - t1, 5)}s"
 
             if not value:
                 log_fn = getattr(logger, level.lower(), logger.error)
-                log_fn(f"{error_message}  | Function: {func.__name__!r} Returned: {str(value)!r} Args/kwargs: {args} | {kwargs}")
+                log_fn(f"{error_message} {formate_message}")
             else:
-                logger.info(right_message)
+                logger.info(f"{right_message} {formate_message}")
 
             return value
 

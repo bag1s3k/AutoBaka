@@ -3,6 +3,7 @@
 import logging
 import sys
 import argparse
+import time
 
 from internal.core.marks_processor import get_marks, process_marks
 from internal.core.navigation import login
@@ -14,6 +15,9 @@ from internal.filesystem.paths_constants import find_project_root
 from internal.filesystem.ini_loader import config
 from internal.utils.decorators import message
 from internal.utils.var_validator import var_message
+
+# STOPWATCH
+t1 = time.time()
 
 # Set up logging
 setup_logging()
@@ -143,7 +147,5 @@ def main() -> bool:
                 logger.error(f"Error during terminating program: {str(e)}")
 
 if __name__ == "__main__":
-    if main():
-        sys.exit(0)
-    else:
-        sys.exit(1)
+    main()
+    print(f"{round(time.time() - t1, 5)}s")
