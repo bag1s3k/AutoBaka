@@ -1,7 +1,5 @@
 ﻿import logging
-from internal.utils.logging_setup import setup_logging
 
-setup_logging()
 logger = logging.getLogger(__name__)
 
 def var_message(var: any, var_name: str, level: str = "error", error_message: str = "Missing or invalid", right_message: str = "Correct"):

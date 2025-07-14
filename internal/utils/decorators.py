@@ -1,9 +1,6 @@
 ﻿import functools
 import logging
 
-from internal.utils.logging_setup import setup_logging
-
-setup_logging()
 logger = logging.getLogger(__name__)
 
 def message(error_message: str = "Function failed", right_message: str = "Function successful", level: str = "error"):
