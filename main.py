@@ -66,14 +66,9 @@ def main() -> bool:
         print(".", end="", flush=True) # CLI PRINT
 
         # Login to baka
-        logger.info("Logging to baka")
-        login_success = login(driver, username, password)
 
-        if not login_success:
-            logger.error("Logging failed")
+        if not var_message(login(driver, username, password), "login(driver, username, password)", "critical", "login failed", "Login successful"):
             return False
-
-        logger.info("Logging was successful")
 
         print(".", end="", flush=True) # CLI PRINT
 

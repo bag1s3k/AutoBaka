@@ -5,12 +5,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
-from internal.utils.logging_setup import setup_logging
 from internal.filesystem.ini_loader import config
+from internal.utils.var_validator import var_message
+from internal.utils.decorators import message
 
-setup_logging()
 logger = logging.getLogger(__name__)
 
+@message("Login func failed", "Login successful", "critical")
 def login(driver, username: str, password: str) -> bool:
     """
     Login user to app
