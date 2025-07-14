@@ -1,4 +1,4 @@
-# v1.2.0
+# v1.3.0
 
 import logging
 import sys
@@ -146,22 +146,17 @@ def main() -> bool:
 def run() -> bool:
     """
     Helper run func
-
-    Args:
-        app (str):
-            - "cli" for addition print in cmd
-            - "gui" for gui
     """
     success = main()
 
     if success:
         print(" Successfully")
-
         logger.info("Program was completed successfully")
+        return True
     else:
         print(" Error, results could be incomplete or wrong")
-
         logger.error("Program was terminated with an error")
+        return False
 
 if __name__ == "__main__":
     if run():
