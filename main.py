@@ -90,11 +90,8 @@ def main() -> bool:
 
         # Export results
         logger.info("Exporting results")
-        if not export_results(processed_marks, config.get_config("PATHS", "result_path")):
-            logger.error("Exporting failed")
+        if not var_message(export_results(processed_marks, config.get_config("PATHS", "result_path")), "export_results(processed_marks, config.get_config('PATHS', 'result_path'))", "error", "Nothing wrote"):
             return False
-
-        logger.info("Exporting was successful")
 
         print(".", end="", flush=True) # CLI PRINT
 
