@@ -44,7 +44,7 @@ def main() -> bool:
 
     driver = None
 
-    # Start of app # TODO START
+    # Start of app
     try:
         # Initiation webdriver
         driver = setup_driver()
@@ -120,8 +120,10 @@ def main() -> bool:
         if driver:
             try:
                 logger.info("Terminate webdriver")
-                driver.quit()
-                logger.info("Webdriver was successfully terminated")
+                if config.get_config("SETTINGS", "quit_driver"):  # let window open or close it
+                    driver.quit()
+                    logger.info("driver was successfully quit")
+                logger.info("Drive was successfully terminated")
             except Exception as e:
                 logger.error(f"Error during terminating program: {str(e)}")
 

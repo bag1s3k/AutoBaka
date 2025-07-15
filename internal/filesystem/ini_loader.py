@@ -69,7 +69,6 @@ class IniConfigFile:
             logger.exception(f"Unexpected issue during reading from ini file: {str(e)}")
             return False
 
-    @message("Getting config failed", "Config successfully got", "critical")
     def get_config(self, section: str, option: str) -> any:
         """
         Get config element
