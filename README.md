@@ -15,6 +15,7 @@
   - [About the Project](#about-the-project)
     - [Functions](#functions)
     - [Variants](#variants)
+    - [Structure](#structure)
   - [Getting started](#getting-started)
   - [Installation](#installation)
   - [Requirements](#requirements)
@@ -60,6 +61,38 @@ The user enters their login credentials to Bakaláři system. The app uses Selen
 - CLI (windows/linux/macOS) Soon!
 - Mobile (android/IOS) Soon!
 - Website <https://autobaka.cz>
+
+### Structure
+
+```
+autobaka  
+ ┣ cli  
+ ┃ ┗ cli.py  
+ ┣ config  
+ ┃ ┣ .env  
+ ┃ ┣ config.ini  
+ ┣ internal  
+ ┃ ┣ core  
+ ┃ ┃ ┣ marks_processor.py  
+ ┃ ┃ ┗ navigation.py  
+ ┃ ┣ filesystem  
+ ┃ ┃ ┣ env_loader.py  
+ ┃ ┃ ┣ export.py  
+ ┃ ┃ ┣ ini_loader.  py
+ ┃ ┃ ┣ json_export.py
+ ┃ ┃ ┗ paths_constants.py
+ ┃ ┗ utils
+ ┃ ┃ ┣ decorators.py
+ ┃ ┃ ┣ logging_setup.py
+ ┃ ┃ ┣ options.py
+ ┃ ┃ ┣ selenium_setup.py
+ ┃ ┃ ┗ var_validator.py
+ ┣ .gitignore
+ ┣ LICENSE
+ ┣ main.py
+ ┣ README.md
+ ┗ requirements.txt
+```
 
 ---
 
