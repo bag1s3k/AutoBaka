@@ -25,6 +25,9 @@ def message(error_message: str = "Function failed", right_message: str = "Functi
             t1 = time.time()
             value = func(*args, **kwargs)
 
+            if "Login func failed" == error_message:
+                args = "<MASKED>"
+
             formate_message = f"| Function: {func.__name__!r} Returned: {str(value)!r} Args/kwargs: {args} | {kwargs} Time: {round(time.time() - t1, 5)}s"
 
             if not value:

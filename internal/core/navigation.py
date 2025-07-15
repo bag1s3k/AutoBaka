@@ -6,7 +6,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from internal.filesystem.ini_loader import config
-from internal.utils.var_validator import var_message
 from internal.utils.decorators import message
 
 logger = logging.getLogger(__name__)
