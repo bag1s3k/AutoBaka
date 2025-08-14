@@ -6,7 +6,6 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from internal.filesystem.ini_loader import config
 from internal.utils.decorators import message
-from internal.utils.var_validator import var_message
 
 logger = logging.getLogger(__name__)
 
