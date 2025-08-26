@@ -1,7 +1,6 @@
 # v1.3.0
 
 import logging
-import sys
 import argparse
 import time
 

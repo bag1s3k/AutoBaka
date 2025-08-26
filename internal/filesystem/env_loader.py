@@ -1,7 +1,6 @@
 ﻿import os
 import logging
 
-from click import argument
 from dotenv import load_dotenv
 from internal.utils.logging_setup import setup_logging
 from internal.utils.options import create_agr_parser
