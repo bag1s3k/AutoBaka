@@ -183,11 +183,7 @@ Just get your average grades without any interface
        .\.venv\Scripts\activate.ps1
        ```
 
-        You should see `(.venv)` before your path
-
-        ```bash
-        (.venv) C:\example\autobaka>
-        ```
+        You should see `(.venv)` before your path: `(.venv) C:\example\autobaka>`
 
     3. Run script `main.py` using login details from `.env`
 
