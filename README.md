@@ -115,8 +115,8 @@ git clone https://github.com/bag1s3k/AutoBaka.git
 These are the versions that I currently use.  
 You can try others, but compatibility is not guaranteed. **(I have never tried)**
 
-![Static Badge](https://img.shields.io/badge/Python-3.13.3-blue)
-![Static Badge](https://img.shields.io/badge/Pip-24.3.1-orange)  
+![Static Badge](https://img.shields.io/badge/Python-3.13.7-blue)
+![Static Badge](https://img.shields.io/badge/Pip-25.2-orange)  
 ![Static Badge](https://img.shields.io/badge/Windows_11-24H2-lightblue)
 
 ---
