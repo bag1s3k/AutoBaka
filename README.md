@@ -57,10 +57,10 @@ The user enters their login credentials to Bakaláři system. The app uses Selen
 | Android | ❌ | ❌ | ❌ | ❌ | 0 |
 | Website | ❌ | ❌ | ❌ | ❌ | 0 |
 
-- UI desktop (windows/linux/macOS) Soon!
-- CLI (windows/linux/macOS) Soon!
-- Mobile (android/IOS) Soon!
-- Website <https://autobaka.cz>
+- UI desktop (windows/linux/macOS) Maybe!
+- CLI (windows/linux/macOS) Maybe!
+- Mobile (android/IOS) Maybe!
+- Website <https://autobaka.cz> Maybe!
 
 ### Structure
 
@@ -247,7 +247,7 @@ Contributions are welcome! Open an issue, fork the repository, make improvements
 
 - [ ] while running only a main script it shows `DevTools listening on ws://127.0.0.1:xxxxx/devtools/browser/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`, and there is 1 dot before this message, I wanna delete it
 - [ ] there are for sure a lot of improvements and issues in the repository, but I'm still adding new features, I'm not interested in finding bugs and improvements
-
+- [ ] it's first version of ReadMe, not complete, not updated 
 ---
 
 ## FAQ
