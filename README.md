@@ -4,9 +4,12 @@
 
 # AutoBaka App
 
-**AutoBaka** is a simple desktop/CLI app that calculates your average grades from Bakaláři.
+**AutoBaka** is a simple script that calculates your average grades from Bakaláři.
 
----
+## How it started
+Our school blocked access to our grade averages, so I came with an idea. After doing some research, I found two options: Selenium or BeautifulSoup. Thanks the responsive layout of the Baka page, I chose Selenium.
+
+
 
 ## Table of Contents
 
@@ -32,7 +35,6 @@
   - [Changelog](#changelog)
   - [Planned](#planned)
 
----
 
 ## About the Project
 
@@ -44,49 +46,62 @@ The user enters their login credentials to Bakaláři system. The app uses Selen
 
     > Ideal for students whose school has hidden the average and who just don’t want to calculate them manually.
 
-2. Calculating absense
-
-    > It quickly shows you how many lessons you will miss, and gives your absence percentage — without using Bakaláři system. 
-    > ⚠️ **Note:** Be cautious - some lessons may be replaced, cancelled, or rescheduled. The data is based on your current timetable.
+[//]: # (2. Calculating absense)
+[//]: # ()
+[//]: # (    > It quickly shows you how many lessons you will miss, and gives your absence percentage — without using Bakaláři system. )
+[//]: # (    > ⚠️ **Note:** Be cautious - some lessons may be replaced, cancelled, or rescheduled. The data is based on your current timetable.)
 
 ### Variants
 
-| Variant   | Stable | UI | CLI | Script | Version |
-|---------|--------|------|-----|--------|---------|
-| Windows 11| ✅ | ❌ | ✅ | ✅ | 1.2.0 |
-| Android | ❌ | ❌ | ❌ | ❌ | 0 |
-| Website | ❌ | ❌ | ❌ | ❌ | 0 |
+| Variant    | Stable | Version |
+|------------|--------|--------|
+| Windows 11 |   ✅   | ✅   | 1.2.0 |
 
-- UI desktop (windows/linux/macOS) Maybe!
-- CLI (windows/linux/macOS) Maybe!
-- Mobile (android/IOS) Maybe!
-- Website <https://autobaka.cz> Maybe!
+[//]: # (| Android | ❌ | ❌ | ❌ | ❌ | 0 |)
+[//]: # (| Website | ❌ | ❌ | ❌ | ❌ | 0 |)
+- single script
+
+[//]: # (- UI desktop &#40;windows/linux/macOS&#41; Maybe!)
+
+[//]: # (- CLI &#40;windows/linux/macOS&#41; Maybe!)
+
+[//]: # (- Mobile &#40;android/IOS&#41; Maybe!)
+
+[//]: # (- Website <https://autobaka.cz> Maybe!)
 
 ### Structure
 
 ```
-autobaka  
- ┣ cli  
- ┃ ┗ cli.py  
- ┣ config  
- ┃ ┣ .env  
- ┃ ┣ config.ini  
- ┣ internal  
- ┃ ┣ core  
- ┃ ┃ ┣ marks_processor.py  
- ┃ ┃ ┗ navigation.py  
- ┃ ┣ filesystem  
- ┃ ┃ ┣ env_loader.py  
- ┃ ┃ ┣ export.py  
- ┃ ┃ ┣ ini_loader.  py
- ┃ ┃ ┣ json_export.py
+autobaka
+ ┣ cli
+ ┃ ┗ cli.py
+ ┣ config
+ ┃ ┣ .env
+ ┃ ┣ .env.template
+ ┃ ┣ config.ini
+ ┃ ┗ config.ini.template
+ ┣ gui
+ ┃ ┗ gui.py
+ ┣ internal
+ ┃ ┣ core
+ ┃ ┃ ┣ marks_processor.py
+ ┃ ┃ ┗ web_navigation.py
+ ┃ ┣ filesystem
+ ┃ ┃ ┣ env_utils.py
+ ┃ ┃ ┣ export.py
+ ┃ ┃ ┣ ini_loader.py
  ┃ ┃ ┗ paths_constants.py
  ┃ ┗ utils
+ ┃ ┃ ┣ arg_parser.py
  ┃ ┃ ┣ decorators.py
  ┃ ┃ ┣ logging_setup.py
- ┃ ┃ ┣ options.py
  ┃ ┃ ┣ selenium_setup.py
  ┃ ┃ ┗ var_validator.py
+ ┣ output
+ ┃ ┣ marks.json
+ ┃ ┣ project_log.log
+ ┃ ┣ project_log.log.template
+ ┃ ┗ raw_marks.json
  ┣ .gitignore
  ┣ LICENSE
  ┣ main.py
@@ -94,13 +109,9 @@ autobaka
  ┗ requirements.txt
 ```
 
----
-
 ## Getting started
 
 To try the app, download the repository from <https://github.com/bag1s3k/AutoBaka>
-
----
 
 ## Installation
 
@@ -108,18 +119,14 @@ To try the app, download the repository from <https://github.com/bag1s3k/AutoBak
 git clone https://github.com/bag1s3k/AutoBaka.git
 ```
 
----
-
 ## Requirements
 
-These are the versions that I currently use.  
-You can try others, but compatibility is not guaranteed. **(I have never tried)**
+These are the versions that I currently use.
+You can try others, but compatibility is not guaranteed. **(I'm regularly updating my system, so the older ones can work)**
 
 ![Static Badge](https://img.shields.io/badge/Python-3.13.7-blue)
 ![Static Badge](https://img.shields.io/badge/Pip-25.2-orange)  
 ![Static Badge](https://img.shields.io/badge/Windows_11-24H2-lightblue)
-
----
 
 ## Usage
 
@@ -127,78 +134,76 @@ You can try others, but compatibility is not guaranteed. **(I have never tried)*
 
 Just get your average grades without any interface  
 
-#### Procedure with WINDOWS 11
+#### Procedure with WINDOWS 
 
-- **Setup an app**
+Set your login details to `config\.env`
 
-    1. Set your login details to `config\.env`
+  ```ini
+  BAKA_USERNAME=username
+  BAKA_PASSWORD=password
+  ```
 
-        ```dotenv
-        BAKA_USERNAME=username
-        BAKA_PASSWORD=password
-        ```
+Setup config to `config\config.ini`
 
-    2. Setup config to `config\config.ini`
+```ini
+[PATHS]
+result_path = c:\example\result.txt 
+```
+>💡 **idea**: You can export the result file to your cloud, so you can access it on your phone as well.
 
-        ```ini
-        [PATHS]
-        result_path = c:\example\result.txt
-        ```
 
-        ```ini
-        [URLS]
-        login_url = https://baka.website/login # login page
-        marks_url = https://baka.website/next/prubzna.aspx?s=chrono
-        ```
 
-        > `marks_url` Login to your bakaláři website interface > Grade > Interim Grading > Chronological button and **copy url**
+```ini
+[URLS]
+login_url = https://baka.website/login # login page
+marks_url = https://baka.website/next/prubzna.aspx?s=chrono
+```
 
-        <p align="left">
-          <img src="docs/screenshot_chronological.png" alt="Chronological button" style="width:100%;"/>
-        </p>
+`marks_url` Login to your bakaláři website interface > Grade > Interim Grading > Chronological button and **copy url**
 
-        ```ini
-        [SETTINGS]
-        timeout = 15 # default and required but you can try different
-        headless_mode = True # Wanna see what is happening
-        quit_driver = True # If you wanna close the window after the program end
-        export_format = json # there are grades stored ["json", "txt", "xaml", "csv"]
-        ```
+
+<p><img src="docs/screenshot_chronological.png" alt="Chronological button" style="width:100%;"/></p>
+
+```ini
+[SETTINGS]
+timeout = 15 # default and required but you can try different
+headless_mode = True # Wanna see what is happening
+quit_driver = True # If you wanna close the window after the program end
+export_format = json # there are grades stored ["json", "txt", "xaml", "csv"]
+```
 
 - **Using virtual environment `.venv`**
 
-    1. Download all required libraries from `requirements.txt` ⚠️*while you are installing requirements you have to be in project root*
+Download all required libraries from `requirements.txt` ⚠️*while you are installing requirements you have to be in project root*
 
-        ```bash
-        pip install -r requirements.txt
-        ```
+```bash
+pip install -r requirements.txt
+```
 
-    2. Activate virtual enviroment `.venv`
+Activate virtual enviroment `.venv`
 
-        ```bash
-        cd C:\example\autobaka 
-        ```
+```bash
+cd C:\example\autobaka 
+```
 
-       ```bash
-       .\.venv\Scripts\activate.ps1
-       ```
+```bash
+.\.venv\Scripts\activate.ps1
+```
 
-        You should see `(.venv)` before your path: `(.venv) C:\example\autobaka>`
+You should see `(.venv)` before your path: `(.venv) C:\example\autobaka>`
 
-    3. Run script `main.py` using login details from `.env`
+Run script `main.py` using login details from `.env`
 
-        ```bash
-        python main.py
-        ```
+```bash
+python main.py
+```
 
-        ***Possible options:***  
-        - `"--loing", "-l"` by using this one you have to enter your login details **username password**
+***Possible options:***  
+- `"--login", "-l"` by using this one you have to enter your login details **username password**
 
-          ```bash
-          python main.py --login username password # --login or -l to use login details from cmd
-          ```
-
----
+```bash
+python main.py --login username password # --login or -l to use login details from cmd
+```
 
 ## Examples
 
@@ -227,32 +232,31 @@ DevTools listening on ws://127.0.0.1:xxxxx/devtools/browser/xxxxxxxx-xxxx-xxxx-x
 (.venv) PS C:\local\work\autobaka>
 ```
 
----
-
 ## Features
 
-- [x] Your average grades
-- [x] Absence calculator
-- [x] Impleneted AI chatbot
-
----
+- Your average grades
 
 ## Contributing
 
 Contributions are welcome! Open an issue, fork the repository, make improvements, and create a pull request.
 
----
+
 
 ## Known Issues
 
-- [ ] while running only a main script it shows `DevTools listening on ws://127.0.0.1:xxxxx/devtools/browser/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`, and there is 1 dot before this message, I wanna delete it
-- [ ] there are for sure a lot of improvements and issues in the repository, but I'm still adding new features, I'm not interested in finding bugs and improvements
-- [ ] it's first version of ReadMe, not complete, not updated 
----
+- while running only a main script it shows `DevTools listening on ws://127.0.0.1:xxxxx/devtools/browser/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`, and there is 1 dot before this message, I wanna delete it
+- there are for sure a lot of improvements and issues in the repository, but I'm still adding new features, I'm not interested in finding bugs and improvements
+
+## Planned
+
+- UI
+- CLI
+- mobile version?
+- absence planner
+
 
 ## FAQ
 
----
 
 ## License
 
@@ -270,25 +274,9 @@ See [LICENSE](LICENSE) for details.
   
 </div>
 
----
-
 ## Changelog
 
 - **1.0.0** - initial release
 - **1.1.0** - added functional headless mode
 - **1.1.1** - added logs `project_log.log`
 - **1.2.1** - added options `--file` or `--user`
-
----
-
-## Planned
-
-- change language
-- complete CLI
-- desktop version (windows, ubuntu, macOS?)
-- mobile version (android, IOS?)
-- absence planner
-- baka clone
-- API
-- server
-- don't be like bot...
