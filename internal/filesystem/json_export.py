@@ -2,7 +2,7 @@
 import logging
 import os
 
-from internal.utils.var_validator import var_message
+from internal.utils.var_validator import log_variable
 from internal.utils.decorators import log_message
 
 logger = logging.getLogger(__name__)
@@ -22,13 +22,13 @@ def export_json(subjects, path) -> bool:
 
     logger.info(f"Current directory: {os.getcwd()}")
 
-    if not var_message(subjects, "subjects", "warning", "No subjects to export", "Exporting successful"):
+    if not log_variable(subjects, "warning", "No subjects to export", "Exporting successful"):
         return False
 
     # Export
-    logger.info("Exporting...")
+    logger.info("Exporting json...")
 
-    if not var_message(path, "path", "critical", "Wrong path"):
+    if not log_variable(path, "critical", "Wrong path"):
         return False
 
     try:

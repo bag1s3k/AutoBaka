@@ -11,7 +11,7 @@ from internal.filesystem.export import export_results
 from internal.filesystem.paths_constants import find_project_root
 from internal.filesystem.ini_loader import config
 from internal.utils.decorators import log_message
-from internal.utils.var_validator import var_message
+from internal.utils.var_validator import log_variable
 
 start_time = time.time() # STOPWATCH start
 
@@ -23,10 +23,10 @@ logger = logging.getLogger(__name__)
 def main() -> bool:
 
     # Find root folder
-    if not var_message(find_project_root().exists(), "find_project_root().exist()", "error", "project root doesn't exist", "Project root folder exist"): return False
+    if not log_variable(find_project_root().exists(), "error", "project root doesn't exist", "Project root folder exist"): return False
 
     # Read config
-    if not var_message(config.read, "config.read", "critical"): return False
+    if not log_variable(config.read, "config.read", "critical"): return False
 
     driver = None
 
@@ -44,20 +44,20 @@ def main() -> bool:
 
         username, password = load_credentials(main_parser)
 
-        if not var_message(username or password, "username | password", "critical"): return False
+        if not log_variable(username or password, "critical"): return False
 
         print(".", end="", flush=True) # CLI PRINT
 
         # Login to baka
 
-        if not var_message(login(driver, username, password), "login(driver, username, password)", "critical", "login failed", "Login successful"):
+        if not log_variable(login(driver, username, password), "critical", "login failed", "Login successful"):
             return False
 
         print(".", end="", flush=True) # CLI PRINT
 
         # Get marks
         raw_marks = get_marks(driver)
-        if not var_message(raw_marks, "raw_marks", "critical", "get marks failed", "get marks successful"):
+        if not log_variable(raw_marks, "critical", "get marks failed", "get marks successful"):
             return False
 
         print(".", end="", flush=True) # CLI PRINT
@@ -66,14 +66,13 @@ def main() -> bool:
         logger.info("Calculating averages")
         processed_marks = process_marks(raw_marks)
 
-        if not var_message(processed_marks, "processed_marks", "warning", "no marks to process"):
-            return False
+        if not log_variable(processed_marks, "warning", "No marks to process"): return False
 
         print(".", end="", flush=True) # CLI PRINT
 
         # Export results
         logger.info("Exporting results")
-        if not var_message(export_results(processed_marks, config.get_config("PATHS", "result_path")), "export_results(processed_marks, config.get_config('PATHS', 'result_path'))", "error", "Nothing wrote"):
+        if not log_variable(export_results(processed_marks, config.get_config("PATHS", "result_path")), "error", "Nothing wrote"):
             return False
 
         print(".", end="", flush=True) # CLI PRINT

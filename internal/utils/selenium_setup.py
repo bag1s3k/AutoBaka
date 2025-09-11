@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 def setup_driver():
     """
     Setup chrome driver with optimization and settings
+
     Returns:
         webdriver.Chrome
     """
@@ -46,19 +47,16 @@ def setup_driver():
         options.add_argument("--disable-notifications")
         options.add_argument("--ignore-certificate-errors")
         options.add_argument("--window-size=1920,1080")
-        logger.debug("Performance optimization")
 
         # Suppress Chrome internal logs
         options.add_argument("--log-level=3")
         options.add_argument("--silent")
-        logger.debug("Chrome logs suppressed")
 
         # Installation and setup chrome driver
         driver = webdriver.Chrome(
             service=Service(ChromeDriverManager().install()),
             options=options
         )
-        logger.info("Chrome was successfully started")
         return driver
 
     except Exception as e:

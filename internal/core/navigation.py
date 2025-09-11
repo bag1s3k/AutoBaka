@@ -24,13 +24,12 @@ def login(driver, username: str, password: str) -> bool:
         bool: Was the login successful?
     """
     try:
-        logger.info("Finding website")
         driver.get(config.get_config("URLS", "login_url"))
         marks_url = config.get_config("URLS", "marks_url")
 
         logger.debug("Website loaded")
 
-        # Wait until  username field load
+        # Wait until username field load
         try:
             username_field = WebDriverWait(driver, config.get_config("SETTINGS", "timeout")).until(
                 EC.presence_of_element_located((By.NAME, "username"))
@@ -42,7 +41,6 @@ def login(driver, username: str, password: str) -> bool:
             return False
 
         # Enter username detail
-        logger.info("Entering username")
         username_field.clear()
         username_field.send_keys(username)
         logger.debug(f"Username filled: {username}")
@@ -52,7 +50,7 @@ def login(driver, username: str, password: str) -> bool:
             password_field = driver.find_element(By.NAME, "password")
             password_field.clear()
             password_field.send_keys(password)
-            logger.debug("Password filled")
+            logger.debug("Password filled: <MASKED>")
 
         except NoSuchElementException:
             logger.error("Field wasn't find")
@@ -70,7 +68,6 @@ def login(driver, username: str, password: str) -> bool:
         logger.info("Sending login form")
         login_button.click()
 
-        logger.debug("Waiting after login")
         time.sleep(2)
 
     except Exception as e:
@@ -79,7 +76,7 @@ def login(driver, username: str, password: str) -> bool:
 
     try:
         # Go to marks page
-        logger.debug("Got to marks page")
+        logger.debug("Go to the marks page")
 
         driver.get(marks_url)
 

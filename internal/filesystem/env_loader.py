@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from internal.utils.logging_setup import setup_logging
 from internal.utils.options import create_agr_parser
 from internal.filesystem.paths_constants import ENV_PATH
-from internal.utils.var_validator import var_message
+from internal.utils.var_validator import log_variable
 from internal.utils.decorators import log_message
 
 setup_logging()
@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 def load_credentials(parser) -> tuple:
     """
     Using argparse load login details
+
     Returns:
         - tuple: (username, password)
     """
@@ -29,8 +30,7 @@ def load_credentials(parser) -> tuple:
         dest="login_details",
     )
 
-    if not var_message(arg, "arg", "error"):
-        return None, None
+    if not log_variable(arg, "arg", "Loading login details from cli failed"): return None, None
 
     return arg.login_details
 
@@ -44,19 +44,19 @@ def load_credentials_from_file() -> tuple:
     """
     try:
         # Does the file exist
-        if not var_message(ENV_PATH.exists(), "ENV_PATH.exist()", "critical", f"ENV path doesn't exist: env path {ENV_PATH}", f"ENV path found env path: {ENV_PATH} "):
+        if not log_variable(ENV_PATH.exists(), "critical", f"ENV path doesn't exist: env path {ENV_PATH}", f"ENV path found env path: {ENV_PATH} "):
             return None, None
 
         # Loading .env file
         env_loaded = load_dotenv(ENV_PATH)
 
-        if not var_message(env_loaded, "env_loaded", "critical", "env file cannot be loaded", "env file loaded successfully"):
+        if not log_variable(env_loaded, "critical", "env file cannot be loaded", "env file loaded successfully"):
             return None, None
 
         # Check variables
         def check_env_var(var_name: str) -> str:
             value = os.getenv(var_name)
-            var_message(value or value.strip(), "value | value.strip()", "critical", "value not found", "value successfully found")
+            log_variable(value or value.strip(), "critical", "value not found", "value successfully found")
 
             return value
 
@@ -69,7 +69,7 @@ def load_credentials_from_file() -> tuple:
         logger.exception(f"Issue while loading login details: {str(e)}")
         return None, None
 
-@log_message("Set new values failed", "Set new values successfully completed", "error")
+@log_message("Setting new values failed", "Setting new values successfully completed", "error")
 def set_env(key: str, value: str) -> bool:
     """
     Set new variables in .env file
@@ -96,7 +96,7 @@ def set_env(key: str, value: str) -> bool:
             else:
                 lines.append(line)
 
-    if not var_message(found, "found", "error", "Wrong key", "Correct key"):
+    if not log_variable(found, "error", "Wrong key"):
         return False
 
     # Set new lines to .env

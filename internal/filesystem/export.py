@@ -1,7 +1,7 @@
 ﻿import logging
 
 from internal.utils.decorators import log_message
-from internal.utils.var_validator import var_message
+from internal.utils.var_validator import log_variable
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ def export_results(subjects, path):
         bool
     """
 
-    var_message(subjects, "subjects", "warning", "Nothing to write")
+    log_variable(subjects, "warning", "Nothing to export")
 
     try:
         with open(path, "w") as file:
