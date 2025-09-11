@@ -1,7 +1,7 @@
 # v1.0.0
 
 from internal.utils.logging_setup import setup_logging
-from internal.filesystem.env_loader import set_env, load_credentials_from_file
+from internal.filesystem.env_utils import set_env, load_credentials_from_file
 from internal.filesystem.ini_loader import config as config_file
 from main import main
 
