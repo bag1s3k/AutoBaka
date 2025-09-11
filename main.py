@@ -6,7 +6,7 @@ from internal.core.marks_processor import get_marks, process_marks
 from internal.core.web_navigation import login
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
-from internal.filesystem.env_loader import load_credentials
+from internal.filesystem.env_utils import load_credentials
 from internal.filesystem.export import export_results
 from internal.filesystem.paths_constants import find_project_root
 from internal.filesystem.ini_loader import config
@@ -97,7 +97,7 @@ def main() -> bool:
         logger.error("Program is gonna be terminate because of error")
         return False
 
-    # finally: 
+    # finally:
     #     # End Driver if the program crash
     #     if driver:
     #         try:
