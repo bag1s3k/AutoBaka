@@ -1,5 +1,3 @@
-# v1.3.0
-
 import logging
 import argparse
 import time
@@ -12,43 +10,30 @@ from internal.filesystem.env_loader import load_credentials
 from internal.filesystem.export import export_results
 from internal.filesystem.paths_constants import find_project_root
 from internal.filesystem.ini_loader import config
-from internal.utils.decorators import message
+from internal.utils.decorators import log_message
 from internal.utils.var_validator import var_message
 
-# STOPWATCH
-t1 = time.time()
+start_time = time.time() # STOPWATCH start
 
 # Set up logging
 setup_logging()
 logger = logging.getLogger(__name__)
 
-@message("Main function (brain) failed", "Main function (brain) successfully completed", "critical")
+@log_message("Main function (brain) failed", "Main function (brain) successfully completed", "critical")
 def main() -> bool:
-    """
-    Main base function
-
-    Returns:
-        Bool: True if successful, False otherwise
-    """
-
-    print(".", end="", flush=True) # CLI PRINT
 
     # Find root folder
-    if not var_message(find_project_root().exists(), "find_project_root().exist()", "error", "project root doesn't exist", "Project root folder exist"):
-        return False
+    if not var_message(find_project_root().exists(), "find_project_root().exist()", "error", "project root doesn't exist", "Project root folder exist"): return False
 
     # Read config
-    if not var_message(config.read, "config.read", "critical"):
-        return False
+    if not var_message(config.read, "config.read", "critical"): return False
 
     driver = None
 
-    # Start of app
+    # Start of an app
     try:
         # Initiation webdriver
         driver = setup_driver()
-
-        print(".", end="", flush=True) # CLI PRINT
 
         # Load login details and create main_parser
         logger.info("Loading login details")
@@ -59,8 +44,7 @@ def main() -> bool:
 
         username, password = load_credentials(main_parser)
 
-        if not var_message(username or password, "username | password", "critical"):
-            return False
+        if not var_message(username or password, "username | password", "critical"): return False
 
         print(".", end="", flush=True) # CLI PRINT
 
@@ -128,4 +112,4 @@ def main() -> bool:
 
 if __name__ == "__main__":
     main()
-    print(f"{round(time.time() - t1, 5)}s")
+    print(f"{round(time.time() - start_time, 5)}s")

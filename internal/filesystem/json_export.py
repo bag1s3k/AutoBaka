@@ -3,11 +3,11 @@ import logging
 import os
 
 from internal.utils.var_validator import var_message
-from internal.utils.decorators import message
+from internal.utils.decorators import log_message
 
 logger = logging.getLogger(__name__)
 
-@message("Exporting failed", "Exporting successful", "warning")
+@log_message("Exporting failed", "Exporting successful", "warning")
 def export_json(subjects, path) -> bool:
     """
     Export marks to JSON file

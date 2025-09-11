@@ -1,11 +1,11 @@
 ﻿import logging
 
-from internal.utils.decorators import message
+from internal.utils.decorators import log_message
 from internal.utils.var_validator import var_message
 
 logger = logging.getLogger(__name__)
 
-@message("Exporting failed", "Exported successfully completed", "warning")
+@log_message("Exporting failed", "Exported successfully completed", "warning")
 def export_results(subjects, path):
     """
     Export averages to file

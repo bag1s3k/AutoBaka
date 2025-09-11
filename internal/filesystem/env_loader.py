@@ -6,12 +6,12 @@ from internal.utils.logging_setup import setup_logging
 from internal.utils.options import create_agr_parser
 from internal.filesystem.paths_constants import ENV_PATH
 from internal.utils.var_validator import var_message
-from internal.utils.decorators import message
+from internal.utils.decorators import log_message
 
 setup_logging()
 logger = logging.getLogger(__name__)
 
-@message("Loading credentials failed", "Loading credentials successfully completed", "critical")
+@log_message("Loading credentials failed", "Loading credentials successfully completed", "critical")
 def load_credentials(parser) -> tuple:
     """
     Using argparse load login details
@@ -34,7 +34,7 @@ def load_credentials(parser) -> tuple:
 
     return arg.login_details
 
-@message("Loading credentials from file failed", "Loading credentials from file successfully completed", "critical")
+@log_message("Loading credentials from file failed", "Loading credentials from file successfully completed", "critical")
 def load_credentials_from_file() -> tuple:
     """
     Load login details from .env file
@@ -69,7 +69,7 @@ def load_credentials_from_file() -> tuple:
         logger.exception(f"Issue while loading login details: {str(e)}")
         return None, None
 
-@message("Set new values failed", "Set new values successfully completed", "error")
+@log_message("Set new values failed", "Set new values successfully completed", "error")
 def set_env(key: str, value: str) -> bool:
     """
     Set new variables in .env file

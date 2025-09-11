@@ -1,8 +1,8 @@
 ﻿import logging
-
+from typing import Any
 logger = logging.getLogger(__name__)
 
-def var_message(var: any, var_name: str, level: str = "error", error_message: str = "Missing or invalid", right_message: str = "Correct"):
+def var_message(var: Any, var_name: str, level: str = "error", error_message: str = "Missing or invalid", right_message: str = "Correct"):
     """
     Function which validates and makes logs
 

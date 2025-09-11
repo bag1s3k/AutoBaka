@@ -3,7 +3,7 @@
 from configparser import ConfigParser
 from pathlib import Path
 from internal.filesystem.paths_constants import INI_PATH
-from internal.utils.decorators import message
+from internal.utils.decorators import log_message
 from internal.utils.var_validator import var_message
 
 logger = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ class IniConfigFile:
         self.config = ConfigParser()
         self.read = self._read_config()
 
-    @message("Setting new variables failed", "Successfully changed", "warning")
+    @log_message("Setting new variables failed", "Successfully changed", "warning")
     def set_new(self, section: str, option: str, value: str) -> bool:
         try:
 
@@ -39,15 +39,14 @@ class IniConfigFile:
 
             # Set new
             self.config.set(section, option, value)
-            with open(INI_PATH, "w", encoding="utf-8") as f:
-                self.config.write(f)
+            with open(INI_PATH, "w", encoding="utf-8") as f: self.config.write(f)
 
             return True
         except Exception as e:
             logger.exception(f"Unexpected error: {str(e)}")
             return False
 
-    @message("Reading config failed", "Reading config successfully completed", "critical")
+    @log_message("Reading config failed", "Reading config successfully completed", "critical")
     def _read_config(self) -> bool:
         """
         Read config from file
@@ -57,11 +56,9 @@ class IniConfigFile:
         """
 
         try:
-            if not var_message(self.ini_path.exists(), "self.ini_path.exist()", "critical", f"Configuration file doesn't exist, path: {self.ini_path}", f"Configuration file found, path: {self.ini_path}"):
-                return False
+            if not var_message(self.ini_path.exists(), "self.ini_path.exist()", "critical", f"Configuration file doesn't exist, path: {self.ini_path}", f"Configuration file found, path: {self.ini_path}"): return False
 
-            with open(self.ini_path, "r", encoding="utf-8") as f:
-                self.config.read_file(f)
+            with open(self.ini_path, "r", encoding="utf-8") as f: self.config.read_file(f)
 
             return True
 
@@ -105,14 +102,11 @@ class IniConfigFile:
             Union[int, bool, str]: best-match
         """
 
-        if value in ["True", "False"]:
-            return True if value == "True" else False
+        if value in ["True", "False"]: return True if value == "True" else False
 
-        elif value.isdigit():
-            return int(value)
+        elif value.isdigit(): return int(value)
 
-        else:
-            return value
+        else: return value
 
 
 config = IniConfigFile(INI_PATH)
