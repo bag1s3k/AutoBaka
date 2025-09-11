@@ -3,7 +3,7 @@ import argparse
 import time
 
 from internal.core.marks_processor import get_marks, process_marks
-from internal.core.navigation import login
+from internal.core.web_navigation import login
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_loader import load_credentials
