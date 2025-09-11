@@ -2,7 +2,7 @@ import logging
 
 from selenium.webdriver.common.by import By
 from unidecode import unidecode
-from internal.filesystem.json_export import export_json
+from internal.filesystem.export import export_json
 from internal.filesystem.paths_constants import JSON_OUTPUT_PATH, JSON_RAW_OUTPUT_PATH
 from internal.utils.decorators import log_message
 from internal.utils.var_validator import log_variable
