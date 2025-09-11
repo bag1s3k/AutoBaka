@@ -97,17 +97,18 @@ def main() -> bool:
         logger.error("Program is gonna be terminate because of error")
         return False
 
-    finally:
-        # End Driver if the program crash
-        if driver:
-            try:
-                logger.info("Terminate webdriver")
-                if config.get_config("SETTINGS", "quit_driver"):  # let window open or close it
-                    driver.quit()
-                    logger.info("driver was successfully quit")
-                logger.info("Drive was successfully terminated")
-            except Exception as e:
-                logger.error(f"Error during terminating program: {str(e)}")
+    # finally: 
+    #     # End Driver if the program crash
+    #     if driver:
+    #         try:
+    #             logger.info("Terminate webdriver")
+    #             if config.get_config("SETTINGS", "quit_driver"):  # let window open or close it
+    #                 driver.quit()
+    #                 logger.info("driver was successfully quit")
+    #             logger.info("Drive was successfully terminated")
+    #         except Exception as e:
+    #             logger.error(f"Error during terminating program: {str(e)}")
+
 
 if __name__ == "__main__":
     main()
