@@ -12,6 +12,7 @@ from internal.filesystem.paths_constants import find_project_root
 from internal.filesystem.ini_loader import config
 from internal.utils.decorators import log_message
 from internal.utils.var_validator import log_variable
+import internal.utils.cloud_backup.main
 
 start_time = time.time() # STOPWATCH start
 
