@@ -9,3 +9,4 @@ output/marks.json
 output/raw_marks.json
 tests
 internal/utils/cloud_backup
+.vscode/
