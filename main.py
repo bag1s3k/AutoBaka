@@ -8,11 +8,11 @@ from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_utils import load_credentials
 from internal.filesystem.export import export_results
-from internal.filesystem.paths_constants import find_project_root
+from internal.filesystem.paths_constants import PROJECT_ROOT
 from internal.filesystem.ini_loader import config
 from internal.utils.decorators import log_message
 from internal.utils.var_validator import log_variable
-import internal.utils.cloud_backup.main
+import internal.utils.cloud_backup.backup # TODO do it in the background
 
 start_time = time.time() # STOPWATCH start
 
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 def main() -> bool:
 
     # Find root folder
-    if not log_variable(find_project_root().exists(), "error", "project root doesn't exist", "Project root folder exist"): return False
+    if not log_variable(PROJECT_ROOT.exists(), "error", "project root doesn't exist", "Project root folder exist"): return False
 
     # Read config
     if not log_variable(config.read, "config.read", "critical"): return False
