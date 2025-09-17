@@ -1,7 +1,29 @@
 ﻿from internal.filesystem.paths_constants import INI_PATH
 import configparser
 
-config = configparser.ConfigParser()
+class AutoCastConfigParser(configparser.ConfigParser):
+    def get_auto_cast(self, section, option):
+        """
+            Try to convert string to int, bool or keep it as str
+
+            Args:
+                section (str): name of the section
+                option (str): name of the option
+
+            Returns:
+                Union[int, bool, str]: best-match
+        """
+
+        value = super().get(section, option)
+
+        if value in ["True", "False"]:
+            return True if value == "True" else False
+        elif value.isdigit():
+            return int(value)
+        else:
+            return value
+
+config = AutoCastConfigParser()
 config.read(INI_PATH, "utf-8")
 
 def read_config():
