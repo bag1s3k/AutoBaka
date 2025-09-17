@@ -9,3 +9,5 @@ def read_config():
         print(f"[{section}]")
         for k, v in config[section].items():
             print(f"{k} = {v}")
+
+        print()
