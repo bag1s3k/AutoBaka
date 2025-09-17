@@ -1,5 +1,6 @@
 import logging
 import argparse
+import sys
 import time
 
 from internal.core.marks_processor import get_marks, process_marks
@@ -10,7 +11,6 @@ from internal.filesystem.env_utils import load_credentials
 from internal.filesystem.export import export_results
 from internal.filesystem.paths_constants import PROJECT_ROOT
 from internal.filesystem.ini_loader import config
-from internal.utils.decorators import log_message
 from internal.utils.var_validator import log_variable
 
 from internal.utils.cloud_backup.backup import run_buckup
@@ -26,10 +26,7 @@ logger = logging.getLogger(__name__)
 # -------------------------------- PREPARE TO ENTER THE WEBSITE ---------------------------------- #
 
 # Does the PROJECT_ROOT path exist
-log_variable(PROJECT_ROOT.exists(), "error", "project root doesn't exist", "Project root folder exist")
-
-# Read config
-log_variable(config.read, "config.read", "critical")
+if not log_variable(PROJECT_ROOT.exists(), "error", "project root doesn't exist", "Project root folder exist"): sys.exit(-1)
 
 driver = None
 
@@ -43,16 +40,17 @@ try:
         description="main parser for main file",
     )
     username, password = load_credentials(main_parser)
+    if not username or not password: sys.exit(-1)
 
     print(".", end="", flush=True) # progress print
 
-    login(driver, username, password)
+    if not login(driver, username, password): sys.exit(-1)
 
     print(".", end="", flush=True) # progress print
     
     # ------------------------------------- ON THE WEBSITE -------------------------------------- #
 
-    raw_marks = get_marks(driver)
+    if raw_marks := get_marks(driver): sys.exit(-1)
 
     print(".", end="", flush=True) # progress print
 
@@ -65,13 +63,13 @@ try:
 
     # ------------------------------------ PROCESSING MARKS ------------------------------------ #
 
-    processed_marks = process_marks(raw_marks)
+    if processed_marks := process_marks(raw_marks): sys.exit(-1)
 
     print(".", end="", flush=True) # CLI PRINT
 
     # ------------------------------------ EXPORTING RESULTS ------------------------------------ #
 
-    export_results(processed_marks, config.get_auto_cast("PATHS", "result_path"))
+    if export_results(processed_marks, config.get_auto_cast("PATHS", "result_path")): sys.exit(-1)
 
     print(". Successfully", flush=True) # CLI PRINT
 
