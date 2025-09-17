@@ -9,4 +9,3 @@ timeout = 15
 headless_mode = True
 quit_driver = True
 export_format = json
-root_folder_name = "autobaka"
