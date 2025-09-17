@@ -22,7 +22,7 @@ def setup_driver():
 
         # Default configuration
         logger.debug("Setup chrome options")
-        if config.get("SETTINGS", "quit_driver"):
+        if config.get_auto_cast("SETTINGS", "quit_driver"):
             options.add_experimental_option("detach", False)
             logger.debug("Detach False")
         else:
@@ -33,7 +33,7 @@ def setup_driver():
         options.add_experimental_option('useAutomationExtension', False)
 
         # Headless mode
-        if config.get("SETTINGS", "headless_mode"): # Turn on or off headless mode from config.ini
+        if config.get_auto_cast("SETTINGS", "headless_mode"): # Turn on or off headless mode from config.ini
             options.add_argument("--headless=new")
             logger.debug("Headless mode was activated")
         else:

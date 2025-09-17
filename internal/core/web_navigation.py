@@ -24,14 +24,14 @@ def login(driver, username: str, password: str) -> bool:
         bool: Was the login successful?
     """
     try:
-        driver.get(config.get("URLS", "login_url"))
-        marks_url = config.get("URLS", "marks_url")
+        driver.get(config.get_auto_cast("URLS", "login_url"))
+        marks_url = config.get_auto_cast("URLS", "marks_url")
 
         logger.debug("Website loaded")
 
         # Wait until username field load
         try:
-            username_field = WebDriverWait(driver, config.get("SETTINGS", "timeout")).until(
+            username_field = WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
                 EC.presence_of_element_located((By.NAME, "username"))
             )
             logger.debug("Field for username found")
@@ -83,7 +83,7 @@ def login(driver, username: str, password: str) -> bool:
         logger.debug("Wait until page will load")
 
         try:
-            WebDriverWait(driver, config.get("SETTINGS", "timeout")).until(
+            WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
                 EC.presence_of_element_located((By.XPATH, "//tbody//tr[.//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]"))
             )
             logger.info("Page with marks was successfully load")
