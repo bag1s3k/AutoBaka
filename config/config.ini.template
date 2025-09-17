@@ -1,8 +1,8 @@
 [PATHS]
 result_path = path\result.txt
 [URLS]
-login_url = https://bakaweb.cichnovabrno.cz/login
-marks_url = https://bakaweb.cichnovabrno.cz/next/prubzna.aspx?s=chrono
+login_url = https://bakaweb.school.cz/login
+marks_url = https://bakaweb.school.cz/next/prubzna.aspx?s=chrono
 
 [SETTINGS]
 timeout = 15
