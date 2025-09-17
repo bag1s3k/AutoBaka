@@ -12,7 +12,8 @@ from internal.filesystem.paths_constants import PROJECT_ROOT
 from internal.filesystem.ini_loader import config
 from internal.utils.decorators import log_message
 from internal.utils.var_validator import log_variable
-import internal.utils.cloud_backup.backup # TODO do it in the background
+
+import internal.utils.cloud_backup.backup # it launches my backup logic
 
 start_time = time.time() # STOPWATCH start
 
@@ -73,14 +74,14 @@ def main() -> bool:
 
         # Export results
         logger.info("Exporting results")
-        if not log_variable(export_results(processed_marks, config.get_config("PATHS", "result_path")), "error", "Nothing wrote"):
+        if not log_variable(export_results(processed_marks, config.get("PATHS", "result_path")), "error", "Nothing wrote"):
             return False
 
         print(".", end="", flush=True) # CLI PRINT
 
         # Finishing
         logger.info("Terminate webdriver")
-        if config.get_config("SETTINGS", "quit_driver"): # let window open or close it
+        if config.get("SETTINGS", "quit_driver"): # let window open or close it
             driver.quit()
             logger.info("driver was successfully quit")
         logger.info("Drive was successfully terminated")
