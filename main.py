@@ -49,8 +49,7 @@ try:
     print(".", end="", flush=True) # progress print
     
     # ------------------------------------- ON THE WEBSITE -------------------------------------- #
-
-    if raw_marks := get_marks(driver): sys.exit(-1)
+    if not (raw_marks := get_marks(driver)): sys.exit(-1)
 
     print(".", end="", flush=True) # progress print
 
@@ -63,13 +62,13 @@ try:
 
     # ------------------------------------ PROCESSING MARKS ------------------------------------ #
 
-    if processed_marks := process_marks(raw_marks): sys.exit(-1)
+    if not (processed_marks := process_marks(raw_marks)): sys.exit(-1)
 
     print(".", end="", flush=True) # CLI PRINT
 
     # ------------------------------------ EXPORTING RESULTS ------------------------------------ #
 
-    if export_results(processed_marks, config.get_auto_cast("PATHS", "result_path")): sys.exit(-1)
+    if not export_results(processed_marks, config.get_auto_cast("PATHS", "result_path")): sys.exit(-1)
 
     print(". Successfully", flush=True) # CLI PRINT
 
