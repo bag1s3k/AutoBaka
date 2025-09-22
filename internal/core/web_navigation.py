@@ -75,19 +75,19 @@ def login(driver, username: str, password: str) -> bool:
         logger.error(f"Issue during login: {e}")
         return False
 
-@log_message("Navigation to the marks page failed", "Navigation to marks page successful")
-def marks_navigation(driver) -> bool:
-    """Move to the page with marks
+@log_message("Moving to new url failed", "Moving to new url successful")
+def go_to_url(driver, url):
+    """Navigation to targe url
     Args:
         driver: instance of webdriver
+        url: target url
     """
-    marks_url = config.get_auto_cast("URLS", "marks_url")
 
     try:
         # Go to marks page
         logger.debug("Go to the marks page")
 
-        driver.get(marks_url)
+        driver.get(url)
 
         logger.debug("Wait until page will load")
 

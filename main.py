@@ -4,7 +4,7 @@ import sys
 import time
 
 from internal.core.marks_processor import get_marks, process_marks
-from internal.core.web_navigation import login, navigate_to_marks_page
+from internal.core.web_navigation import login, go_to_url
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_utils import load_credentials
@@ -43,7 +43,7 @@ try:
     print(".", end="", flush=True) # progress print
 
     if not login(driver, username, password): sys.exit(-1)
-    if not navigate_to_marks_page(driver): sys.exit(-1)
+    if not go_to_url(driver, config.get_auto_cast("URLS", "marks_url")): sys.exit(-1)
 
     print(".", end="", flush=True) # progress print
     
