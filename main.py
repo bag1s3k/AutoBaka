@@ -42,13 +42,28 @@ try:
 
     print(".", end="", flush=True) # progress print
 
+    # ------------------------------------- ON THE WEBSITE -------------------------------------- #
+
     if not login(driver, username, password): sys.exit(-1)
-    if not go_to_url(driver, config.get_auto_cast("URLS", "marks_url")): sys.exit(-1)
+
+    # Navigate to marks page
+    if not go_to_url(driver,
+                     config.get_auto_cast("URLS", "marks_url"),
+                    "//tbody//tr[//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]"
+    ): sys.exit(-1)
 
     print(".", end="", flush=True) # progress print
-    
-    # ------------------------------------- ON THE WEBSITE -------------------------------------- #
+
     if not (raw_marks := get_marks(driver)): sys.exit(-1)
+
+    print(".", end="", flush=True) # progress print
+
+    # Navigate to timetable page
+    xpath = "//div"
+    if not (go_to_url(driver,
+                      config.get_auto_cast("URLS", "timetable_url"),
+                      xpath)
+    ): sys.exit(-2)
 
     print(".", end="", flush=True) # progress print
 
@@ -61,13 +76,13 @@ try:
 
     # ------------------------------------ PROCESSING MARKS ------------------------------------ #
 
-    if not (processed_marks := process_marks(raw_marks)): sys.exit(-1)
+    if not (processed_marks := process_marks(raw_marks)): sys.exit(-3)
 
     print(".", end="", flush=True) # CLI PRINT
 
     # ------------------------------------ EXPORTING RESULTS ------------------------------------ #
 
-    if not export_results(processed_marks, config.get_auto_cast("PATHS", "result_path")): sys.exit(-1)
+    if not export_results(processed_marks, config.get_auto_cast("PATHS", "result_path")): sys.exit(-4)
 
     print(". Successfully", flush=True) # CLI PRINT
 

@@ -76,16 +76,16 @@ def login(driver, username: str, password: str) -> bool:
         return False
 
 @log_message("Moving to new url failed", "Moving to new url successful")
-def go_to_url(driver, url):
+def go_to_url(driver, url, xpath):
     """Navigation to targe url
     Args:
         driver: instance of webdriver
         url: target url
+        xpath (string): enter xpath (By.XPATH)
     """
 
     try:
-        # Go to marks page
-        logger.debug("Go to the marks page")
+        logger.debug("Go to the target page")
 
         driver.get(url)
 
@@ -93,17 +93,17 @@ def go_to_url(driver, url):
 
         try:
             WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
-                EC.presence_of_element_located((By.XPATH, "//tbody//tr[.//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]"))
+                EC.presence_of_element_located((By.XPATH, xpath))
             )
-            logger.info("Page with marks was successfully load")
+            logger.info("Target page was successfully load")
             return True
 
         except TimeoutException:
-            logger.error("Page with marks didn't load")
+            logger.error("Target page with marks didn't load")
             logger.debug(f"Current url: {driver.current_url}")
             logger.debug(f"Current title: {driver.title}")
             return False
 
     except Exception as e:
-        logger.error(f"Error while going to marks page: {e}")
+        logger.error(f"Error while moving to the target page: {e}")
         return False
