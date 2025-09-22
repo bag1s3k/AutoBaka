@@ -25,7 +25,6 @@ def login(driver, username: str, password: str) -> bool:
     """
     try:
         driver.get(config.get_auto_cast("URLS", "login_url"))
-        marks_url = config.get_auto_cast("URLS", "marks_url")
 
         logger.debug("Website loaded")
 
@@ -70,9 +69,15 @@ def login(driver, username: str, password: str) -> bool:
 
         time.sleep(2)
 
+        return True
+
     except Exception as e:
         logger.error(f"Issue during login: {e}")
         return False
+
+@log_message("Navigation to the marks page failed", "Navigation to marks page successful")
+def marks_navigation(driver) -> bool:
+    marks_url = config.get_auto_cast("URLS", "marks_url")
 
     try:
         # Go to marks page

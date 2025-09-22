@@ -4,7 +4,7 @@ import sys
 import time
 
 from internal.core.marks_processor import get_marks, process_marks
-from internal.core.web_navigation import login
+from internal.core.web_navigation import login, navigate_to_marks_page
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_utils import load_credentials
@@ -14,8 +14,6 @@ from internal.filesystem.ini_loader import config
 from internal.utils.var_validator import log_variable
 
 from internal.utils.cloud_backup.backup import run_buckup
-
-run_buckup() # it's only for me, it creates copy of the whole project except some files and folders
 
 start_time = time.time() # STOPWATCH start
 
@@ -45,6 +43,7 @@ try:
     print(".", end="", flush=True) # progress print
 
     if not login(driver, username, password): sys.exit(-1)
+    if not navigate_to_marks_page(driver): sys.exit(-1)
 
     print(".", end="", flush=True) # progress print
     
@@ -93,3 +92,5 @@ except Exception as e:
 
 
 print(f"{round(time.time() - start_time, 5)}s")
+
+run_buckup() # it's only for me, it creates copy of the whole project except some files and folders
