@@ -77,6 +77,10 @@ def login(driver, username: str, password: str) -> bool:
 
 @log_message("Navigation to the marks page failed", "Navigation to marks page successful")
 def marks_navigation(driver) -> bool:
+    """Move to the page with marks
+    Args:
+        driver: instance of webdriver
+    """
     marks_url = config.get_auto_cast("URLS", "marks_url")
 
     try:
