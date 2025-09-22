@@ -2,6 +2,7 @@ import logging
 
 from selenium.webdriver.common.by import By
 from unidecode import unidecode
+
 from internal.filesystem.export import export_json
 from internal.filesystem.paths_constants import JSON_OUTPUT_PATH, JSON_RAW_OUTPUT_PATH
 from internal.utils.decorators import log_message
@@ -10,11 +11,12 @@ from internal.utils.var_validator import log_variable
 logger = logging.getLogger(__name__)
 
 @log_message("Extraction marks from baka page failed", "Extraction marks from baka page failed", "warning")
-def get_marks(driver) -> dict:
+def get_marks(driver, xpath) -> dict:
     """
     Extraction marks from baka page
     Args:
         driver: instance of the browser
+        xpath: xpath of marks
     Returns:
         dict: dictionary {subject: average}
     """
@@ -22,8 +24,7 @@ def get_marks(driver) -> dict:
     try:
         logger.info("Looking for an element on page with marks")
 
-        marks_line = driver.find_elements("xpath",
-                                          "//tbody//tr[.//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]")
+        marks_line = driver.find_elements("xpath", xpath)
 
         # Load whole marks (date, mark, value...) it's line of these data
         if not log_variable(marks_line, "warning", f"Marks not found url: {driver.current_url} title: {driver.title}", f"Marks found url {driver.current_url} title: {driver.title}"):
@@ -118,3 +119,13 @@ def process_marks(subjects) -> dict:
             return {}
 
     return dict(sorted(subjects.items()))
+
+
+def get_timetable(driver, xpath):
+    days = driver.find_elements("xpath", xpath)
+
+    for day in days:
+        lectures = day.find_elements("xpath", "//div[@class='middle ']")
+
+        for lecture in lectures:
+            print(lecture.text)

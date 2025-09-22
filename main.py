@@ -3,7 +3,7 @@ import argparse
 import sys
 import time
 
-from internal.core.marks_processor import get_marks, process_marks
+from internal.core.web_processor import get_marks, process_marks, get_timetable
 from internal.core.web_navigation import login, go_to_url
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
@@ -47,23 +47,26 @@ try:
     if not login(driver, username, password): sys.exit(-1)
 
     # Navigate to marks page
+    marks_xpath = "//tbody//tr[//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]"
     if not go_to_url(driver,
                      config.get_auto_cast("URLS", "marks_url"),
-                    "//tbody//tr[//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]"
+                     marks_xpath
     ): sys.exit(-1)
 
     print(".", end="", flush=True) # progress print
 
-    if not (raw_marks := get_marks(driver)): sys.exit(-1)
+    if not (raw_marks := get_marks(driver, marks_xpath)): sys.exit(-1)
 
     print(".", end="", flush=True) # progress print
 
     # Navigate to timetable page
-    xpath = "//div"
-    if not (go_to_url(driver,
+    timetable_xpath = "//div[@class='day-row normal']"
+    if not go_to_url(driver,
                       config.get_auto_cast("URLS", "timetable_url"),
-                      xpath)
+                      timetable_xpath
     ): sys.exit(-2)
+
+    get_timetable(driver, timetable_xpath)
 
     print(".", end="", flush=True) # progress print
 
