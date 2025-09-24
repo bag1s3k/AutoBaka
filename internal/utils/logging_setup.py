@@ -3,7 +3,7 @@ from internal.filesystem.paths_constants import LOG_PATH
 
 def setup_logging():
     """
-    Setup logging for whole app without Selenium logs
+    Setup logging
     """
 
     # Create root logger
@@ -43,4 +43,4 @@ def setup_logging():
     logging.getLogger("requests").setLevel(logging.WARNING)
     logging.getLogger("urllib3.connectionpool").setLevel(logging.WARNING)
 
-    logging.info("Logging setup successfully completed")
+    logging.info("Logging setup successful")

@@ -2,6 +2,7 @@ import logging
 
 from selenium.webdriver.common.by import By
 from unidecode import unidecode
+
 from internal.filesystem.export import export_json
 from internal.filesystem.paths_constants import JSON_OUTPUT_PATH, JSON_RAW_OUTPUT_PATH
 from internal.utils.decorators import log_message
@@ -10,11 +11,12 @@ from internal.utils.var_validator import log_variable
 logger = logging.getLogger(__name__)
 
 @log_message("Extraction marks from baka page failed", "Extraction marks from baka page failed", "warning")
-def get_marks(driver) -> dict:
+def get_marks(driver, xpath) -> dict:
     """
     Extraction marks from baka page
     Args:
         driver: instance of the browser
+        xpath: xpath of marks
     Returns:
         dict: dictionary {subject: average}
     """
@@ -22,8 +24,7 @@ def get_marks(driver) -> dict:
     try:
         logger.info("Looking for an element on page with marks")
 
-        marks_line = driver.find_elements("xpath",
-                                          "//tbody//tr[.//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]")
+        marks_line = driver.find_elements("xpath", xpath)
 
         # Load whole marks (date, mark, value...) it's line of these data
         if not log_variable(marks_line, "warning", f"Marks not found url: {driver.current_url} title: {driver.title}", f"Marks found url {driver.current_url} title: {driver.title}"):
@@ -118,3 +119,35 @@ def process_marks(subjects) -> dict:
             return {}
 
     return dict(sorted(subjects.items()))
+
+@log_message("Extracting timetable failed", "Extracting timetable successful", "critical")
+def get_timetable(driver, xpath):
+    """
+    Extract timetable from website
+
+    :param driver: an instance of chromedriver
+    :param xpath: xpath for each day
+    :return timetable: timetable (dict)
+    """
+
+    timetable = {}
+    try:
+        days = driver.find_elements("xpath", xpath)
+
+        for day in days:
+            date = day.find_element("xpath", ".//div/div/div/div/span").text
+
+            lectures = day.find_elements("xpath", ".//div/div/span/div/div[@class='empty'] |"
+                                                  ".//div/div/span/div/div/div[@class='top clearfix'] |"
+                                                  ".//div/div/span/div/div/div/div[2]")
+
+            timetable[date] = []
+            for lecture in lectures: timetable[date].append(lecture.text)
+
+            if (n := len(timetable[date])) != 10: logger.debug(f"Wrong amount of lectures: {n} there must be 10")
+
+    except Exception as e:
+        logger.exception(f"Something unexcepted happened: {e}")
+        return {}
+
+    return timetable

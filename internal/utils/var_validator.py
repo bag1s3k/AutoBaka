@@ -2,7 +2,7 @@
 from typing import Any
 logger = logging.getLogger(__name__)
 
-def log_variable(var: Any, level: str = "error", error_message: str = "Missing or invalid", right_message: str = "Correct"):
+def log_variable(var: Any, level: str = "error", error_message: str = "Missing or invalid", right_message: str = "Var seems be correct"):
     """
     Function which validates and makes logs
 

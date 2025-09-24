@@ -12,17 +12,16 @@ logger = logging.getLogger(__name__)
 @log_message("Webdriver setup failed", "Webdriver setup successfully completed", "error")
 def setup_driver():
     """
-    Setup chrome driver with optimization and settings
+    Setup chromedriver
 
-    Returns:
-        webdriver.Chrome
+    :return: an instance of driver
     """
     try:
         options = Options()
 
-        # Default configuration
+        # Set default configuration if there is no data in .ini for quit_driver (True default)
         logger.debug("Setup chrome options")
-        if config.get_auto_cast("SETTINGS", "quit_driver"):
+        if config.get_auto_cast("SETTINGS", "quit_driver"): # returns True or False
             options.add_experimental_option("detach", False)
             logger.debug("Detach False")
         else:
@@ -32,11 +31,12 @@ def setup_driver():
         options.add_experimental_option("excludeSwitches", ["enable-automation", "enable-logging"])
         options.add_experimental_option('useAutomationExtension', False)
 
-        # Headless mode
-        if config.get_auto_cast("SETTINGS", "headless_mode"): # Turn on or off headless mode from config.ini
+        # Set default configuration if there is no data in .ini for headless mode (True default)
+        if config.get_auto_cast("SETTINGS", "headless_mode"): # returns True or False
             options.add_argument("--headless=new")
             logger.debug("Headless mode was activated")
         else:
+            options.add_argument("--headless=new")
             logger.debug("Headless mode off")
 
         # Performance
