@@ -120,18 +120,20 @@ def process_marks(subjects) -> dict:
 
     return dict(sorted(subjects.items()))
 
-
 def get_timetable(driver, xpath):
+    timetable = {}
     days = driver.find_elements("xpath", xpath)
 
     for day in days:
-        date = day.find_element("xpath", ".//div/div/div/div/span")
-        # print(date.text)
+        date = day.find_element("xpath", ".//div/div/div/div/span").text
 
-        lectures = day.find_elements("xpath", ".//div/div/span/div/div")
+        lectures = day.find_elements("xpath", ".//div/div/span/div/div[@class='empty'] |"
+                                              ".//div/div/span/div/div/div[@class='top clearfix'] |"
+                                              ".//div/div/span/div/div/div/div[2]")
 
-        lectures_list = []
+        timetable[date] = []
         for lecture in lectures:
-            lectures_list.append(lecture.text)
+            timetable[date].append(lecture.text)
 
-        print(date + lectures_list)
+    for k, v in timetable.items():
+        print(f"{k} {v}")
