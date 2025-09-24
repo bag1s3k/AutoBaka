@@ -13,15 +13,13 @@ logger = logging.getLogger(__name__)
 @log_message("Login func failed", "Login successful", "critical")
 def login(driver, username: str, password: str) -> bool:
     """
-    Login user to app
+    Login user to baka page, send login details to page
 
-    Args:
-         driver: instance of the driver
-         username: username (string)
-         password: password (string)
+    :param driver: instance of the driver
+    :param username: username (string)
+    :param password: password (string)
 
-    Return:
-        bool: Was the login successful?
+    :return bool: Successful?
     """
     try:
         driver.get(config.get_auto_cast("URLS", "login_url"))
