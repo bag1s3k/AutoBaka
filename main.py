@@ -21,10 +21,12 @@ start_time = time.time() # STOPWATCH start
 setup_logging()
 logger = logging.getLogger(__name__)
 
+error_n = -1
+
 # -------------------------------- PREPARE TO ENTER THE WEBSITE ---------------------------------- #
 
 # Does the PROJECT_ROOT path exist
-if not log_variable(PROJECT_ROOT.exists(), "error", "project root doesn't exist", "Project root folder exist"): sys.exit(-1)
+if not log_variable(PROJECT_ROOT.exists(), "error", "project root doesn't exist", "Project root folder exist"): sys.exit(error_n := -1)
 
 driver = None
 
@@ -38,24 +40,24 @@ try:
         description="main parser for main file",
     )
     username, password = load_credentials(main_parser)
-    if not username or not password: sys.exit(-1)
+    if not username or not password: sys.exit(error_n := -1)
 
     print(".", end="", flush=True) # progress print
 
     # ------------------------------------- ON THE WEBSITE -------------------------------------- #
 
-    if not login(driver, username, password): sys.exit(-1)
+    if not login(driver, username, password): sys.exit(error_n := -1)
 
     # Navigate to marks page
     marks_xpath = "//tbody//tr[//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]"
     if not go_to_url(driver,
                      config.get_auto_cast("URLS", "marks_url"),
                      marks_xpath
-    ): sys.exit(-1)
+    ): sys.exit(error_n := -1)
 
     print(".", end="", flush=True) # progress print
 
-    if not (raw_marks := get_marks(driver, marks_xpath)): sys.exit(-1)
+    if not (raw_marks := get_marks(driver, marks_xpath)): sys.exit(error_n := -1)
 
     print(".", end="", flush=True) # progress print
 
@@ -64,9 +66,9 @@ try:
     if not go_to_url(driver,
                       config.get_auto_cast("URLS", "timetable_url"),
                       timetable_xpath
-    ): sys.exit(-2)
+    ): sys.exit(error_n := -1)
 
-    get_timetable(driver, timetable_xpath)
+    if not (timetable := get_timetable(driver, timetable_xpath)): sys.exit(error_n := -1)
 
     print(".", end="", flush=True) # progress print
 
@@ -79,13 +81,13 @@ try:
 
     # ------------------------------------ PROCESSING MARKS ------------------------------------ #
 
-    if not (processed_marks := process_marks(raw_marks)): sys.exit(-3)
+    if not (processed_marks := process_marks(raw_marks)): sys.exit(error_n := -1)
 
     print(".", end="", flush=True) # CLI PRINT
 
     # ------------------------------------ EXPORTING RESULTS ------------------------------------ #
 
-    if not export_results(processed_marks, config.get_auto_cast("PATHS", "result_path")): sys.exit(-4)
+    if not export_results(processed_marks, config.get_auto_cast("PATHS", "result_path")): sys.exit(error_n := -1)
 
     print(". Successfully", flush=True) # CLI PRINT
 
