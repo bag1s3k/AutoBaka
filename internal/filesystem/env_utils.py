@@ -15,9 +15,9 @@ logger = logging.getLogger(__name__)
 def load_credentials(parser) -> tuple:
     """
     Using argparse load login details
+    (default option is load credentials from file)
 
-    Returns:
-        - tuple: (username, password)
+    :return arg.login_details:  (username, password)
     """
 
     arg = create_agr_parser(
@@ -30,21 +30,20 @@ def load_credentials(parser) -> tuple:
         dest="login_details",
     )
 
-    if not log_variable(arg, "arg", "Loading login details from cli failed"): return None, None
+    if not log_variable(arg, "critical", "Retrieving credentials failed"): return None, None
 
     return arg.login_details
 
-@log_message("Loading credentials from file failed", "Loading credentials from file successfully completed", "critical")
+@log_message("Retrieving credentials from file failed", "Loading credentials from file successful", "critical")
 def load_credentials_from_file() -> tuple:
     """
-    Load login details from .env file
+    Loading login details from .env file
 
-    Returns:
-        - tuple: (username, password) or (None, None) if failed
+    :return: username, password: (username, password) or (None, None) if failed
     """
     try:
         # Does the file exist
-        if not log_variable(ENV_PATH.exists(), "critical", f"ENV path doesn't exist: env path {ENV_PATH}", f"ENV path found env path: {ENV_PATH} "):
+        if not log_variable(ENV_PATH.exists(), "critical", f"ENV path doesn't exist: env path {ENV_PATH}", f"ENV path found"):
             return None, None
 
         # Loading .env file
@@ -56,7 +55,7 @@ def load_credentials_from_file() -> tuple:
         # Check variables
         def check_env_var(var_name: str) -> str:
             value = os.getenv(var_name)
-            log_variable(value or value.strip(), "critical", "value not found", "value successfully found")
+            log_variable(value or value.strip(), "critical", "Username or password not found in .env")
 
             return value
 
@@ -68,40 +67,3 @@ def load_credentials_from_file() -> tuple:
     except Exception as e:
         logger.exception(f"Issue while loading login details: {str(e)}")
         return None, None
-
-@log_message("Setting new values failed", "Setting new values successfully completed", "error")
-def set_env(key: str, value: str) -> bool:
-    """
-    Set new variables in .env file
-
-    Args:
-        key (str): key in .env
-        value (str): value in .env that will change
-
-    Returns:
-         Bool: True if successful, False otherwise
-    """
-
-    lines = []
-    found = False
-
-    # Load lines from .env
-    with open(ENV_PATH, "r", encoding="utf-8") as f:
-        logger.info(f"{ENV_PATH} opened")
-        for line in f:
-            if line.startswith(f"{key}="):
-                lines.append(f"{key}={value}\n")
-                logger.debug(f"New: {key}={value}")
-                found = True
-            else:
-                lines.append(line)
-
-    if not log_variable(found, "error", "Wrong key"):
-        return False
-
-    # Set new lines to .env
-    with open(ENV_PATH, "w", encoding="utf-8") as f:
-        logger.info(f"{ENV_PATH}: opened to set new values")
-        f.writelines(lines)
-
-    return True
