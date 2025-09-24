@@ -121,19 +121,32 @@ def process_marks(subjects) -> dict:
     return dict(sorted(subjects.items()))
 
 def get_timetable(driver, xpath):
+    """
+    Extract timetable from website
+
+    :param driver: an instance of chromedriver
+    :param xpath: xpath for each day
+    :return timetable: timetable (dict)
+    """
+
     timetable = {}
-    days = driver.find_elements("xpath", xpath)
+    try:
+        days = driver.find_elements("xpath", xpath)
 
-    for day in days:
-        date = day.find_element("xpath", ".//div/div/div/div/span").text
+        for day in days:
+            date = day.find_element("xpath", ".//div/div/div/div/span").text
 
-        lectures = day.find_elements("xpath", ".//div/div/span/div/div[@class='empty'] |"
-                                              ".//div/div/span/div/div/div[@class='top clearfix'] |"
-                                              ".//div/div/span/div/div/div/div[2]")
+            lectures = day.find_elements("xpath", ".//div/div/span/div/div[@class='empty'] |"
+                                                  ".//div/div/span/div/div/div[@class='top clearfix'] |"
+                                                  ".//div/div/span/div/div/div/div[2]")
 
-        timetable[date] = []
-        for lecture in lectures:
-            timetable[date].append(lecture.text)
+            timetable[date] = []
+            for lecture in lectures: timetable[date].append(lecture.text)
 
-    for k, v in timetable.items():
-        print(f"{k} {v}")
+            if (n := len(timetable[date])) != 10: logger.debug(f"Wrong amount of lectures: {n} there must be 10")
+
+    except Exception as e:
+        logger.exception(f"Something unexcepted happened: {e}")
+        return {}
+
+    return timetable
