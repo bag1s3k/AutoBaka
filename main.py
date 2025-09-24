@@ -36,7 +36,7 @@ try:
     # Load login details and create main_parser
     main_parser = argparse.ArgumentParser(
         prog=__name__,
-        description="main parser for main file",
+        description="parses cmd-line args to extract user credentials (username and password)",
     )
     username, password = load_credentials(main_parser)
     if not username or not password: sys.exit(error_n := -1)

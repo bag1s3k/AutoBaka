@@ -18,25 +18,22 @@ def create_agr_parser(parser,
                       metavar=None,
                       dest=None):
     """
-    Create new argparse.ArgumentParser with one add_argument, it uses library argparse, the most of args are same as in the argparse
-    Look at documentation of the argparse
+    Create new argparse.ArgumentParser with one add_argument, it uses library argparse, the most of args are same Look at documentation
 
-    Args:
-        parser: enter parser (argparse.ArgumentParser)
-        arg_name: name of arg "file" or --file (["--file", "-f"])
-        action: what is to happen while entering arg ("store", "store_true", "store_false", ...)
-        nargs: Amount of the args (None, "?", "+", ...)
-        const: Const value for action store_const
-        default: default value if user didn't enter arg
-        variable_type: data type (int, str, ...)
-        choices: Accessible values ["red", "green"]
-        required: if the arg is required
-        help_text: text in the help (--help)
-        metavar: name in the help instead variable name
-        dest: name of the attribute
+    :param parser: enter parser (argparse.ArgumentParser)
+    :param arg_name: name of arg "file" or --file (["--file", "-f"])
+    :param action: what is to happen while entering arg ("store", "store_true", "store_false", ...)
+    :param nargs: Amount of the args (None, "?", "+", ...)
+    :param const: Const value for action store_const
+    :param default: default value if user didn't enter arg
+    :param variable_type: data type (int, str, ...)
+    :param choices: Accessible values ["red", "green"]
+    :param required: if the arg is required
+    :param help_text: text in the help (--help)
+    :param metavar: name in the help instead variable name
+    :param dest: name of the attribute
 
-    Returns:
-        set argparse.ArgumentParser with add_argument
+    :return argparse.ArgumentParser with add_argument
     """
 
     try:
