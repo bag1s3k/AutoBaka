@@ -125,7 +125,8 @@ def get_timetable(driver, xpath):
     days = driver.find_elements("xpath", xpath)
 
     for day in days:
-        lectures = day.find_elements("xpath", "//*[@id='schedule']/div/div/div/span/div/div/div/div[2]")
+        date = day.find_element("xpath", ".//div/div/div/div/span")
+        print(date.text)
 
-        for lecture in lectures:
-            print(lecture.text)
+        # for lecture in lectures:
+        #     print(lecture.text)
