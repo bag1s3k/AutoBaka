@@ -26,12 +26,11 @@ error_n = -1
 # -------------------------------- PREPARE TO ENTER THE WEBSITE ---------------------------------- #
 
 # Does the PROJECT_ROOT path exist
-if not log_variable(PROJECT_ROOT.exists(), "error", "project root doesn't exist", "Project root folder exist"): sys.exit(error_n := -1)
+if not log_variable(PROJECT_ROOT.exists(), "critical", "project root folder doesn't exist", "Project root folder exists"): sys.exit(error_n := -1)
 
 driver = None
 
 try:
-
     driver = setup_driver() # Initiation webdriver
 
     # Load login details and create main_parser

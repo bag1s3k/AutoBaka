@@ -120,6 +120,7 @@ def process_marks(subjects) -> dict:
 
     return dict(sorted(subjects.items()))
 
+@log_message("Extracting timetable failed", "Extracting timetable successful", "critical")
 def get_timetable(driver, xpath):
     """
     Extract timetable from website
