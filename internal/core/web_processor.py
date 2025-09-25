@@ -25,7 +25,9 @@ def get_marks(driver, xpath) -> dict:
     try:
         logger.info("Looking for an element on page with marks")
 
-        marks_line = driver.find_elements("xpath", xpath)
+        marks_line = WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
+            ec.presence_of_all_elements_located((By.XPATH, xpath))
+        )
 
         # Load whole marks (date, mark, value...) it's line of these data
         if not log_variable(marks_line, "warning", f"Marks not found url: {driver.current_url} title: {driver.title}", f"Marks found url {driver.current_url} title: {driver.title}"):
@@ -131,19 +133,28 @@ def get_timetable(driver, xpath):
 
     timetable = {}
     try:
-        days = driver.find_elements("xpath", xpath)
+        days = WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
+            ec.presence_of_all_elements_located(("xpath", xpath))
+        )
+
+        if n_days := len(days) != 5: logger.debug(f"Wrong amount of days: {n_days} there must be 5")
 
         for day in days:
-            date = day.find_element("xpath", ".//div/div/div/div/span").text
+            date = WebDriverWait(day, config.get_auto_cast("SETTINGS", "timeout")).until(
+                ec.presence_of_element_located(("xpath", ".//div/div/div/div/span"))
+            )
+            date = date.text
 
-            lectures = day.find_elements("xpath", ".//div/div/span/div/div[@class='empty'] |"
+            lectures = WebDriverWait(day, config.get_auto_cast("SETTINGS", "timeout")).until(
+                ec.presence_of_all_elements_located(("xpath", ".//div/div/span/div/div[@class='empty'] |"
                                                   ".//div/div/span/div/div/div[@class='top clearfix'] |"
-                                                  ".//div/div/span/div/div/div/div[2]")
+                                                  ".//div/div/span/div/div/div/div[2]"))
+            )
 
             timetable[date] = []
             for lecture in lectures: timetable[date].append(lecture.text)
 
-            if (n := len(timetable[date])) != 10: logger.debug(f"Wrong amount of lectures: {n} there must be 10")
+            if (n_timetable := len(timetable[date])) != 10: logger.debug(f"Wrong amount of lectures: {n_timetable} there must be 10")
 
     except Exception as e:
         logger.exception(f"Something unexcepted happened: {e}")

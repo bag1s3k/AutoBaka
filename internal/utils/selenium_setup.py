@@ -36,7 +36,6 @@ def setup_driver():
             options.add_argument("--headless=new")
             logger.debug("Headless mode was activated")
         else:
-            options.add_argument("--headless=new")
             logger.debug("Headless mode off")
 
         # Performance
