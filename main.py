@@ -3,7 +3,10 @@ import argparse
 import sys
 import time
 
-from internal.core.web_processor import get_marks, process_marks, get_timetable
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+
+from internal.core.web_processor import get_marks, process_marks, get_timetable, process_timetable
 from internal.core.web_navigation import login, go_to_url
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
@@ -26,7 +29,10 @@ error_n = -1
 # -------------------------------- PREPARE TO ENTER THE WEBSITE ---------------------------------- #
 
 # Does the PROJECT_ROOT path exist
-if not log_variable(PROJECT_ROOT.exists(), "critical", "project root folder doesn't exist", "Project root folder exists"): sys.exit(error_n := -1)
+if not log_variable(PROJECT_ROOT.exists(), "critical", "project root folder doesn't exist", "Project root folder exists"):
+    sys.exit(error_n)
+else:
+    error_n -= 1
 
 driver = None
 
@@ -39,35 +45,56 @@ try:
         description="parses cmd-line args to extract user credentials (username and password)",
     )
     username, password = load_credentials(main_parser)
-    if not username or not password: sys.exit(error_n := -1)
+
+    if not username or not password:
+        sys.exit(error_n)
+    else:
+        error_n -= 1
 
     print(".", end="", flush=True) # progress print
 
     # ------------------------------------- ON THE WEBSITE -------------------------------------- #
 
-    if not login(driver, username, password): sys.exit(error_n := -1)
+    if not login(driver, username, password):
+        sys.exit(error_n)
+    else: error_n -= 1
 
     # Navigate to marks page
     marks_xpath = "//tbody//tr[//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]"
-    if not go_to_url(driver,
-                     config.get_auto_cast("URLS", "marks_url"),
-                     marks_xpath
-    ): sys.exit(error_n := -1)
+    sys.exit(error_n) if not go_to_url(driver, config.get_auto_cast("URLS", "marks_url")) else error_n -= 1
 
     print(".", end="", flush=True) # progress print
 
-    if not (raw_marks := get_marks(driver, marks_xpath)): sys.exit(error_n := -1)
+    sys.exit(error_n) if not (raw_marks := get_marks(driver, marks_xpath)) else error_n -= 1
 
     print(".", end="", flush=True) # progress print
 
-    # Navigate to timetable page
+    # Navigating on the timetable page
+    # Current week
     timetable_xpath = "//div[@class='day-row normal']"
-    if not go_to_url(driver,
-                      config.get_auto_cast("URLS", "timetable_url"),
-                      timetable_xpath
-    ): sys.exit(error_n := -1)
+    sys.exit(error_n) if not go_to_url(driver, config.get_auto_cast("URLS", "timetable_url")) else error_n -= 1
+    sys.exit(error_n) if not (current_timetable := get_timetable(driver, timetable_xpath)) else error_n -= 1
+    process_timetable(current_timetable)
 
-    if not (timetable := get_timetable(driver, timetable_xpath)): sys.exit(error_n := -1)
+    print(".", end="", flush=True) # progress print
+
+    # Next week
+    nextweek_timetable_btn_xpath = '//*[@id="cphmain_linkpristi"]'
+    nextweek_button = WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
+        ec.presence_of_element_located(("xpath", nextweek_timetable_btn_xpath))
+    )
+    sys.exit(error_n) if not nextweek_button else error_n -= 1
+    nextweek_button.click()
+    sys.exit(error_n) if not (nextweek_timetable := get_timetable(driver, timetable_xpath)) else error_n -= 1
+    process_timetable(nextweek_timetable)
+
+    # Stable week
+    stable_timetable_btn_xpath = '//*[@id="cphmain_linkpevny"]'
+    stable_button = WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
+        ec.presence_of_element_located(("xpath", stable_timetable_btn_xpath))
+    )
+    sys.exit(error_n) if not stable_button else error_n -= 1
+    stable_button.click()
 
     print(".", end="", flush=True) # progress print
 
@@ -80,13 +107,13 @@ try:
 
     # ------------------------------------ PROCESSING MARKS ------------------------------------ #
 
-    if not (processed_marks := process_marks(raw_marks)): sys.exit(error_n := -1)
+    sys.exit(error_n) if not (processed_marks := process_marks(raw_marks)) else error_n -= 1
 
     print(".", end="", flush=True) # CLI PRINT
 
     # ------------------------------------ EXPORTING RESULTS ------------------------------------ #
 
-    if not export_results(processed_marks, config.get_auto_cast("PATHS", "result_path")): sys.exit(error_n := -1)
+    sys.exit(error_n) if not export_results(processed_marks, config.get_auto_cast("PATHS", "result_path")) else error_n -= 1
 
     print(". Successfully", flush=True) # CLI PRINT
 
