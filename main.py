@@ -3,7 +3,10 @@ import argparse
 import sys
 import time
 
-from internal.core.web_processor import get_marks, process_marks, get_timetable
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+
+from internal.core.web_processor import get_marks, process_marks, get_timetable, process_timetable
 from internal.core.web_navigation import login, go_to_url
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
@@ -50,8 +53,7 @@ try:
     # Navigate to marks page
     marks_xpath = "//tbody//tr[//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]"
     if not go_to_url(driver,
-                     config.get_auto_cast("URLS", "marks_url"),
-                     marks_xpath
+                     config.get_auto_cast("URLS", "marks_url")
     ): sys.exit(error_n := -1)
 
     print(".", end="", flush=True) # progress print
@@ -60,14 +62,26 @@ try:
 
     print(".", end="", flush=True) # progress print
 
-    # Navigate to timetable page
+    # Navigating on the timetable page
+    # Current week
     timetable_xpath = "//div[@class='day-row normal']"
     if not go_to_url(driver,
-                      config.get_auto_cast("URLS", "timetable_url"),
-                      timetable_xpath
+                      config.get_auto_cast("URLS", "timetable_url")
     ): sys.exit(error_n := -1)
+    if not (current_timetable := get_timetable(driver, timetable_xpath)): sys.exit(error_n := -1)
+    process_timetable(current_timetable)
 
-    if not (timetable := get_timetable(driver, timetable_xpath)): sys.exit(error_n := -1)
+    print(".", end="", flush=True) # progress print
+
+    # Next week
+    nextweek_timetable_btn_xpath = '//*[@id="cphmain_linkpristi"]'
+    nextweek_button = WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
+        ec.presence_of_element_located(("xpath", nextweek_timetable_btn_xpath))
+    )
+    if not nextweek_button: sys.exit(error_n := -1)
+    nextweek_button.click()
+    if not (nextweek_timetable := get_timetable(driver, timetable_xpath)): sys.exit(error_n := -1)
+    process_timetable(nextweek_timetable)
 
     print(".", end="", flush=True) # progress print
 
