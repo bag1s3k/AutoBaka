@@ -1,5 +1,4 @@
 ﻿import logging
-import time
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -46,8 +45,6 @@ def login(driver, username: str, password: str) -> bool | None:
         password_field.clear()
         password_field.send_keys(password); logger.debug("Password filled: <MASKED>")
         login_button.click(); logger.debug("Click the button")
-
-        time.sleep(2) # todo: don't use time.sleep()
 
         return True
 
