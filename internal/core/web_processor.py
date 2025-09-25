@@ -14,7 +14,7 @@ from internal.utils.var_validator import log_variable
 logger = logging.getLogger(__name__)
 
 @log_message("Extraction marks from baka page failed", "Extraction marks from baka page successful", "warning")
-def get_marks(driver, xpath) -> dict:
+def get_marks(driver, xpath: str) -> dict:
     """
     Extraction marks from baka page
     :param driver: instance of the browser
@@ -69,7 +69,7 @@ def get_marks(driver, xpath) -> dict:
         return {}
 
 @log_message("Processing marks failed", "Processing marks successful", "critical")
-def process_marks(subjects) -> dict:
+def process_marks(subjects: dict) -> dict:
     """
     Processing marks and calculate averages
     :param subjects: dict of marks
@@ -122,7 +122,7 @@ def process_marks(subjects) -> dict:
     return dict(sorted(subjects.items()))
 
 @log_message("Extracting timetable failed", "Extracting timetable successful", "critical")
-def get_timetable(driver, xpath):
+def get_timetable(driver, xpath: str) -> dict:
     """
     Extract timetable from website
 
@@ -161,3 +161,7 @@ def get_timetable(driver, xpath):
         return {}
 
     return timetable
+
+def process_timetable(timetable):
+    for k, v in timetable.items():
+        print(k, v)

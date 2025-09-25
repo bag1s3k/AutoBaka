@@ -52,13 +52,10 @@ def login(driver, username: str, password: str) -> bool | None:
         logger.exception(f"Login failed: {e}")
 
 @log_message("Moving to new url failed", "Moving to new url successful")
-def go_to_url(driver, url, xpath) -> bool | None:
+def go_to_url(driver, url) -> bool | None:
     """Navigation to the targe url
-
     :param driver: instance of webdriver
     :param url: target url
-    :param xpath: enter xpath (By.XPATH)
-
     :return bool: True on success False otherwise
     """
 
@@ -69,9 +66,6 @@ def go_to_url(driver, url, xpath) -> bool | None:
 
         logger.debug("Wait until page will load")
 
-        WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
-            ec.presence_of_element_located((By.XPATH, xpath))
-        )
         logger.info("Target page was successfully load")
         return True
 
