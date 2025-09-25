@@ -70,9 +70,7 @@ def get_marks(driver, xpath) -> dict:
 def process_marks(subjects) -> dict:
     """
     Processing marks and calculate averages
-
     :param subjects: dict of marks
-
     :return subjects: sorted dict of processed marks
     """
 
