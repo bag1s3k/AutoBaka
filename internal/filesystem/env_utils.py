@@ -11,7 +11,10 @@ from internal.utils.decorators import log_message
 setup_logging()
 logger = logging.getLogger(__name__)
 
-@log_message("Loading credentials failed", "Loading credentials successfully completed", "critical")
+
+@log_message(error_message="Loading credentials failed",
+             right_message="Loading credentials successfully completed",
+             level="critical")
 def load_credentials(parser) -> tuple:
     """
     Using argparse load login details
@@ -30,11 +33,15 @@ def load_credentials(parser) -> tuple:
         dest="login_details",
     )
 
-    if not log_variable(arg, "critical", "Retrieving credentials failed"): return None, None
+    if not log_variable(arg, "critical", "Retrieving credentials failed"):
+        return None, None
 
     return arg.login_details
 
-@log_message("Retrieving credentials from file failed", "Loading credentials from file successful", "critical")
+
+@log_message(error_message="Retrieving credentials from file failed",
+             right_message="Loading credentials from file successful",
+             level="critical")
 def load_credentials_from_file() -> tuple:
     """
     Loading login details from .env file
@@ -43,13 +50,19 @@ def load_credentials_from_file() -> tuple:
     """
     try:
         # Does the file exist
-        if not log_variable(ENV_PATH.exists(), "critical", f"ENV path doesn't exist: env path {ENV_PATH}", f"ENV path found"):
+        if not log_variable(ENV_PATH.exists(),
+                            level="critical",
+                            error_message=f"ENV path doesn't exist: env path {ENV_PATH}",
+                            right_message="ENV path found"):
             return None, None
 
         # Loading .env file
         env_loaded = load_dotenv(ENV_PATH)
 
-        if not log_variable(env_loaded, "critical", "env file cannot be loaded", "env file loaded successfully"):
+        if not log_variable(env_loaded,
+                            level= "critical",
+                            error_message="env file cannot be loaded",
+                            right_message="env file loaded successfully"):
             return None, None
 
         # Check variables

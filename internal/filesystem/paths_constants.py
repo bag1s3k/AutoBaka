@@ -1,13 +1,12 @@
 ﻿from pathlib import Path
 from internal.utils.decorators import log_message
 
-log_message("No project root found", "Project root found", "error")
+
+@log_message(error_message="No project root found", right_message="Project root found", level="error")
 def find_project_root(target_folder: str = "autobaka") -> Path:
     """
-    This func finds project root folder
-
-    Returns:
-        - absolute path of the project root
+    It finds project root folder
+    :return path: absolute path of the project root
     """
     path = Path(__file__).resolve() # get current absolut path of this file
 

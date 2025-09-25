@@ -9,15 +9,14 @@ from internal.utils.decorators import log_message
 
 logger = logging.getLogger(__name__)
 
-@log_message("Login func failed", "Login successful", "critical")
+
+@log_message(error_message="Login func failed", right_message="Login successful", level="critical")
 def login(driver, username: str, password: str) -> bool | None:
     """
     Login user to baka page, send login details to page
-
     :param driver: instance of the driver
     :param username: username (string)
     :param password: password (string)
-
     :return bool: Successful?
     """
 
@@ -51,7 +50,8 @@ def login(driver, username: str, password: str) -> bool | None:
     except Exception as e:
         logger.exception(f"Login failed: {e}")
 
-@log_message("Moving to new url failed", "Moving to new url successful")
+
+@log_message(error_message="Moving to new url failed", right_message="Moving to new url successful", level="critical")
 def go_to_url(driver, url) -> bool | None:
     """Navigation to the targe url
     :param driver: instance of webdriver

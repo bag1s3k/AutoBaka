@@ -7,6 +7,7 @@ from internal.utils.var_validator import log_variable
 
 logger = logging.getLogger(__name__)
 
+
 @log_message("Exporting failed", "Exported successfully completed", "warning")
 def export_results(subjects, path) -> bool:
     """
@@ -27,6 +28,7 @@ def export_results(subjects, path) -> bool:
         logger.exception(f"Issue during exporting: {str(e)}")
         return False
 
+
 @log_message("Exporting failed", "Exporting successful", "warning")
 def export_json(subjects, path) -> bool:
     """
@@ -38,13 +40,16 @@ def export_json(subjects, path) -> bool:
 
     logger.info(f"Current directory: {os.getcwd()}")
 
-    if not log_variable(subjects, "warning", "No subjects to export", "Exporting successful"):
+    if not log_variable(subjects,
+                        level="warning",
+                        error_message="No subjects to export",
+                        right_message="Exporting successful"):
         return False
 
     # Export
     logger.info("Exporting json...")
 
-    if not log_variable(path, "critical", "Wrong path"):
+    if not log_variable(path, level="critical", error_message="Wrong path"):
         return False
 
     try:

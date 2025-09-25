@@ -13,7 +13,10 @@ from internal.utils.var_validator import log_variable
 
 logger = logging.getLogger(__name__)
 
-@log_message("Extraction marks from baka page failed", "Extraction marks from baka page successful", "warning")
+
+@log_message(error_message="Extraction marks from baka page failed",
+             right_message="Extraction marks from baka page successful",
+             level="warning")
 def get_marks(driver, xpath: str) -> dict:
     """
     Extraction marks from baka page
@@ -30,7 +33,10 @@ def get_marks(driver, xpath: str) -> dict:
         )
 
         # Load whole marks (date, mark, value...) it's line of these data
-        if not log_variable(marks_line, "warning", f"Marks not found url: {driver.current_url} title: {driver.title}", f"Marks found url {driver.current_url} title: {driver.title}"):
+        if not log_variable(marks_line,
+                            level="warning",
+                            error_message=f"Marks not found url: {driver.current_url} title: {driver.title}",
+                            right_message=f"Marks found url {driver.current_url} title: {driver.title}"):
             return {}
 
         # Extract marks to a dict
@@ -42,7 +48,11 @@ def get_marks(driver, xpath: str) -> dict:
                 ec.presence_of_all_elements_located((By.TAG_NAME, "td"))
             )
 
-            if not log_variable(subject, "warning", "No subject", "Subject found"): return {}
+            if not log_variable(subject,
+                                level="warning",
+                                error_message="No subject",
+                                right_message="Subject found"):
+                return {}
 
             mark = subject[1].text
             topic = unidecode(subject[2].text)
@@ -68,7 +78,8 @@ def get_marks(driver, xpath: str) -> dict:
         logger.exception(f"Issue during getting marks: {str(e)}")
         return {}
 
-@log_message("Processing marks failed", "Processing marks successful", "critical")
+
+@log_message(error_message="Processing marks failed", right_message="Processing marks successful", level="critical")
 def process_marks(subjects: dict) -> dict:
     """
     Processing marks and calculate averages
@@ -107,8 +118,10 @@ def process_marks(subjects: dict) -> dict:
                 weight_sum += float(mark[1])
 
             average = 0
-            if weight_sum != 0: average = round(mark_times_weight / weight_sum, 2)
-            else: logger.warning(f"{subject} has no weight")
+            if weight_sum != 0:
+                average = round(mark_times_weight / weight_sum, 2)
+            else:
+                logger.warning(f"{subject} has no weight")
 
             subjects[subject].append({"avg": average})
 
@@ -121,11 +134,13 @@ def process_marks(subjects: dict) -> dict:
 
     return dict(sorted(subjects.items()))
 
-@log_message("Extracting timetable failed", "Extracting timetable successful", "critical")
+
+@log_message(error_message="Extracting timetable failed",
+             right_message="Extracting timetable successful",
+             level="critical")
 def get_timetable(driver, xpath: str) -> dict:
     """
     Extract timetable from website
-
     :param driver: an instance of chromedriver
     :param xpath: xpath for each day
     :return timetable: timetable (dict)
@@ -137,7 +152,8 @@ def get_timetable(driver, xpath: str) -> dict:
             ec.presence_of_all_elements_located(("xpath", xpath))
         )
 
-        if n_days := len(days) != 5: logger.debug(f"Wrong amount of days: {n_days} there must be 5")
+        if n_days := len(days) != 5:
+            logger.debug(f"Wrong amount of days: {n_days} there must be 5")
 
         for day in days:
             date = WebDriverWait(day, config.get_auto_cast("SETTINGS", "timeout")).until(
@@ -152,15 +168,18 @@ def get_timetable(driver, xpath: str) -> dict:
             )
 
             timetable[date] = []
-            for lecture in lectures: timetable[date].append(lecture.text)
+            for lecture in lectures:
+                timetable[date].append(lecture.text)
 
-            if (n_timetable := len(timetable[date])) != 10: logger.debug(f"Wrong amount of lectures: {n_timetable} there must be 10")
+            if (n_timetable := len(timetable[date])) != 10:
+                logger.debug(f"Wrong amount of lectures: {n_timetable} there must be 10")
 
     except Exception as e:
         logger.exception(f"Something unexcepted happened: {e}")
         return {}
 
     return timetable
+
 
 def process_timetable(timetable):
     for k, v in timetable.items():

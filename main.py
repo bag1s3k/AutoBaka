@@ -25,14 +25,23 @@ setup_logging()
 logger = logging.getLogger(__name__)
 
 error_n = -1
+def sysexit(var):
+    """
+    Checks variable and when the variable is falsy it stops the program and raises code num
+    :param var: checking variable
+    """
+    global error_n
+    if not var:
+        sys.exit(error_n)
+    else:
+        error_n -= 1
 
 # -------------------------------- PREPARE TO ENTER THE WEBSITE ---------------------------------- #
-
 # Does the PROJECT_ROOT path exist
-if not log_variable(PROJECT_ROOT.exists(), "critical", "project root folder doesn't exist", "Project root folder exists"):
-    sys.exit(error_n)
-else:
-    error_n -= 1
+sysexit(log_variable(PROJECT_ROOT.exists(),
+                     level="critical",
+                     error_message="project root folder doesn't exist",
+                     right_message="Project root folder exists"))
 
 driver = None
 
@@ -46,74 +55,69 @@ try:
     )
     username, password = load_credentials(main_parser)
 
-    if not username or not password:
-        sys.exit(error_n)
-    else:
-        error_n -= 1
+    sysexit(username or password)
 
     print(".", end="", flush=True) # progress print
 
     # ------------------------------------- ON THE WEBSITE -------------------------------------- #
-
-    if not login(driver, username, password):
-        sys.exit(error_n)
-    else: error_n -= 1
+    sysexit(login(driver, username, password))
 
     # Navigate to marks page
-    marks_xpath = "//tbody//tr[//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]"
-    sys.exit(error_n) if not go_to_url(driver, config.get_auto_cast("URLS", "marks_url")) else error_n -= 1
+    marks_xpath = ("//tbody//tr[//td "
+                   "and contains(@class, 'dx-row') "
+                   "and contains(@class, 'dx-data-row') "
+                   "and contains(@class, 'dx-row-lines')]")
 
-    print(".", end="", flush=True) # progress print
+    sysexit(go_to_url(driver, config.get_auto_cast("URLS", "marks_url")))
 
-    sys.exit(error_n) if not (raw_marks := get_marks(driver, marks_xpath)) else error_n -= 1
+    print(".", end="", flush=True) 
 
-    print(".", end="", flush=True) # progress print
+    sysexit((raw_marks := get_marks(driver, marks_xpath)))
+
+    print(".", end="", flush=True) 
 
     # Navigating on the timetable page
-    # Current week
+    # This week
     timetable_xpath = "//div[@class='day-row normal']"
-    sys.exit(error_n) if not go_to_url(driver, config.get_auto_cast("URLS", "timetable_url")) else error_n -= 1
-    sys.exit(error_n) if not (current_timetable := get_timetable(driver, timetable_xpath)) else error_n -= 1
-    process_timetable(current_timetable)
+    sysexit(go_to_url(driver, config.get_auto_cast("URLS", "timetable_url")))
+    sysexit((thisweek_timetable := get_timetable(driver, timetable_xpath)))
+    process_timetable(thisweek_timetable)
 
-    print(".", end="", flush=True) # progress print
+    print(".", end="", flush=True) 
 
     # Next week
-    nextweek_timetable_btn_xpath = '//*[@id="cphmain_linkpristi"]'
+    nextweek_timetable_btn = '//*[@id="cphmain_linkpristi"]'
     nextweek_button = WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
-        ec.presence_of_element_located(("xpath", nextweek_timetable_btn_xpath))
+        ec.presence_of_element_located(("xpath", nextweek_timetable_btn))
     )
-    sys.exit(error_n) if not nextweek_button else error_n -= 1
+    sysexit(nextweek_button)
     nextweek_button.click()
-    sys.exit(error_n) if not (nextweek_timetable := get_timetable(driver, timetable_xpath)) else error_n -= 1
+    sysexit((nextweek_timetable := get_timetable(driver, timetable_xpath)))
     process_timetable(nextweek_timetable)
 
-    # Stable week
-    stable_timetable_btn_xpath = '//*[@id="cphmain_linkpevny"]'
-    stable_button = WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
-        ec.presence_of_element_located(("xpath", stable_timetable_btn_xpath))
+    # permanent week
+    permanentweek_timetable_btn = '//*[@id="cphmain_linkpevny"]'
+    permanentweek_button = WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
+        ec.presence_of_element_located(("xpath", permanentweek_timetable_btn))
     )
-    sys.exit(error_n) if not stable_button else error_n -= 1
-    stable_button.click()
+    sysexit(permanentweek_button)
+    permanentweek_button.click()
 
-    print(".", end="", flush=True) # progress print
+    print(".", end="", flush=True) 
 
     # --------------------------------------- TERMINATE WEBDRIVER ----------------------------- #
-
     if config.get_auto_cast("SETTINGS", "quit_driver"):  # let window open or close it
         driver.quit()
         logger.info("driver was successfully quit")
     logger.info("Drive was successfully terminated")
 
     # ------------------------------------ PROCESSING MARKS ------------------------------------ #
-
-    sys.exit(error_n) if not (processed_marks := process_marks(raw_marks)) else error_n -= 1
+    sysexit((processed_marks := process_marks(raw_marks)))
 
     print(".", end="", flush=True) # CLI PRINT
 
     # ------------------------------------ EXPORTING RESULTS ------------------------------------ #
-
-    sys.exit(error_n) if not export_results(processed_marks, config.get_auto_cast("PATHS", "result_path")) else error_n -= 1
+    sysexit(export_results(processed_marks, config.get_auto_cast("PATHS", "result_path")))
 
     print(". Successfully", flush=True) # CLI PRINT
 
