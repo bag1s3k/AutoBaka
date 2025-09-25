@@ -1,24 +1,25 @@
 import logging
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
 from unidecode import unidecode
 
 from internal.filesystem.export import export_json
+from internal.filesystem.ini_loader import config
 from internal.filesystem.paths_constants import JSON_OUTPUT_PATH, JSON_RAW_OUTPUT_PATH
 from internal.utils.decorators import log_message
 from internal.utils.var_validator import log_variable
 
 logger = logging.getLogger(__name__)
 
-@log_message("Extraction marks from baka page failed", "Extraction marks from baka page failed", "warning")
+@log_message("Extraction marks from baka page failed", "Extraction marks from baka page successful", "warning")
 def get_marks(driver, xpath) -> dict:
     """
     Extraction marks from baka page
-    Args:
-        driver: instance of the browser
-        xpath: xpath of marks
-    Returns:
-        dict: dictionary {subject: average}
+    :param driver: instance of the browser
+    :param xpath: xpath of marks
+    :return subjects: dictionary {subject: average}
     """
 
     try:
@@ -31,11 +32,13 @@ def get_marks(driver, xpath) -> dict:
             return {}
 
         # Extract marks to a dict
-        logger.info("Extracting data to variable")
+        logger.info("Extracting marks data to variable")
 
         subjects = {}
         for single_line in marks_line:
-            subject = single_line.find_elements(By.TAG_NAME, "td")
+            subject = WebDriverWait(single_line, config.get_auto_cast("SETTINGS", "timeout")).until(
+                ec.presence_of_all_elements_located((By.TAG_NAME, "td"))
+            )
 
             if not log_variable(subject, "warning", "No subject", "Subject found"): return {}
 
@@ -68,11 +71,9 @@ def process_marks(subjects) -> dict:
     """
     Processing marks and calculate averages
 
-    Args:
-        subjects: dict of marks
+    :param subjects: dict of marks
 
-    Returns:
-        dict: sorted dict of processed marks
+    :return subjects: sorted dict of processed marks
     """
 
     if not subjects: return {}
