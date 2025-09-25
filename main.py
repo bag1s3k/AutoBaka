@@ -90,12 +90,9 @@ try:
 
     print(". Successfully", flush=True) # CLI PRINT
 
-except KeyboardInterrupt:
-    logger.warning("Program was terminate by pressing ctrl+c")
+except KeyboardInterrupt:logger.warning("Program was terminate by pressing ctrl+c")
 
-except Exception as e:
-    logger.exception(f"Unexpectedly error... {str(e)}")
-    logger.error("Program is gonna be terminate because of error")
+except Exception as e: logger.exception(f"Unexpectedly error... {str(e)}")
 
 # finally:
 #     # End Driver if the program crash

@@ -1,17 +1,16 @@
 ﻿import logging
-import time
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.webdriver.support import expected_conditions as ec
+
 from internal.filesystem.ini_loader import config
 from internal.utils.decorators import log_message
 
 logger = logging.getLogger(__name__)
 
 @log_message("Login func failed", "Login successful", "critical")
-def login(driver, username: str, password: str) -> bool:
+def login(driver, username: str, password: str) -> bool | None:
     """
     Login user to baka page, send login details to page
 
@@ -21,65 +20,46 @@ def login(driver, username: str, password: str) -> bool:
 
     :return bool: Successful?
     """
+
     try:
-        driver.get(config.get_auto_cast("URLS", "login_url"))
+        driver.get(config.get_auto_cast("URLS", "login_url")); logger.debug("Website loaded")
 
-        logger.debug("Website loaded")
+        # Find required elements on website (username and password field, login button)
+        username_field = WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
+            ec.presence_of_element_located((By.NAME, "username"))
+        )
+        logger.debug("Field for username found")
 
-        # Wait until username field load
-        try:
-            username_field = WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
-                EC.presence_of_element_located((By.NAME, "username"))
-            )
-            logger.debug("Field for username found")
+        password_field = WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
+            ec.presence_of_element_located((By.NAME, "password"))
+        )
+        logger.debug("Field for password found")
 
-        except TimeoutException:
-            logger.error("Field for username wasn't find")
-            return False
+        login_button = WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
+            ec.presence_of_element_located((By.NAME, "login"))
+        )
+        logger.debug("Login button found")
 
-        # Enter username detail
         username_field.clear()
-        username_field.send_keys(username)
-        logger.debug(f"Username filled: {username}")
-
-        # Try to enter password
-        try:
-            password_field = driver.find_element(By.NAME, "password")
-            password_field.clear()
-            password_field.send_keys(password)
-            logger.debug("Password filled: <MASKED>")
-
-        except NoSuchElementException:
-            logger.error("Field wasn't find")
-            return False
-
-        # Login button
-        try:
-            login_button = driver.find_element(By.NAME, "login")
-            logger.debug("Login button found")
-
-        except NoSuchElementException:
-            logger.error("Login button not found")
-            return False
-
-        logger.info("Sending login form")
-        login_button.click()
-
-        time.sleep(2)
+        username_field.send_keys(username); logger.debug(f"Username filled: {username}")
+        password_field.clear()
+        password_field.send_keys(password); logger.debug("Password filled: <MASKED>")
+        login_button.click(); logger.debug("Click the button")
 
         return True
 
     except Exception as e:
-        logger.error(f"Issue during login: {e}")
-        return False
+        logger.exception(f"Login failed: {e}")
 
 @log_message("Moving to new url failed", "Moving to new url successful")
-def go_to_url(driver, url, xpath):
-    """Navigation to targe url
-    Args:
-        driver: instance of webdriver
-        url: target url
-        xpath (string): enter xpath (By.XPATH)
+def go_to_url(driver, url, xpath) -> bool | None:
+    """Navigation to the targe url
+
+    :param driver: instance of webdriver
+    :param url: target url
+    :param xpath: enter xpath (By.XPATH)
+
+    :return bool: True on success False otherwise
     """
 
     try:
@@ -89,19 +69,13 @@ def go_to_url(driver, url, xpath):
 
         logger.debug("Wait until page will load")
 
-        try:
-            WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
-                EC.presence_of_element_located((By.XPATH, xpath))
-            )
-            logger.info("Target page was successfully load")
-            return True
-
-        except TimeoutException:
-            logger.error("Target page with marks didn't load")
-            logger.debug(f"Current url: {driver.current_url}")
-            logger.debug(f"Current title: {driver.title}")
-            return False
+        WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
+            ec.presence_of_element_located((By.XPATH, xpath))
+        )
+        logger.info("Target page was successfully load")
+        return True
 
     except Exception as e:
-        logger.error(f"Error while moving to the target page: {e}")
-        return False
+        logger.exception(f"Error while moving to the target page: {e}")
+        logger.debug(f"Current url: {driver.current_url}")
+        logger.debug(f"Current title: {driver.title}")

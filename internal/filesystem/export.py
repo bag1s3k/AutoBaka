@@ -8,14 +8,12 @@ from internal.utils.var_validator import log_variable
 logger = logging.getLogger(__name__)
 
 @log_message("Exporting failed", "Exported successfully completed", "warning")
-def export_results(subjects, path):
+def export_results(subjects, path) -> bool:
     """
     Export averages to file
-    Args:
-        subjects: dict of marks
-        path: path to output file
-    Returns:
-        bool
+    :param subjects: dict of marks
+    :param path: path to output file
+    :return bool: True on success False otherwise
     """
 
     log_variable(subjects, "warning", "Nothing to export")
@@ -33,13 +31,9 @@ def export_results(subjects, path):
 def export_json(subjects, path) -> bool:
     """
     Export marks to JSON file
-
-    Args:
-        subjects: dict of marks
-        path: absolut file path
-
-    Returns:
-        bool: True if successful, False otherwise
+    :param subjects: dict of marks
+    :param path: absolut file path
+    :return bool: True if successful, False otherwise
     """
 
     logger.info(f"Current directory: {os.getcwd()}")

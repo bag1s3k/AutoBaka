@@ -5,13 +5,9 @@ class AutoCastConfigParser(configparser.ConfigParser):
     def get_auto_cast(self, section, option):
         """
             Try to convert string to int, bool or keep it as str
-
-            Args:
-                section (str): name of the section
-                option (str): name of the option
-
-            Returns:
-                Union[int, bool, str]: best-match
+            :param section: name of the section
+            :param option: name of the option
+            :return Union[int, bool, str]: best-match
         """
 
         value = super().get(section, option)
