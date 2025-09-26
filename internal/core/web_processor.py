@@ -181,6 +181,10 @@ def get_timetable(driver, xpath: str) -> dict:
     return timetable
 
 
+def get_permanent_timetable(driver, xpath):
+    # TODO cuz permanent has different view
+    pass
+
 def process_timetable(timetable):
     for k, v in timetable.items():
         print(k, v)
