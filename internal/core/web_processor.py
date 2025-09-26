@@ -1,4 +1,5 @@
 import logging
+import time
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -181,9 +182,18 @@ def get_timetable(driver, xpath: str) -> dict:
     return timetable
 
 
-def get_permanent_timetable(driver, xpath):
-    # TODO cuz permanent has different view
-    pass
+def get_permanent_timetable(driver):
+    time.sleep(2)
+    xpath_lessons = "//div/div/div/span/div/div/div/div[2]"
+    days_timetable = "//div[@class='day-row double']"
+
+    days = driver.find_elements("xpath", days_timetable)
+
+    for day in days:
+        day_t = day.find_elements("xpath", xpath_lessons)
+
+        for d in day_t:
+            print(d.text)
 
 def process_timetable(timetable):
     for k, v in timetable.items():
