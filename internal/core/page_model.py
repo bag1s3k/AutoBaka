@@ -163,11 +163,23 @@ class Timetable(BasePage):
         self.PERMANENT_TT_DAYS = "//div[@class='day-row double']"
         self.PERMANENT_TT_LECTURES = "//div/div/div/span/div/div[@class='empty'] | //div/div/div/span/div/div/div/div[2]"
 
+        self.timetable = {}
+        semester_end = datetime.strptime(config.get_auto_cast("DATES", "semester1_end"), "%Y-%m-%d").date()
+        today = datetime.today().date()
+
+        self.difference = (semester_end - today).days
+
+        for _ in range(self.difference):
+            today = today + timedelta(days=1)
+            self.timetable[today.isoformat()] = ""
+
+    @log_message(error_message="Extracting timetable failed",
+                 right_message="Extracting timetable successful",
+                 level="error")
     def get_timetable(self):
 
         def extract_tt(days_xpath, date_xpath, lectures_xpath, last_date=None):
-            
-            timetable = {}
+
             try:
                 days = self.find_items((By.XPATH, days_xpath))
 
@@ -180,40 +192,34 @@ class Timetable(BasePage):
                         date = date.text
                     else:
                         year = datetime.now().year
-                        print(f"** {last_date} **")
-                        last_date = datetime.strptime(str(f"{last_date}/{year}"), "%d/%m/%Y")
+                        last_date = datetime.strptime(str(f"{last_date}/{year}"), "%m/%d/%Y")
                         date = last_date + timedelta(days=1)
-                        last_date = date = date.strftime("%#d/%#m")
+                        last_date = date = date.strftime("%#m/%#d/%#Y")
 
                     lectures = self.find_items((By.XPATH, lectures_xpath), parent=day)
 
-                    timetable[date] = []
+                    self.timetable[date] = []
                     for lecture in lectures:
-                        timetable[date].append(lecture.text)
+                        self.timetable[date].append(lecture.text)
 
-                    if (n_timetable := len(timetable[date])) != 10:
+                    if (n_timetable := len(self.timetable[date])) != 10:
                         logger.debug(f"Wrong amount of lectures: {n_timetable} there must be 10")
-
-                return timetable
 
             except Exception as e:
                 logger.exception(f"Something unexcepted happened: {e}")
-                return {}
-        
-        thisweek_tt = extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
+
+        extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
         self.find_item((By.XPATH, self.NEXT_TT_BTN)).click()
-        nextweek_tt = extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
+        extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
         self.find_item((By.XPATH, self.PERMANENT_TT_BTN)).click()
-        permanentweek_tt = extract_tt(days_xpath=self.PERMANENT_TT_DAYS,
-                                      date_xpath=None,
-                                      lectures_xpath=self.PERMANENT_TT_LECTURES,
-                                      last_date=tuple(nextweek_tt)[4])
+        extract_tt(days_xpath=self.PERMANENT_TT_DAYS,
+                   date_xpath=None,
+                   lectures_xpath=self.PERMANENT_TT_LECTURES,
+                   last_date="10/10")
 
         # temp print
         def print_week(week):
             for k, v in week.items():
                 print(k, v)
 
-        print_week(thisweek_tt)
-        print_week(nextweek_tt)
-        print_week(permanentweek_tt)
+        print_week(self.timetable)
