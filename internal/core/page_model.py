@@ -187,17 +187,18 @@ class Timetable(BasePage):
                     logger.debug(f"Wrong amount of days: {n_days} there must be 5")
 
                 for day in days:
+
+                    year = datetime.now().year
                     if date_xpath is not None:
                         date = self.find_item((By.XPATH, date_xpath), parent=day)
-                        date = date.text
+                        date = datetime.strptime(f"{date.text}/{year}", "%d/%m/%Y")
                     else:
-                        year = datetime.now().year
-                        last_date = datetime.strptime(str(f"{last_date}/{year}"), "%m/%d/%Y")
-                        date = last_date + timedelta(days=1)
-                        last_date = date = date.strftime("%#m/%#d/%#Y")
+                        new_last_date = datetime.strptime(str(f"{last_date}/{year}"), "%m/%d/%Y")
+                        date = new_last_date + timedelta(days=1)
 
                     lectures = self.find_items((By.XPATH, lectures_xpath), parent=day)
 
+                    date = date.date().isoformat()
                     self.timetable[date] = []
                     for lecture in lectures:
                         self.timetable[date].append(lecture.text)
@@ -222,4 +223,4 @@ class Timetable(BasePage):
             for k, v in week.items():
                 print(k, v)
 
-        print_week(self.timetable)
+        # print_week(self.timetable)
