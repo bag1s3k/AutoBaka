@@ -54,7 +54,8 @@ try:
     # TIMETABLE PAGE
     timetable = Timetable(driver=driver, url=config.get_auto_cast("URLS", "timetable_url"))
     timetable.get()
-    timetable.get_timetable()
+    timetable.get_tt()
+    timetable.process_tt()
 
     print(".", end="", flush=True) 
 

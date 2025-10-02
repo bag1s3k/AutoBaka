@@ -131,7 +131,7 @@ class MarksPage(BasePage):
     @validate_output(error_msg="Getting marks failed",
                  success_msg="Getting marks successful",
                  level="critical")
-    def get_marks(self) -> dict[str, list]:
+    def get_marks(self) -> dict[str, list[dict[str, str]]]:
         """
         Specific logic to get marks
         :return: if not empty dict successful otherwise empty dict
@@ -187,7 +187,7 @@ class MarksPage(BasePage):
     @validate_output(error_msg="Processing marks failed or there are no marks",
                      success_msg="Processing marks successful",
                      level="error")
-    def process_marks(self) -> dict[str, list]:
+    def process_marks(self) -> dict[str, list[dict[str, object]]]:
         """
         Specific logit to process marks
 
@@ -315,7 +315,7 @@ class Timetable(BasePage):
 
 
     # TODO: CHECK OUTPUT !!!
-    def get_timetable(self):
+    def get_tt(self):
         """
         It's help func, it calls other functions (extract_tt or find_item)
         :return: true if successful otherwise None
@@ -328,3 +328,10 @@ class Timetable(BasePage):
                    date_xpath=None,
                    lectures_xpath=self.PERMANENT_TT_LECTURES,
                    last_date="2025-10-10")
+    
+    def rework_permanent_tt(self):
+        pass
+    
+    def process_tt(self):
+        for k, v in self.timetable.items():
+            print(k, v)
