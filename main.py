@@ -31,8 +31,8 @@ logger = logging.getLogger(__name__)
 # Does the PROJECT_ROOT path exist?
 log_variable(PROJECT_ROOT.exists(),
                      level="critical",
-                     error_message="project root folder doesn't exist",
-                     right_message="Project root folder exists")
+                     error_msg="project root folder doesn't exist",
+                     success_msg="Project root folder exists")
 
 
 driver = None
@@ -58,6 +58,7 @@ try:
     # Marks page
     marks_page = MarksPage(driver=driver, url=config.get_auto_cast("URLS", "marks_url"))
     marks_page.get()
+    marks_page.get_marks()
 
     print(".", end="", flush=True) 
 
@@ -65,8 +66,6 @@ try:
     timetable = Timetable(driver=driver, url=config.get_auto_cast("URLS", "timetable_url"))
     timetable.get()
     timetable.get_timetable()
-    for k, v in timetable.timetable.items():
-        print(k, v)
 
     print(".", end="", flush=True) 
 

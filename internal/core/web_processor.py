@@ -9,14 +9,14 @@ from unidecode import unidecode
 from internal.filesystem.export import export_json
 from internal.filesystem.ini_loader import config
 from internal.filesystem.paths_constants import JSON_OUTPUT_PATH, JSON_RAW_OUTPUT_PATH
-from internal.utils.decorators import log_message
+from internal.utils.decorators import validate_output
 from internal.utils.var_validator import log_variable
 
 logger = logging.getLogger(__name__)
 
 
-@log_message(error_message="Extraction marks from baka page failed",
-             right_message="Extraction marks from baka page successful",
+@validate_output(error_msg="Extraction marks from baka page failed",
+             success_msg="Extraction marks from baka page successful",
              level="warning")
 def get_marks(driver, xpath: str) -> dict:
     """
@@ -36,8 +36,8 @@ def get_marks(driver, xpath: str) -> dict:
         # Load whole marks (date, mark, value...) it's line of these data
         if not log_variable(marks_line,
                             level="warning",
-                            error_message=f"Marks not found url: {driver.current_url} title: {driver.title}",
-                            right_message=f"Marks found url {driver.current_url} title: {driver.title}"):
+                            error_msg=f"Marks not found url: {driver.current_url} title: {driver.title}",
+                            success_msg=f"Marks found url {driver.current_url} title: {driver.title}"):
             return {}
 
         # Extract marks to a dict
@@ -51,8 +51,8 @@ def get_marks(driver, xpath: str) -> dict:
 
             if not log_variable(subject,
                                 level="warning",
-                                error_message="No subject",
-                                right_message="Subject found"):
+                                error_msg="No subject",
+                                success_msg="Subject found"):
                 return {}
 
             mark = subject[1].text
@@ -80,7 +80,7 @@ def get_marks(driver, xpath: str) -> dict:
         return {}
 
 
-@log_message(error_message="Processing marks failed", right_message="Processing marks successful", level="critical")
+@validate_output(error_msg="Processing marks failed", success_msg="Processing marks successful", level="critical")
 def process_marks(subjects: dict) -> dict:
     """
     Processing marks and calculate averages
@@ -136,8 +136,8 @@ def process_marks(subjects: dict) -> dict:
     return dict(sorted(subjects.items()))
 
 
-@log_message(error_message="Extracting timetable failed",
-             right_message="Extracting timetable successful",
+@validate_output(error_msg="Extracting timetable failed",
+             success_msg="Extracting timetable successful",
              level="critical")
 def get_timetable(driver, xpath: str) -> dict:
     """

@@ -2,13 +2,13 @@
 import json
 import os
 
-from internal.utils.decorators import log_message
+from internal.utils.decorators import validate_output
 from internal.utils.var_validator import log_variable
 
 logger = logging.getLogger(__name__)
 
 
-@log_message("Exporting failed", "Exported successfully completed", "warning")
+@validate_output("Exporting failed", "Exported successfully completed", "warning")
 def export_results(subjects, path) -> bool:
     """
     Export averages to file
@@ -29,7 +29,7 @@ def export_results(subjects, path) -> bool:
         return False
 
 
-@log_message("Exporting failed", "Exporting successful", "warning")
+@validate_output("Exporting failed", "Exporting successful", "warning")
 def export_json(subjects, path) -> bool:
     """
     Export marks to JSON file
@@ -42,14 +42,14 @@ def export_json(subjects, path) -> bool:
 
     if not log_variable(subjects,
                         level="warning",
-                        error_message="No subjects to export",
-                        right_message="Exporting successful"):
+                        error_msg="No subjects to export",
+                        success_msg="Exporting successful"):
         return False
 
     # Export
     logger.info("Exporting json...")
 
-    if not log_variable(path, level="critical", error_message="Wrong path"):
+    if not log_variable(path, level="critical", error_msg="Wrong path"):
         return False
 
     try:

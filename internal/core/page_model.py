@@ -11,7 +11,7 @@ from unidecode import unidecode
 
 from internal.filesystem.export import export_json
 from internal.filesystem.paths_constants import JSON_RAW_OUTPUT_PATH
-from internal.utils.decorators import log_message
+from internal.utils.decorators import validate_output
 from internal.utils.var_validator import log_variable
 from internal.filesystem.ini_loader import config
 from internal.utils.logging_setup import setup_logging
@@ -30,21 +30,20 @@ class BasePage(ABC):
         self.timeout = timeout
         self.url = url
 
-    @log_message(error_message="Moving to target page failed url: {self.url}",
-                 right_message="Moving to target page successful",
-                 level="critical")
+    @validate_output(error_msg=f"Moving to the target page failed url",
+                     success_msg=f"Moving to the target page successful url:",
+                     level="critical")
     def get(self):
         """Move to target page"""
         try:
             self.driver.get(self.url)
             return True
         except Exception as e:
-            logger.critical(f"Issue while moving to targe page: {self.url}")
             logger.exception(e)
             return False
 
-    @log_message(error_message="Item not found",
-                 right_message="Item found",
+    @validate_output(error_msg="Item on website not found",
+                 success_msg="Item on website found",
                  level="warning")
     def _find_item(self, target: Tuple[str, str], parent=None) -> WebElement | None:
         """
@@ -64,8 +63,8 @@ class BasePage(ABC):
             logger.warning(e)
             return None
 
-    @log_message(error_message="Items not found",
-                 right_message="Items found",
+    @validate_output(error_msg="Items not found",
+                 success_msg="Items found",
                  level="warning")
     def _find_items(self, target: Tuple[str, str], parent=None) -> list[WebElement] | None:
         """
@@ -92,8 +91,8 @@ class Login(BasePage):
     Use for login
     """
 
-    @log_message(error_message="Login failed",
-                 right_message="Login successful",
+    @validate_output(error_msg="Login failed",
+                 success_msg="Login successful",
                  level="critical")
     def login(self, username, password) -> bool:
         """
@@ -130,13 +129,13 @@ class MarksPage(BasePage):
         super().__init__(driver, url)
         self.SUBJECTS = {}
 
-    @log_message(error_message="Getting marks failed",
-                 right_message="Getting marks successful",
+    @validate_output(error_msg="Getting marks failed",
+                 success_msg="Getting marks successful",
                  level="critical")
     def get_marks(self) -> bool | dict[str, list]:
         """
         Specific logic to get marks
-        :return: True if successful otherwise False
+        :return: if not empty dict successful otherwise empty dict
         """
         try:
             logger.info("Looking for an element on page with marks")
@@ -150,20 +149,18 @@ class MarksPage(BasePage):
             # Load whole marks (date, mark, value...) it's line of these data
             if not log_variable(marks_line,
                                 level="warning",
-                                error_message=f"Marks not found url: {self.driver.current_url} title: {self.driver.title}",
-                                right_message=f"Marks found url {self.driver.current_url} title: {self.driver.title}"):
+                                error_msg=f"Marks not found url: {self.driver.current_url} title: {self.driver.title}",
+                                success_msg=f"Marks found url {self.driver.current_url} title: {self.driver.title}"):
                 self.SUBJECTS = {}
                 return self.SUBJECTS
 
-
-            self.SUBJECTS = {}
             for single_line in marks_line:
                 subject = self._find_items(target=(By.TAG_NAME, "td"), parent=single_line)
 
                 if not log_variable(subject,
                                     level="warning",
-                                    error_message="No subject",
-                                    right_message="Subject found"):
+                                    error_msg="No subject",
+                                    success_msg="Subject found"):
                     self.SUBJECTS = {}
                     return self.SUBJECTS
 
@@ -188,7 +185,7 @@ class MarksPage(BasePage):
             return self.SUBJECTS
 
         except Exception as e:
-            logger.exception({str(e)})
+            logger.exception(e)
             self.SUBJECTS = {}
             return self.SUBJECTS
 
