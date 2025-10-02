@@ -47,6 +47,7 @@ try:
     marks_page = MarksPage(driver=driver, url=config.get_auto_cast("URLS", "marks_url"))
     marks_page.get()
     marks_page.get_marks()
+    marks_page.process_marks()
 
     print(".", end="", flush=True) 
 
@@ -64,12 +65,10 @@ try:
     logger.info("Drive was successfully terminated")
 
     # ------------------------------------ PROCESSING MARKS ------------------------------------ #
-    processed_marks = process_marks(marks_page.SUBJECTS)
-
     print(".", end="", flush=True) # CLI PRINT
 
     # ------------------------------------ EXPORTING RESULTS ------------------------------------ #
-    export_results(processed_marks, config.get_auto_cast("PATHS", "result_path"))
+    export_results(marks_page.SUBJECTS, config.get_auto_cast("PATHS", "result_path"))
 
     print(". Successfully", flush=True) # CLI PRINT
 

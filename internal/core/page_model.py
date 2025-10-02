@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from unidecode import unidecode
 
 from internal.filesystem.export import export_json
-from internal.filesystem.paths_constants import JSON_RAW_OUTPUT_PATH
+from internal.filesystem.paths_constants import JSON_RAW_OUTPUT_PATH, JSON_OUTPUT_PATH
 from internal.utils.decorators import validate_output
 from internal.filesystem.ini_loader import config
 from internal.utils.logging_setup import setup_logging
@@ -131,7 +131,7 @@ class MarksPage(BasePage):
     @validate_output(error_msg="Getting marks failed",
                  success_msg="Getting marks successful",
                  level="critical")
-    def get_marks(self) -> bool | dict[str, list]:
+    def get_marks(self) -> dict[str, list]:
         """
         Specific logic to get marks
         :return: if not empty dict successful otherwise empty dict
@@ -183,6 +183,66 @@ class MarksPage(BasePage):
             logger.exception(e)
             self.SUBJECTS = {}
             return self.SUBJECTS
+
+    @validate_output(error_msg="Processing marks failed or there are no marks",
+                     success_msg="Processing marks successful",
+                     level="error")
+    def process_marks(self) -> dict[str, list]:
+        """
+        Specific logit to process marks
+
+        :return subjects: sorted dict of processed marks
+        """
+
+        if not self.SUBJECTS: return self.SUBJECTS
+
+        logger.info(f"Processing marks")
+
+        # (1- -> 1.5) or N don't add to the list and Calculate average
+        text_to_num = [4.5, 3.5, 2.5, 1.5]
+        for subject, list_subject in self.SUBJECTS.items():
+            logger.info(f"Processing subject: {subject}")
+            try:
+                marks = []
+                for dict_mark in list_subject:
+                    if "-" in dict_mark["mark"]:
+                        dict_mark["mark"] = text_to_num[-int(dict_mark["mark"][
+                                                                 0])]  # take 1. char of '2-' => 2 and 2 * (-1) => -2 is index of a list (text_to_num)
+                    elif dict_mark["mark"].isdigit():
+                        dict_mark["mark"] = int(dict_mark["mark"])
+                    else:
+                        continue
+
+                    marks.append([dict_mark["mark"], dict_mark["weight"]])
+
+                # Calculate averages
+                logger.info("Calculating average")
+
+                mark_times_weight = 0
+                weight_sum = 0
+
+                for mark in marks:
+                    mark_times_weight += float(mark[0]) * float(mark[1])
+                    weight_sum += float(mark[1])
+
+                average = 0
+                if weight_sum != 0:
+                    average = round(mark_times_weight / weight_sum, 2)
+                else:
+                    logger.warning(f"{subject} has no weight")
+
+                self.SUBJECTS[subject].append({"avg": average})
+
+                # Export marks to json file
+                export_json(self.SUBJECTS, JSON_OUTPUT_PATH)
+
+            except Exception as e:
+                logger.exception(f"Something happened during processing marks: {e}")
+                return {}
+
+        self.SUBJECTS = dict(sorted(self.SUBJECTS.items()))
+        return  self.SUBJECTS
+
 
 class Timetable(BasePage):
     """
@@ -253,8 +313,8 @@ class Timetable(BasePage):
             logger.exception(f"Something unexcepted happened: {e}")
             return False
 
-    # TODO: CHECK OUTPUT !!!
 
+    # TODO: CHECK OUTPUT !!!
     def get_timetable(self):
         """
         It's help func, it calls other functions (extract_tt or find_item)
