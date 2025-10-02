@@ -152,21 +152,20 @@ def get_timetable(driver, xpath: str) -> dict:
         days = WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
             ec.presence_of_all_elements_located(("xpath", xpath))
         )
+        print(days)
 
         if n_days := len(days) != 5:
             logger.debug(f"Wrong amount of days: {n_days} there must be 5")
 
         for day in days:
             date = WebDriverWait(day, config.get_auto_cast("SETTINGS", "timeout")).until(
-                ec.presence_of_element_located(("xpath", ".//div/div/div/div/span"))
-            )
+                ec.presence_of_element_located(("xpath", ".//div/div/div/div/span")))
             date = date.text
 
             lectures = WebDriverWait(day, config.get_auto_cast("SETTINGS", "timeout")).until(
                 ec.presence_of_all_elements_located(("xpath", ".//div/div/span/div/div[@class='empty'] |"
                                                   ".//div/div/span/div/div/div[@class='top clearfix'] |"
-                                                  ".//div/div/span/div/div/div/div[2]"))
-            )
+                                                  ".//div/div/span/div/div/div/div[2]")))
 
             timetable[date] = []
             for lecture in lectures:
@@ -184,7 +183,7 @@ def get_timetable(driver, xpath: str) -> dict:
 
 def get_permanent_timetable(driver):
     time.sleep(2)
-    xpath_lessons = "//div/div/div/span/div/div/div/div[2]"
+    xpath_lessons = "//div/div/div/span/div/div[@class='empty'] | //div/div/div/span/div/div/div/div[2]"
     days_timetable = "//div[@class='day-row double']"
 
     days = driver.find_elements("xpath", days_timetable)
