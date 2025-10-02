@@ -4,6 +4,7 @@ from typing import Tuple
 from abc import ABC
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from unidecode import unidecode
@@ -20,6 +21,10 @@ logger = logging.getLogger(__name__)
 
 
 class BasePage(ABC):
+    """
+    Abstract base class for using selenium (generally every interact with website)
+    - every subclass is specific for 1 interaction (e.g. class Login)
+    """
     def __init__(self, driver, url, timeout=config.get_auto_cast("SETTINGS", "timeout")):
         self.driver = driver
         self.timeout = timeout
@@ -40,8 +45,14 @@ class BasePage(ABC):
 
     @log_message(error_message="Item not found",
                  right_message="Item found",
-                 level="critical")
-    def find_item(self, target: Tuple[str, str], parent=None):
+                 level="warning")
+    def _find_item(self, target: Tuple[str, str], parent=None) -> WebElement | None:
+        """
+        Find specific element on website
+        :param target: tuple selenium expression e.g (By.XPATH, "//div")
+        :param parent: Selenium WebElement; default self.driver If None
+        :return item: If true return matching element otherwise return None
+        """
         if parent is None:
             parent = self.driver
 
@@ -50,13 +61,19 @@ class BasePage(ABC):
                 ec.presence_of_element_located(target))
             return item
         except Exception as e:
-            logger.exception(e)
+            logger.warning(e)
             return None
 
     @log_message(error_message="Items not found",
                  right_message="Items found",
-                 level="critical")
-    def find_items(self, target: Tuple[str, str], parent=None):
+                 level="warning")
+    def _find_items(self, target: Tuple[str, str], parent=None) -> list[WebElement] | None:
+        """
+        Find specific elements on website
+        :param target: tuple selenium expression e.g (By.XPATH, "//div")
+        :param parent: Selenium WebElement; default self.driver If None
+        :return item: If true return matching elements otherwise return None
+        """
         if parent is None:
             parent = self.driver
 
@@ -68,21 +85,28 @@ class BasePage(ABC):
             logger.exception(e)
             return None
 
-    @staticmethod
-    def check_output(self): pass
-
 
 class Login(BasePage):
+    """
+    Inherits from BasePage
+    Use for login
+    """
 
     @log_message(error_message="Login failed",
                  right_message="Login successful",
                  level="critical")
-    def login(self, username, password):
+    def login(self, username, password) -> bool:
+        """
+        Specific login logic
+        :param username: username (string)
+        :param password: password (string)
+        :return: True if successful otherwise False
+        """
         try:
             # Find required elements on website (username and password field, login button)
-            username_field = self.find_item(target=(By.NAME, "username"))
-            password_field = self.find_item(target=(By.NAME, "password"))
-            login_button = self.find_item(target=(By.NAME, "login"))
+            username_field = self._find_item(target=(By.NAME, "username"))
+            password_field = self._find_item(target=(By.NAME, "password"))
+            login_button = self._find_item(target=(By.NAME, "login"))
 
             username_field.clear()
             username_field.send_keys(username)
@@ -98,11 +122,26 @@ class Login(BasePage):
 
 
 class MarksPage(BasePage):
-    def get_marks(self):
+    """
+    Inherits from BasePage
+    Use for get marks
+    """
+    def __init__(self, driver, url):
+        super().__init__(driver, url)
+        self.SUBJECTS = {}
+
+    @log_message(error_message="Getting marks failed",
+                 right_message="Getting marks successful",
+                 level="critical")
+    def get_marks(self) -> bool | dict[str, list]:
+        """
+        Specific logic to get marks
+        :return: True if successful otherwise False
+        """
         try:
             logger.info("Looking for an element on page with marks")
 
-            marks_line = self.find_items(target=(By.XPATH,
+            marks_line = self._find_items(target=(By.XPATH,
                                                        "//tbody//tr[//td "
                                                         "and contains(@class, 'dx-row') "
                                                         "and contains(@class, 'dx-data-row') "
@@ -113,18 +152,20 @@ class MarksPage(BasePage):
                                 level="warning",
                                 error_message=f"Marks not found url: {self.driver.current_url} title: {self.driver.title}",
                                 right_message=f"Marks found url {self.driver.current_url} title: {self.driver.title}"):
-                return {}
+                self.SUBJECTS = {}
+                return self.SUBJECTS
 
 
-            subjects = {}
+            self.SUBJECTS = {}
             for single_line in marks_line:
-                subject = self.find_items(target=(By.TAG_NAME, "td"), parent=single_line)
+                subject = self._find_items(target=(By.TAG_NAME, "td"), parent=single_line)
 
                 if not log_variable(subject,
                                     level="warning",
                                     error_message="No subject",
                                     right_message="Subject found"):
-                    return {}
+                    self.SUBJECTS = {}
+                    return self.SUBJECTS
 
                 mark = subject[1].text
                 topic = unidecode(subject[2].text)
@@ -134,7 +175,7 @@ class MarksPage(BasePage):
 
                 logger.info(f"Extracting: {mark} {topic} {weight} {date} {subject_name}")
 
-                subjects.setdefault(subject_name, []).append({
+                self.SUBJECTS.setdefault(subject_name, []).append({
                     "mark": mark,
                     "topic": topic,
                     "weight": weight,
@@ -142,85 +183,97 @@ class MarksPage(BasePage):
                 })
 
             # Export marks to json file
-            export_json(subjects, JSON_RAW_OUTPUT_PATH)
+            export_json(self.SUBJECTS, JSON_RAW_OUTPUT_PATH)
 
-            return subjects
+            return self.SUBJECTS
 
         except Exception as e:
             logger.exception({str(e)})
-            return {}
+            self.SUBJECTS = {}
+            return self.SUBJECTS
 
 class Timetable(BasePage):
+    """
+    Inherits BasePage
+    Use for get timetable (in code is used shortcut TT or tt for timetable
+    """
     def __init__(self, driver, url):
         super().__init__(driver, url)
         self.NORMAL_TT_DAYS = "//div[@class='day-row normal']"
         self.NORMAL_TT_DATES = ".//div/div/div/div/span"
-        self.NORMAL_TT_LECTURES = ".//div/div/span/div/div[@class='empty'] | .//div/div/span/div/div/div[@class='top clearfix'] | .//div/div/span/div/div/div/div[2]"
-
+        self.NORMAL_TT_LECTURES = (".//div/div/span/div/div[@class='empty']"
+                                   " | .//div/div/span/div/div/div[@class='top clearfix']"
+                                   " | .//div/div/span/div/div/div/div[2]")
         self.NEXT_TT_BTN = '//*[@id="cphmain_linkpristi"]'
-
         self.PERMANENT_TT_BTN = '//*[@id="cphmain_linkpevny"]'
         self.PERMANENT_TT_DAYS = "//div[@class='day-row double']"
-        self.PERMANENT_TT_LECTURES = "//div/div/div/span/div/div[@class='empty'] | //div/div/div/span/div/div/div/div[2]"
+        self.PERMANENT_TT_LECTURES = ".//div/div/span/div/div[@class='empty'] | .//div/div/span/div/div/div/div[2]"
 
+        self.SEMESTER_END = datetime.strptime(config.get_auto_cast("DATES", "semester1_end"), "%Y-%m-%d").date()
         self.timetable = {}
-        semester_end = datetime.strptime(config.get_auto_cast("DATES", "semester1_end"), "%Y-%m-%d").date()
-        today = datetime.today().date()
 
-        self.difference = (semester_end - today).days
+    def _extract_tt(self, days_xpath, date_xpath, lectures_xpath, last_date=None) -> bool:
+        """
+        Specific logic to get specific timetable
+        :param days_xpath:
+        :param date_xpath:
+        :param lectures_xpath:
+        :param last_date:
+        :return: True if successful otherwise False
+        """
+        try:
+            days = self._find_items((By.XPATH, days_xpath))
 
-        for _ in range(self.difference):
-            today = today + timedelta(days=1)
-            self.timetable[today.isoformat()] = ""
+            if n_days := len(days) != 5:
+                logger.debug(f"Wrong amount of days: {n_days} there must be 5")
 
-    @log_message(error_message="Extracting timetable failed",
-                 right_message="Extracting timetable successful",
-                 level="error")
+            n = 3
+            for day in days:
+                year = datetime.now().year
+                if date_xpath is not None:
+                    date_raw = self._find_item((By.XPATH, date_xpath), parent=day)
+                    date_raw = datetime.strptime(f"{date_raw.text}/{year}", "%d/%m/%Y")
+                else:
+                    new_last_date = datetime.strptime(str(f"{last_date}"), "%Y-%m-%d")
+                    date_raw = new_last_date + timedelta(days=n)
+                    n += 1
+
+                lectures = self._find_items((By.XPATH, lectures_xpath), parent=day)
+
+                if date_raw.weekday() in [6, 7]:
+                    continue
+
+                date = date_raw.date().isoformat()
+                self.timetable[date] = []
+                for lecture in lectures:
+                    self.timetable[date].append(lecture.text)
+
+                if (n_timetable := len(self.timetable[date])) != 10:
+                    logger.debug(f"Wrong amount of lectures: {n_timetable} there must be 10")
+
+            return True
+
+        except Exception as e:
+            logger.exception(f"Something unexcepted happened: {e}")
+            return False
+
+    # TODO: CHECK OUTPUT !!!
+
     def get_timetable(self):
+        """
+        It's help func, it calls other functions (extract_tt or find_item)
+        :return: true if successful otherwise None
+        """
+        log_variable(var=self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES),
+                     error_message="Extraction failed or timetable is empty",
+                     right_message="Extraction timetable successful",
+                     level="warning"
+                     )
 
-        def extract_tt(days_xpath, date_xpath, lectures_xpath, last_date=None):
-
-            try:
-                days = self.find_items((By.XPATH, days_xpath))
-
-                if n_days := len(days) != 5:
-                    logger.debug(f"Wrong amount of days: {n_days} there must be 5")
-
-                for day in days:
-
-                    year = datetime.now().year
-                    if date_xpath is not None:
-                        date = self.find_item((By.XPATH, date_xpath), parent=day)
-                        date = datetime.strptime(f"{date.text}/{year}", "%d/%m/%Y")
-                    else:
-                        new_last_date = datetime.strptime(str(f"{last_date}/{year}"), "%m/%d/%Y")
-                        date = new_last_date + timedelta(days=1)
-
-                    lectures = self.find_items((By.XPATH, lectures_xpath), parent=day)
-
-                    date = date.date().isoformat()
-                    self.timetable[date] = []
-                    for lecture in lectures:
-                        self.timetable[date].append(lecture.text)
-
-                    if (n_timetable := len(self.timetable[date])) != 10:
-                        logger.debug(f"Wrong amount of lectures: {n_timetable} there must be 10")
-
-            except Exception as e:
-                logger.exception(f"Something unexcepted happened: {e}")
-
-        extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
-        self.find_item((By.XPATH, self.NEXT_TT_BTN)).click()
-        extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
-        self.find_item((By.XPATH, self.PERMANENT_TT_BTN)).click()
-        extract_tt(days_xpath=self.PERMANENT_TT_DAYS,
+        self._find_item((By.XPATH, self.NEXT_TT_BTN)).click()
+        self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
+        self._find_item((By.XPATH, self.PERMANENT_TT_BTN)).click()
+        self._extract_tt(days_xpath=self.PERMANENT_TT_DAYS,
                    date_xpath=None,
                    lectures_xpath=self.PERMANENT_TT_LECTURES,
-                   last_date="10/10")
-
-        # temp print
-        def print_week(week):
-            for k, v in week.items():
-                print(k, v)
-
-        # print_week(self.timetable)
+                   last_date="2025-10-10")
