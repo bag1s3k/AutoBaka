@@ -1,24 +1,25 @@
 ﻿import functools
 import logging
+import sys
 from typing import Any
 
 logger = logging.getLogger(__name__)
 
 
-def log_message(error_message: str = "Function failed", right_message: str = "Function successful", level: str = "error"):
+def validate_output(error_msg: str = "Failed", success_msg: str = "Successful", level: str = "error"):
     """
     Decorator that logs a message depending on the return value of the decorated function.
     - If the function returns a falsy value (e.g. None, False, empty string),
       an error message is logged.
     - If the function returns a truthy value, a success message is logged.
-    :param error_message: Message to log if the decorated function returns a falsy value.
-    :param right_message: Message to log if the decorated function returns a truthy value.
+    :param error_msg: Message to log if the decorated function returns a falsy value.
+    :param success_msg: Message to log if the decorated function returns a truthy value.
     :param level: Logging level to use when the decorated function returns a falsy value
                  (e.g. "error", "warning", "info"). Defaults to "error".
     :return Any: The original return value of the decorated function.
 
     Example:
-        >>> @log_message(error_message="Login failed", right_message="Login successful", level="critical")
+        >>> @validate_output(error_msg="Login failed", success_msg="Login successful", level="critical")
         ... def login(user, password):
         ...     return user == "admin" and password == "secret"
         >>> login("correct", "wrong")
@@ -33,9 +34,11 @@ def log_message(error_message: str = "Function failed", right_message: str = "Fu
 
             if not result:
                 logger_method = getattr(logger, level.lower(), logger.error) # getattr instead writing if statements for each logger level
-                logger_method(error_message)
+                logger_method(error_msg)
+                if level.lower() in ["error", "critical"]:
+                    sys.exit(-1)
             else:
-                logger.info(right_message)
+                logger.info(success_msg)
 
             return result
 

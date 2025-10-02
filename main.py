@@ -1,24 +1,15 @@
 import logging
 import argparse
-import sys
 import time
 
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
-
 from internal.core.page_model import MarksPage, Login, Timetable
-from internal.core.web_processor import get_marks, process_marks, get_timetable, process_timetable, \
-    get_permanent_timetable
-from internal.core.web_navigation import go_to_url
-# from internal.core.web_navigation import login, go_to_url
+from internal.core.web_processor import process_marks
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_utils import load_credentials
 from internal.filesystem.export import export_results
 from internal.filesystem.paths_constants import PROJECT_ROOT
 from internal.filesystem.ini_loader import config
-from internal.utils.var_validator import log_variable
-
 from internal.utils.cloud_backup.backup import run_buckup
 
 start_time = time.time() # STOPWATCH start
@@ -28,11 +19,8 @@ setup_logging()
 logger = logging.getLogger(__name__)
 
 # -------------------------------- BEFORE TO ENTER THE WEBSITE ---------------------------------- #
-# Does the PROJECT_ROOT path exist?
-log_variable(PROJECT_ROOT.exists(),
-                     level="critical",
-                     error_message="project root folder doesn't exist",
-                     right_message="Project root folder exists")
+if not PROJECT_ROOT.exists():
+    logger.error("Project root folder doesn't exist")
 
 
 driver = None
@@ -58,6 +46,7 @@ try:
     # Marks page
     marks_page = MarksPage(driver=driver, url=config.get_auto_cast("URLS", "marks_url"))
     marks_page.get()
+    marks_page.get_marks()
 
     print(".", end="", flush=True) 
 
@@ -65,8 +54,6 @@ try:
     timetable = Timetable(driver=driver, url=config.get_auto_cast("URLS", "timetable_url"))
     timetable.get()
     timetable.get_timetable()
-    for k, v in timetable.timetable.items():
-        print(k, v)
 
     print(".", end="", flush=True) 
 

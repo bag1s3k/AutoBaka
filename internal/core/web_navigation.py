@@ -5,12 +5,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
 from internal.filesystem.ini_loader import config
-from internal.utils.decorators import log_message
+from internal.utils.decorators import validate_output
 
 logger = logging.getLogger(__name__)
 
 
-@log_message(error_message="Login func failed", right_message="Login successful", level="critical")
+@validate_output(error_msg="Login func failed", success_msg="Login successful", level="critical")
 def login(driver, username: str, password: str) -> bool | None:
     """
     Login user to baka page, send login details to page
@@ -51,7 +51,7 @@ def login(driver, username: str, password: str) -> bool | None:
         logger.exception(f"Login failed: {e}")
 
 
-@log_message(error_message="Moving to new url failed", right_message="Moving to new url successful", level="critical")
+@validate_output(error_msg="Moving to new url failed", success_msg="Moving to new url successful", level="critical")
 def go_to_url(driver, url) -> bool | None:
     """Navigation to the targe url
     :param driver: instance of webdriver
