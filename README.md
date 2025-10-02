@@ -127,6 +127,9 @@ You can try others, but compatibility is not guaranteed. **(I'm regularly updati
 ![Static Badge](https://img.shields.io/badge/Python-3.13.7-blue)
 ![Static Badge](https://img.shields.io/badge/Pip-25.2-orange)  
 ![Static Badge](https://img.shields.io/badge/Windows_11-24H2-lightblue)
+![Static Badge](https://img.shields.io/badge/Chrome-Updated-yellow)
+
+> ⚠️ **Chrome Required**: This app uses Chromedriver via WebDriverManager. Make sure you have Google Chrome installed and keep it up to date, because the driver is matched automatically to your installed Chrome version.
 
 ## Usage
 
