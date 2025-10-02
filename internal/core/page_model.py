@@ -230,6 +230,8 @@ class Timetable(BasePage):
             n = 3
             for day in days:
                 year = datetime.now().year
+
+                # If None, use calculated date otherwise use date from website
                 if date_xpath is not None:
                     date_raw = self._find_item((By.XPATH, date_xpath), parent=day)
                     date_raw = datetime.strptime(f"{date_raw.text}/{year}", "%d/%m/%Y")
@@ -240,6 +242,7 @@ class Timetable(BasePage):
 
                 lectures = self._find_items((By.XPATH, lectures_xpath), parent=day)
 
+                # skip Sat, Sun
                 if date_raw.weekday() in [6, 7]:
                     continue
 
@@ -248,6 +251,7 @@ class Timetable(BasePage):
                 for lecture in lectures:
                     self.timetable[date].append(lecture.text)
 
+                # One day of timetable should have 10 lessons
                 if (n_timetable := len(self.timetable[date])) != 10:
                     logger.debug(f"Wrong amount of lectures: {n_timetable} there must be 10")
 
@@ -264,12 +268,7 @@ class Timetable(BasePage):
         It's help func, it calls other functions (extract_tt or find_item)
         :return: true if successful otherwise None
         """
-        log_variable(var=self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES),
-                     error_message="Extraction failed or timetable is empty",
-                     right_message="Extraction timetable successful",
-                     level="warning"
-                     )
-
+        self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
         self._find_item((By.XPATH, self.NEXT_TT_BTN)).click()
         self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
         self._find_item((By.XPATH, self.PERMANENT_TT_BTN)).click()
