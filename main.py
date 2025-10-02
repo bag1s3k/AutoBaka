@@ -17,8 +17,6 @@ from internal.filesystem.env_utils import load_credentials
 from internal.filesystem.export import export_results
 from internal.filesystem.paths_constants import PROJECT_ROOT
 from internal.filesystem.ini_loader import config
-from internal.utils.var_validator import log_variable
-
 from internal.utils.cloud_backup.backup import run_buckup
 
 start_time = time.time() # STOPWATCH start
@@ -28,11 +26,8 @@ setup_logging()
 logger = logging.getLogger(__name__)
 
 # -------------------------------- BEFORE TO ENTER THE WEBSITE ---------------------------------- #
-# Does the PROJECT_ROOT path exist?
-log_variable(PROJECT_ROOT.exists(),
-                     level="critical",
-                     error_msg="project root folder doesn't exist",
-                     success_msg="Project root folder exists")
+if not PROJECT_ROOT.exists():
+    logger.error("Project root folder doesn't exist")
 
 
 driver = None

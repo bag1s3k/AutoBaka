@@ -3,12 +3,11 @@ import json
 import os
 
 from internal.utils.decorators import validate_output
-from internal.utils.var_validator import log_variable
 
 logger = logging.getLogger(__name__)
 
 
-@validate_output("Exporting failed", "Exported successfully completed", "warning")
+@validate_output("Exporting failed or it's empty", "Exported successfully completed", "warning")
 def export_results(subjects, path) -> bool:
     """
     Export averages to file
@@ -17,7 +16,7 @@ def export_results(subjects, path) -> bool:
     :return bool: True on success False otherwise
     """
 
-    log_variable(subjects, "warning", "Nothing to export")
+    if not subjects: return False
 
     try:
         with open(path, "w") as file:
@@ -25,11 +24,11 @@ def export_results(subjects, path) -> bool:
                 file.write(f"{subject:30} {marks[-1]["avg"]}\n")
         return True
     except Exception as e:
-        logger.exception(f"Issue during exporting: {str(e)}")
+        logger.exception(f"Issue during exporting: {e}")
         return False
 
 
-@validate_output("Exporting failed", "Exporting successful", "warning")
+@validate_output("Exporting failed or nothing to export", "Exporting successful", "warning")
 def export_json(subjects, path) -> bool:
     """
     Export marks to JSON file
@@ -40,16 +39,14 @@ def export_json(subjects, path) -> bool:
 
     logger.info(f"Current directory: {os.getcwd()}")
 
-    if not log_variable(subjects,
-                        level="warning",
-                        error_msg="No subjects to export",
-                        success_msg="Exporting successful"):
+    if not subjects:
         return False
 
     # Export
     logger.info("Exporting json...")
 
-    if not log_variable(path, level="critical", error_msg="Wrong path"):
+    if not path:
+        logger.error("Wrong export json path")
         return False
 
     try:
@@ -58,5 +55,5 @@ def export_json(subjects, path) -> bool:
         return True
 
     except Exception as e:
-        logger.exception(f"Something happened during exporting: {str(e)}")
+        logger.exception(f"Something happened during exporting: {e}")
         return False

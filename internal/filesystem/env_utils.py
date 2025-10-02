@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 from internal.utils.logging_setup import setup_logging
 from internal.utils.arg_parser import create_agr_parser
 from internal.filesystem.paths_constants import ENV_PATH
-from internal.utils.var_validator import log_variable
 from internal.utils.decorators import validate_output
 
 setup_logging()
@@ -33,7 +32,8 @@ def load_credentials(parser) -> tuple:
         dest="login_details",
     )
 
-    if not log_variable(arg, "critical", "Retrieving credentials failed"):
+    if not arg:
+        logger.critical("Retrieving credentials failed")
         return None, None
 
     return arg.login_details
@@ -50,25 +50,22 @@ def load_credentials_from_file() -> tuple:
     """
     try:
         # Does the file exist
-        if not log_variable(ENV_PATH.exists(),
-                            level="critical",
-                            error_msg=f"ENV path doesn't exist: env path {ENV_PATH}",
-                            success_msg="ENV path found"):
+        if not ENV_PATH.exists():
+            logger.error(f"ENV path doesn't exist: env path {ENV_PATH}")
             return None, None
 
         # Loading .env file
         env_loaded = load_dotenv(ENV_PATH)
 
-        if not log_variable(env_loaded,
-                            level= "critical",
-                            error_msg="env file cannot be loaded",
-                            success_msg="env file loaded successfully"):
+        if not env_loaded:
+            logger.error("env file cannot be loaded")
             return None, None
 
         # Check variables
         def check_env_var(var_name: str) -> str:
             value = os.getenv(var_name)
-            log_variable(value or value.strip(), "critical", "Username or password not found in .env")
+            if not value or not value.strip():
+                logger.error("Username or password not found in .env")
 
             return value
 

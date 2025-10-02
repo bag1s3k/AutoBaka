@@ -12,7 +12,6 @@ from unidecode import unidecode
 from internal.filesystem.export import export_json
 from internal.filesystem.paths_constants import JSON_RAW_OUTPUT_PATH
 from internal.utils.decorators import validate_output
-from internal.utils.var_validator import log_variable
 from internal.filesystem.ini_loader import config
 from internal.utils.logging_setup import setup_logging
 
@@ -147,20 +146,16 @@ class MarksPage(BasePage):
                                                         "and contains(@class, 'dx-row-lines')]"))
 
             # Load whole marks (date, mark, value...) it's line of these data
-            if not log_variable(marks_line,
-                                level="warning",
-                                error_msg=f"Marks not found url: {self.driver.current_url} title: {self.driver.title}",
-                                success_msg=f"Marks found url {self.driver.current_url} title: {self.driver.title}"):
+            if not marks_line:
+                logger.error(f"Marks not found url: {self.driver.current_url} title: {self.driver.title}")
                 self.SUBJECTS = {}
                 return self.SUBJECTS
 
             for single_line in marks_line:
                 subject = self._find_items(target=(By.TAG_NAME, "td"), parent=single_line)
 
-                if not log_variable(subject,
-                                    level="warning",
-                                    error_msg="No subject",
-                                    success_msg="Subject found"):
+                if not subject:
+                    logger.warning("No subject")
                     self.SUBJECTS = {}
                     return self.SUBJECTS
 

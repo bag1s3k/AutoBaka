@@ -10,7 +10,6 @@ from internal.filesystem.export import export_json
 from internal.filesystem.ini_loader import config
 from internal.filesystem.paths_constants import JSON_OUTPUT_PATH, JSON_RAW_OUTPUT_PATH
 from internal.utils.decorators import validate_output
-from internal.utils.var_validator import log_variable
 
 logger = logging.getLogger(__name__)
 
@@ -34,10 +33,8 @@ def get_marks(driver, xpath: str) -> dict:
         )
 
         # Load whole marks (date, mark, value...) it's line of these data
-        if not log_variable(marks_line,
-                            level="warning",
-                            error_msg=f"Marks not found url: {driver.current_url} title: {driver.title}",
-                            success_msg=f"Marks found url {driver.current_url} title: {driver.title}"):
+        if not marks_line:
+            logger.error(f"Marks not found url: {driver.current_url} title: {driver.title}")
             return {}
 
         # Extract marks to a dict
@@ -49,10 +46,8 @@ def get_marks(driver, xpath: str) -> dict:
                 ec.presence_of_all_elements_located((By.TAG_NAME, "td"))
             )
 
-            if not log_variable(subject,
-                                level="warning",
-                                error_msg="No subject",
-                                success_msg="Subject found"):
+            if not subject:
+                logger.error("No subject")
                 return {}
 
             mark = subject[1].text
