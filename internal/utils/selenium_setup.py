@@ -9,11 +9,13 @@ from internal.utils.decorators import log_message
 
 logger = logging.getLogger(__name__)
 
-@log_message("Webdriver setup failed", "Webdriver setup successfully completed", "error")
+
+@log_message(error_message="Webdriver setup failed",
+             right_message="Webdriver setup successfully completed",
+             level="error")
 def setup_driver():
     """
     Setup chromedriver
-
     :return: an instance of driver
     """
     try:

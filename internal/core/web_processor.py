@@ -1,4 +1,5 @@
 import logging
+import time
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -13,8 +14,11 @@ from internal.utils.var_validator import log_variable
 
 logger = logging.getLogger(__name__)
 
-@log_message("Extraction marks from baka page failed", "Extraction marks from baka page successful", "warning")
-def get_marks(driver, xpath) -> dict:
+
+@log_message(error_message="Extraction marks from baka page failed",
+             right_message="Extraction marks from baka page successful",
+             level="warning")
+def get_marks(driver, xpath: str) -> dict:
     """
     Extraction marks from baka page
     :param driver: instance of the browser
@@ -30,7 +34,10 @@ def get_marks(driver, xpath) -> dict:
         )
 
         # Load whole marks (date, mark, value...) it's line of these data
-        if not log_variable(marks_line, "warning", f"Marks not found url: {driver.current_url} title: {driver.title}", f"Marks found url {driver.current_url} title: {driver.title}"):
+        if not log_variable(marks_line,
+                            level="warning",
+                            error_message=f"Marks not found url: {driver.current_url} title: {driver.title}",
+                            right_message=f"Marks found url {driver.current_url} title: {driver.title}"):
             return {}
 
         # Extract marks to a dict
@@ -42,7 +49,11 @@ def get_marks(driver, xpath) -> dict:
                 ec.presence_of_all_elements_located((By.TAG_NAME, "td"))
             )
 
-            if not log_variable(subject, "warning", "No subject", "Subject found"): return {}
+            if not log_variable(subject,
+                                level="warning",
+                                error_message="No subject",
+                                right_message="Subject found"):
+                return {}
 
             mark = subject[1].text
             topic = unidecode(subject[2].text)
@@ -68,8 +79,9 @@ def get_marks(driver, xpath) -> dict:
         logger.exception(f"Issue during getting marks: {str(e)}")
         return {}
 
-@log_message("Processing marks failed", "Processing marks successful", "critical")
-def process_marks(subjects) -> dict:
+
+@log_message(error_message="Processing marks failed", right_message="Processing marks successful", level="critical")
+def process_marks(subjects: dict) -> dict:
     """
     Processing marks and calculate averages
     :param subjects: dict of marks
@@ -107,8 +119,10 @@ def process_marks(subjects) -> dict:
                 weight_sum += float(mark[1])
 
             average = 0
-            if weight_sum != 0: average = round(mark_times_weight / weight_sum, 2)
-            else: logger.warning(f"{subject} has no weight")
+            if weight_sum != 0:
+                average = round(mark_times_weight / weight_sum, 2)
+            else:
+                logger.warning(f"{subject} has no weight")
 
             subjects[subject].append({"avg": average})
 
@@ -121,11 +135,13 @@ def process_marks(subjects) -> dict:
 
     return dict(sorted(subjects.items()))
 
-@log_message("Extracting timetable failed", "Extracting timetable successful", "critical")
-def get_timetable(driver, xpath):
+
+@log_message(error_message="Extracting timetable failed",
+             right_message="Extracting timetable successful",
+             level="critical")
+def get_timetable(driver, xpath: str) -> dict:
     """
     Extract timetable from website
-
     :param driver: an instance of chromedriver
     :param xpath: xpath for each day
     :return timetable: timetable (dict)
@@ -136,28 +152,48 @@ def get_timetable(driver, xpath):
         days = WebDriverWait(driver, config.get_auto_cast("SETTINGS", "timeout")).until(
             ec.presence_of_all_elements_located(("xpath", xpath))
         )
+        print(days)
 
-        if n_days := len(days) != 5: logger.debug(f"Wrong amount of days: {n_days} there must be 5")
+        if n_days := len(days) != 5:
+            logger.debug(f"Wrong amount of days: {n_days} there must be 5")
 
         for day in days:
             date = WebDriverWait(day, config.get_auto_cast("SETTINGS", "timeout")).until(
-                ec.presence_of_element_located(("xpath", ".//div/div/div/div/span"))
-            )
+                ec.presence_of_element_located(("xpath", ".//div/div/div/div/span")))
             date = date.text
 
             lectures = WebDriverWait(day, config.get_auto_cast("SETTINGS", "timeout")).until(
                 ec.presence_of_all_elements_located(("xpath", ".//div/div/span/div/div[@class='empty'] |"
                                                   ".//div/div/span/div/div/div[@class='top clearfix'] |"
-                                                  ".//div/div/span/div/div/div/div[2]"))
-            )
+                                                  ".//div/div/span/div/div/div/div[2]")))
 
             timetable[date] = []
-            for lecture in lectures: timetable[date].append(lecture.text)
+            for lecture in lectures:
+                timetable[date].append(lecture.text)
 
-            if (n_timetable := len(timetable[date])) != 10: logger.debug(f"Wrong amount of lectures: {n_timetable} there must be 10")
+            if (n_timetable := len(timetable[date])) != 10:
+                logger.debug(f"Wrong amount of lectures: {n_timetable} there must be 10")
 
     except Exception as e:
         logger.exception(f"Something unexcepted happened: {e}")
         return {}
 
     return timetable
+
+
+def get_permanent_timetable(driver):
+    time.sleep(2)
+    xpath_lessons = "//div/div/div/span/div/div[@class='empty'] | //div/div/div/span/div/div/div/div[2]"
+    days_timetable = "//div[@class='day-row double']"
+
+    days = driver.find_elements("xpath", days_timetable)
+
+    for day in days:
+        day_t = day.find_elements("xpath", xpath_lessons)
+
+        for d in day_t:
+            print(d.text)
+
+def process_timetable(timetable):
+    for k, v in timetable.items():
+        print(k, v)

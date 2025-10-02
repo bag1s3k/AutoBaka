@@ -1,13 +1,14 @@
 ﻿from internal.filesystem.paths_constants import INI_PATH
 import configparser
 
+
 class AutoCastConfigParser(configparser.ConfigParser):
     def get_auto_cast(self, section, option):
         """
-            Try to convert string to int, bool or keep it as str
-            :param section: name of the section
-            :param option: name of the option
-            :return Union[int, bool, str]: best-match
+        Try to convert string to int, bool or keep it as str
+        :param section: name of the section
+        :param option: name of the option
+        :return Union[int, bool, str]: best-match
         """
 
         value = super().get(section, option)

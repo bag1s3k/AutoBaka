@@ -1,6 +1,7 @@
 ﻿import logging
 from internal.filesystem.paths_constants import LOG_PATH
 
+
 def setup_logging():
     """
     Setup logging

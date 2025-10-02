@@ -3,8 +3,14 @@ import argparse
 import sys
 import time
 
-from internal.core.web_processor import get_marks, process_marks, get_timetable
-from internal.core.web_navigation import login, go_to_url
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+
+from internal.core.page_model import MarksPage, Login, Timetable
+from internal.core.web_processor import get_marks, process_marks, get_timetable, process_timetable, \
+    get_permanent_timetable
+from internal.core.web_navigation import go_to_url
+# from internal.core.web_navigation import login, go_to_url
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_utils import load_credentials
@@ -21,17 +27,17 @@ start_time = time.time() # STOPWATCH start
 setup_logging()
 logger = logging.getLogger(__name__)
 
-error_n = -1
+# -------------------------------- BEFORE TO ENTER THE WEBSITE ---------------------------------- #
+# Does the PROJECT_ROOT path exist?
+log_variable(PROJECT_ROOT.exists(),
+                     level="critical",
+                     error_message="project root folder doesn't exist",
+                     right_message="Project root folder exists")
 
-# -------------------------------- PREPARE TO ENTER THE WEBSITE ---------------------------------- #
-
-# Does the PROJECT_ROOT path exist
-if not log_variable(PROJECT_ROOT.exists(), "critical", "project root folder doesn't exist", "Project root folder exists"): sys.exit(error_n := -1)
 
 driver = None
-
 try:
-    driver = setup_driver() # Initiation webdriver
+    driver = setup_driver()
 
     # Load login details and create main_parser
     main_parser = argparse.ArgumentParser(
@@ -39,54 +45,44 @@ try:
         description="parses cmd-line args to extract user credentials (username and password)",
     )
     username, password = load_credentials(main_parser)
-    if not username or not password: sys.exit(error_n := -1)
 
     print(".", end="", flush=True) # progress print
 
-    # ------------------------------------- ON THE WEBSITE -------------------------------------- #
+    # ------------------------------------- ON WEBSITE -------------------------------------- #
+    login = Login(driver=driver, url=config.get_auto_cast("URLS", "login_url"))
+    login.get()
+    login.login(username, password)
 
-    if not login(driver, username, password): sys.exit(error_n := -1)
+    print(".", end="", flush=True)
 
-    # Navigate to marks page
-    marks_xpath = "//tbody//tr[//td and contains(@class, 'dx-row') and contains(@class, 'dx-data-row') and contains(@class, 'dx-row-lines')]"
-    if not go_to_url(driver,
-                     config.get_auto_cast("URLS", "marks_url"),
-                     marks_xpath
-    ): sys.exit(error_n := -1)
+    # Marks page
+    marks_page = MarksPage(driver=driver, url=config.get_auto_cast("URLS", "marks_url"))
+    marks_page.get()
 
-    print(".", end="", flush=True) # progress print
+    print(".", end="", flush=True) 
 
-    if not (raw_marks := get_marks(driver, marks_xpath)): sys.exit(error_n := -1)
+    # TIMETABLE PAGE
+    timetable = Timetable(driver=driver, url=config.get_auto_cast("URLS", "timetable_url"))
+    timetable.get()
+    timetable.get_timetable()
+    for k, v in timetable.timetable.items():
+        print(k, v)
 
-    print(".", end="", flush=True) # progress print
-
-    # Navigate to timetable page
-    timetable_xpath = "//div[@class='day-row normal']"
-    if not go_to_url(driver,
-                      config.get_auto_cast("URLS", "timetable_url"),
-                      timetable_xpath
-    ): sys.exit(error_n := -1)
-
-    if not (timetable := get_timetable(driver, timetable_xpath)): sys.exit(error_n := -1)
-
-    print(".", end="", flush=True) # progress print
+    print(".", end="", flush=True) 
 
     # --------------------------------------- TERMINATE WEBDRIVER ----------------------------- #
-
     if config.get_auto_cast("SETTINGS", "quit_driver"):  # let window open or close it
         driver.quit()
         logger.info("driver was successfully quit")
     logger.info("Drive was successfully terminated")
 
     # ------------------------------------ PROCESSING MARKS ------------------------------------ #
-
-    if not (processed_marks := process_marks(raw_marks)): sys.exit(error_n := -1)
+    processed_marks = process_marks(marks_page.SUBJECTS)
 
     print(".", end="", flush=True) # CLI PRINT
 
     # ------------------------------------ EXPORTING RESULTS ------------------------------------ #
-
-    if not export_results(processed_marks, config.get_auto_cast("PATHS", "result_path")): sys.exit(error_n := -1)
+    export_results(processed_marks, config.get_auto_cast("PATHS", "result_path"))
 
     print(". Successfully", flush=True) # CLI PRINT
 
