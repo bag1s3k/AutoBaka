@@ -5,13 +5,13 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from internal.filesystem.ini_loader import config
-from internal.utils.decorators import log_message
+from internal.utils.decorators import validate_output
 
 logger = logging.getLogger(__name__)
 
 
-@log_message(error_message="Webdriver setup failed",
-             right_message="Webdriver setup successfully completed",
+@validate_output(error_msg="Webdriver setup failed",
+             success_msg="Webdriver setup successfully completed",
              level="error")
 def setup_driver():
     """
