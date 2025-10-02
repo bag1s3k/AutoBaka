@@ -1,16 +1,9 @@
 import logging
 import argparse
-import sys
 import time
 
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
-
 from internal.core.page_model import MarksPage, Login, Timetable
-from internal.core.web_processor import get_marks, process_marks, get_timetable, process_timetable, \
-    get_permanent_timetable
-from internal.core.web_navigation import go_to_url
-# from internal.core.web_navigation import login, go_to_url
+from internal.core.web_processor import process_marks
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_utils import load_credentials
