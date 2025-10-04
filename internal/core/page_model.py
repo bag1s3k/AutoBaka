@@ -9,8 +9,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from unidecode import unidecode
 
-from internal.filesystem.export import export_json
-from internal.filesystem.paths_constants import JSON_RAW_OUTPUT_PATH
+from internal.filesystem.export import export_json, export_results
+from internal.filesystem.paths_constants import RAW_MARKS_OUTPUT, MARKS_OUTPUT, TIMETABLE_OUTPUT
 from internal.utils.decorators import validate_output
 from internal.filesystem.ini_loader import config
 from internal.utils.logging_setup import setup_logging
@@ -131,10 +131,10 @@ class MarksPage(BasePage):
     @validate_output(error_msg="Getting marks failed",
                  success_msg="Getting marks successful",
                  level="critical")
-    def get_marks(self) -> bool | dict[str, list]:
+    def get_marks(self) -> dict[str, list[dict[str, str]]]:
         """
         Specific logic to get marks
-        :return: if not empty dict successful otherwise empty dict
+        :return: empty dict if fail otherwise filled dict
         """
         try:
             logger.info("Looking for an element on page with marks")
@@ -175,7 +175,7 @@ class MarksPage(BasePage):
                 })
 
             # Export marks to json file
-            export_json(self.SUBJECTS, JSON_RAW_OUTPUT_PATH)
+            export_json(self.SUBJECTS, RAW_MARKS_OUTPUT)
 
             return self.SUBJECTS
 
@@ -184,10 +184,72 @@ class MarksPage(BasePage):
             self.SUBJECTS = {}
             return self.SUBJECTS
 
+    @validate_output(error_msg="Processing marks failed or there are no marks",
+                     success_msg="Processing marks successful",
+                     level="error")
+    def process_marks(self) -> bool:
+        """
+        Specific logit to process marks
+
+        :return subjects: sorted dict of processed marks
+        """
+
+        if not self.SUBJECTS: return False
+
+        logger.info(f"Processing marks")
+
+        # (1- -> 1.5) or N don't add to the list and Calculate average
+        text_to_num = [4.5, 3.5, 2.5, 1.5]
+        for subject, list_subject in self.SUBJECTS.items():
+            logger.info(f"Processing subject: {subject}")
+            try:
+                marks = []
+                for dict_mark in list_subject:
+                    if "-" in dict_mark["mark"]:
+                        dict_mark["mark"] = text_to_num[-int(dict_mark["mark"][
+                                                                 0])]  # take 1. char of '2-' => 2 and 2 * (-1) => -2 is index of a list (text_to_num)
+                    elif dict_mark["mark"].isdigit():
+                        dict_mark["mark"] = int(dict_mark["mark"])
+                    else:
+                        continue
+
+                    marks.append([dict_mark["mark"], dict_mark["weight"]])
+
+                # Calculate averages
+                logger.info("Calculating average")
+
+                mark_times_weight = 0
+                weight_sum = 0
+
+                for mark in marks:
+                    mark_times_weight += float(mark[0]) * float(mark[1])
+                    weight_sum += float(mark[1])
+
+                average = 0
+                if weight_sum != 0:
+                    average = round(mark_times_weight / weight_sum, 2)
+                else:
+                    logger.warning(f"{subject} has no weight")
+
+                self.SUBJECTS[subject].append({"avg": average})
+
+                # Export marks to json file
+                export_json(self.SUBJECTS, MARKS_OUTPUT)
+
+            except Exception as e:
+                logger.exception(f"Something happened during processing marks: {e}")
+                return False
+
+        self.SUBJECTS = dict(sorted(self.SUBJECTS.items()))
+        export_results(self.SUBJECTS, config.get_auto_cast("PATHS", "result_path"))
+
+        return True
+
+
 class Timetable(BasePage):
     """
     Inherits BasePage
-    Use for get timetable (in code is used shortcut TT or tt for timetable
+    Use for get timetable (in code is used shortcut TT or tt for timetable)
     """
     def __init__(self, driver, url):
         super().__init__(driver, url)
@@ -199,19 +261,23 @@ class Timetable(BasePage):
         self.NEXT_TT_BTN = '//*[@id="cphmain_linkpristi"]'
         self.PERMANENT_TT_BTN = '//*[@id="cphmain_linkpevny"]'
         self.PERMANENT_TT_DAYS = "//div[@class='day-row double']"
-        self.PERMANENT_TT_LECTURES = ".//div/div/span/div/div[@class='empty'] | .//div/div/span/div/div/div/div[2]"
 
         self.SEMESTER_END = datetime.strptime(config.get_auto_cast("DATES", "semester1_end"), "%Y-%m-%d").date()
         self.timetable = {}
 
-    def _extract_tt(self, days_xpath, date_xpath, lectures_xpath, last_date=None) -> bool:
+    @validate_output(
+        error_msg="Extracting timetable failed",
+        success_msg="Extracting timetable successful",
+        level="error"
+    )
+    def _extract_tt(self, days_xpath, date_xpath=None, lectures_xpath=None, last_date=None, dual=False) -> dict:
         """
         Specific logic to get specific timetable
         :param days_xpath:
         :param date_xpath:
         :param lectures_xpath:
         :param last_date:
-        :return: True if successful otherwise False
+        :return: Empty dict if fail otherwise filled dict
         """
         try:
             days = self._find_items((By.XPATH, days_xpath))
@@ -219,43 +285,57 @@ class Timetable(BasePage):
             if n_days := len(days) != 5:
                 logger.debug(f"Wrong amount of days: {n_days} there must be 5")
 
-            n = 3
+            n = 3 # TODO: FIX ME
             for day in days:
                 year = datetime.now().year
+                lectures = []
 
-                # If None, use calculated date otherwise use date from website
-                if date_xpath is not None:
+                # ------- SINGLE TT ------ #
+                if not dual:
                     date_raw = self._find_item((By.XPATH, date_xpath), parent=day)
                     date_raw = datetime.strptime(f"{date_raw.text}/{year}", "%d/%m/%Y")
+                    lectures_t = self._find_items((By.XPATH, lectures_xpath), parent=day)
+                    lectures = [i.text for i in lectures_t]
+
+                # ------- DUAL TT ------- #
                 else:
                     new_last_date = datetime.strptime(str(f"{last_date}"), "%Y-%m-%d")
                     date_raw = new_last_date + timedelta(days=n)
-                    n += 1
+                    n += 1 # TODO: FIX ME
 
-                lectures = self._find_items((By.XPATH, lectures_xpath), parent=day)
+                    double_lectures = self._find_items((By.XPATH, ".//div/div/span/div"), parent=day)
 
-                # skip Sat, Sun
-                if date_raw.weekday() in [6, 7]:
-                    continue
+                    for single_lectures in double_lectures:
+                        double_lecture = self._find_items(
+                            (By.XPATH, ".//div[@class='empty'] | .//div/div/div[2]"),
+                            parent=single_lectures)
+                        lectures_to_string = [t.text for t in double_lecture]
+                        for i, x in enumerate(lectures_to_string[:]):
+                            if  i % 2 == 0: lectures_to_string.remove(x)
 
+                        lectures.append(lectures_to_string)
+
+                if date_raw.weekday() in [6, 7]: continue # skip Sat, Sun
+
+                # Fill dict
                 date = date_raw.date().isoformat()
                 self.timetable[date] = []
                 for lecture in lectures:
-                    self.timetable[date].append(lecture.text)
+                    self.timetable[date].append(lecture)
 
                 # One day of timetable should have 10 lessons
                 if (n_timetable := len(self.timetable[date])) != 10:
                     logger.debug(f"Wrong amount of lectures: {n_timetable} there must be 10")
-
-            return True
+            
+            export_json(self.timetable, TIMETABLE_OUTPUT)
+            return self.timetable
 
         except Exception as e:
             logger.exception(f"Something unexcepted happened: {e}")
-            return False
+            return {}
 
-    # TODO: CHECK OUTPUT !!!
 
-    def get_timetable(self):
+    def get_tt(self):
         """
         It's help func, it calls other functions (extract_tt or find_item)
         :return: true if successful otherwise None
@@ -265,6 +345,6 @@ class Timetable(BasePage):
         self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
         self._find_item((By.XPATH, self.PERMANENT_TT_BTN)).click()
         self._extract_tt(days_xpath=self.PERMANENT_TT_DAYS,
-                   date_xpath=None,
-                   lectures_xpath=self.PERMANENT_TT_LECTURES,
-                   last_date="2025-10-10")
+                   last_date="2025-10-10",
+                    dual=True) # TODO: FIX ME
+
