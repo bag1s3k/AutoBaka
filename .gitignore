@@ -12,3 +12,4 @@ internal/utils/cloud_backup
 .vscode/
 raw_timetable.json
 timetable.json
+raw_absence.json
