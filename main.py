@@ -2,7 +2,7 @@ import logging
 import argparse
 import time
 
-from internal.core.page_model import MarksPage, Login, Timetable
+from internal.core.page_model import MarksPage, Login, Timetable, Absence
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_utils import load_credentials
@@ -49,11 +49,17 @@ try:
 
     print(".", end="", flush=True)
 
-
     # ----- TIMETABLE ------ #
     timetable = Timetable(driver=driver, url=config.get_auto_cast("URLS", "timetable_url"))
     timetable.get()
     timetable.get_tt()
+
+    print(".", end="", flush=True)
+
+    # ----- ABSENCE ------ #
+    absence = Absence(driver=driver, url=config.get_auto_cast("URLS", "absence_url"))
+    absence.get()
+    absence.get_absence()
 
     print(".", end="", flush=True) 
 

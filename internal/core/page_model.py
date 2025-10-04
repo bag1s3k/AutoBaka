@@ -1,6 +1,6 @@
 ﻿import logging
 from datetime import datetime, timedelta
-from typing import Tuple
+from typing import Tuple, Any
 from abc import ABC
 
 from selenium.webdriver.common.by import By
@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from unidecode import unidecode
 
 from internal.filesystem.export import export_json, export_results
-from internal.filesystem.paths_constants import RAW_MARKS_OUTPUT, MARKS_OUTPUT, TIMETABLE_OUTPUT
+from internal.filesystem.paths_constants import RAW_MARKS_OUTPUT, MARKS_OUTPUT, TIMETABLE_OUTPUT, RAW_ABSENCE_OUTPUT
 from internal.utils.decorators import validate_output
 from internal.filesystem.ini_loader import config
 from internal.utils.logging_setup import setup_logging
@@ -363,3 +363,40 @@ class Timetable(BasePage):
             last_date="2025-10-10", # TODO: FIX ME
             dual=True
         )
+
+
+class Absence(BasePage):
+    """
+    Inherits BasePage
+    Use for get absence
+    """
+    def __init__(self, driver, url):
+        super().__init__(driver, url)
+
+        self.absence = []
+
+    def get_absence(self):
+        """
+        Specific logic to get absence
+        :return: empty dict if fail otherwise filled dict
+        """
+        try:
+            subjects = self._find_items((By.XPATH, "//tr[@class='dx-row dx-data-row']"))
+            for subject in subjects:
+                subjects_l = self._find_items((By.XPATH, "td"), parent=subject)
+                subject_str = [t.text for t in subjects_l]
+
+                self.absence.append({
+                    "subject": subject_str[0],
+                    "passed_lectures": int(subject_str[1]),
+                    "absence": int(subject_str[2]),
+                    "%": subject_str[3]
+                })
+
+            export_json(self.absence, RAW_ABSENCE_OUTPUT)
+
+            return self.absence
+
+        except Exception as e:
+            logger.exception(e)
+            return {}
