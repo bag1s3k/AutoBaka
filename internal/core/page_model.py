@@ -29,9 +29,11 @@ class BasePage(ABC):
         self.timeout = timeout
         self.url = url
 
-    @validate_output(error_msg=f"Moving to the target page failed url",
-                     success_msg=f"Moving to the target page successful url:",
-                     level="critical")
+    @validate_output(
+        error_msg=f"Moving to the target page failed url",
+        success_msg=f"Moving to the target page successful url:",
+        level="critical"
+    )
     def get(self):
         """Move to target page"""
         try:
@@ -41,9 +43,11 @@ class BasePage(ABC):
             logger.exception(e)
             return False
 
-    @validate_output(error_msg="Item on website not found",
-                 success_msg="Item on website found",
-                 level="warning")
+    @validate_output(
+        error_msg="Item on website not found",
+        success_msg="Item on website found",
+        level="warning"
+    )
     def _find_item(self, target: Tuple[str, str], parent=None) -> WebElement | None:
         """
         Find specific element on website
@@ -56,15 +60,18 @@ class BasePage(ABC):
 
         try:
             item = WebDriverWait(parent, self.timeout).until(
-                ec.presence_of_element_located(target))
+                ec.presence_of_element_located(target)
+            )
             return item
         except Exception as e:
             logger.warning(e)
             return None
 
-    @validate_output(error_msg="Items not found",
-                 success_msg="Items found",
-                 level="warning")
+    @validate_output(
+        error_msg="Items not found",
+        success_msg="Items found",
+        level="warning"
+    )
     def _find_items(self, target: Tuple[str, str], parent=None) -> list[WebElement] | None:
         """
         Find specific elements on website
@@ -77,7 +84,8 @@ class BasePage(ABC):
 
         try:
             item = WebDriverWait(parent, self.timeout).until(
-                ec.presence_of_all_elements_located(target))
+                ec.presence_of_all_elements_located(target)
+            )
             return item
         except Exception as e:
             logger.exception(e)
@@ -90,9 +98,11 @@ class Login(BasePage):
     Use for login
     """
 
-    @validate_output(error_msg="Login failed",
-                 success_msg="Login successful",
-                 level="critical")
+    @validate_output(
+        error_msg="Login failed",
+        success_msg="Login successful",
+        level="critical"
+    )
     def login(self, username, password) -> bool:
         """
         Specific login logic
@@ -128,9 +138,11 @@ class MarksPage(BasePage):
         super().__init__(driver, url)
         self.SUBJECTS = {}
 
-    @validate_output(error_msg="Getting marks failed",
-                 success_msg="Getting marks successful",
-                 level="critical")
+    @validate_output(
+        error_msg="Getting marks failed",
+        success_msg="Getting marks successful",
+        level="critical"
+    )
     def get_marks(self) -> dict[str, list[dict[str, str]]]:
         """
         Specific logic to get marks
@@ -140,7 +152,7 @@ class MarksPage(BasePage):
             logger.info("Looking for an element on page with marks")
 
             marks_line = self._find_items(target=(By.XPATH,
-                                                       "//tbody//tr[//td "
+                                                        "//tbody//tr[//td "
                                                         "and contains(@class, 'dx-row') "
                                                         "and contains(@class, 'dx-data-row') "
                                                         "and contains(@class, 'dx-row-lines')]"))
@@ -184,9 +196,11 @@ class MarksPage(BasePage):
             self.SUBJECTS = {}
             return self.SUBJECTS
 
-    @validate_output(error_msg="Processing marks failed or there are no marks",
-                     success_msg="Processing marks successful",
-                     level="error")
+    @validate_output(
+        error_msg="Processing marks failed or there are no marks",
+        success_msg="Processing marks successful",
+        level="error"
+    )
     def process_marks(self) -> bool:
         """
         Specific logit to process marks
@@ -344,7 +358,8 @@ class Timetable(BasePage):
         self._find_item((By.XPATH, self.NEXT_TT_BTN)).click()
         self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
         self._find_item((By.XPATH, self.PERMANENT_TT_BTN)).click()
-        self._extract_tt(days_xpath=self.PERMANENT_TT_DAYS,
-                   last_date="2025-10-10",
-                    dual=True) # TODO: FIX ME
-
+        self._extract_tt(
+            days_xpath=self.PERMANENT_TT_DAYS,
+            last_date="2025-10-10", # TODO: FIX ME
+            dual=True
+        )
