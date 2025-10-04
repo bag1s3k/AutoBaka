@@ -10,9 +10,11 @@ from internal.utils.decorators import validate_output
 logger = logging.getLogger(__name__)
 
 
-@validate_output(error_msg="Webdriver setup failed",
-             success_msg="Webdriver setup successfully completed",
-             level="error")
+@validate_output(
+    error_msg="Webdriver setup failed",
+    success_msg="Webdriver setup successfully completed",
+    level="error"
+)
 def setup_driver():
     """
     Setup chromedriver
