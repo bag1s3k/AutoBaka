@@ -6,7 +6,6 @@ from internal.core.page_model import MarksPage, Login, Timetable
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_utils import load_credentials
-from internal.filesystem.export import export_results
 from internal.filesystem.paths_constants import PROJECT_ROOT
 from internal.filesystem.ini_loader import config
 from internal.utils.cloud_backup.backup import run_buckup
@@ -42,15 +41,16 @@ try:
 
     print(".", end="", flush=True)
 
-    # Marks page
+    # ----- MARKS ------ #
     marks_page = MarksPage(driver=driver, url=config.get_auto_cast("URLS", "marks_url"))
     marks_page.get()
     marks_page.get_marks()
     marks_page.process_marks()
 
-    print(".", end="", flush=True) 
+    print(".", end="", flush=True)
 
-    # TIMETABLE PAGE
+
+    # ----- TIMETABLE ------ #
     timetable = Timetable(driver=driver, url=config.get_auto_cast("URLS", "timetable_url"))
     timetable.get()
     timetable.get_tt()
@@ -62,9 +62,6 @@ try:
         driver.quit()
         logger.info("driver was successfully quit")
     logger.info("Drive was successfully terminated")
-
-    # ------------------------------------ EXPORTING RESULTS ------------------------------------ #
-
 
     print(". Successfully", flush=True) # CLI PRINT
 
