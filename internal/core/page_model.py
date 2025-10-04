@@ -266,7 +266,7 @@ class Timetable(BasePage):
         self.SEMESTER_END = datetime.strptime(config.get_auto_cast("DATES", "semester1_end"), "%Y-%m-%d").date()
         self.timetable = {}
 
-    def _extract_tt(self, days_xpath, date_xpath, lectures_xpath, last_date=None) -> dict:
+    def _extract_tt(self, days_xpath, date_xpath, lectures_xpath, last_date=None, dual=False) -> dict:
         """
         Specific logic to get specific timetable
         :param days_xpath:
@@ -285,17 +285,31 @@ class Timetable(BasePage):
             n = 3 # TODO: FIX ME
             for day in days:
                 year = datetime.now().year
+                lectures = []
 
-                # If None, use calculated date otherwise use date from website
-                if date_xpath is not None:
+                # ------------------- SINGLE LECTURE WEEK -------------------- #
+                if not dual:
                     date_raw = self._find_item((By.XPATH, date_xpath), parent=day)
                     date_raw = datetime.strptime(f"{date_raw.text}/{year}", "%d/%m/%Y")
+                    lectures_t = self._find_items((By.XPATH, lectures_xpath), parent=day)
+                    lectures = [i.text for i in lectures_t]
+
+                # ------------------------ DUAL TT ----------------------- #
                 else:
                     new_last_date = datetime.strptime(str(f"{last_date}"), "%Y-%m-%d")
                     date_raw = new_last_date + timedelta(days=n)
                     n += 1 # TODO: FIX ME
 
-                lectures = self._find_items((By.XPATH, lectures_xpath), parent=day)
+                    double_lectures = self._find_items((By.XPATH, ".//div/div/span/div"), parent=day)
+
+                    for single_lecture in double_lectures:
+                        double_lecture = self._find_items((By.XPATH, ".//div[@class='empty'] | .//div/div/div[2]"), parent=single_lecture)
+                        temp = [i.text for i in double_lecture]
+                        for i, x in enumerate(temp[:]):
+                            if  i % 2 == 0: temp.remove(x)
+
+                        lectures.append(temp)
+
 
                 # skip Sat, Sun
                 if date_raw.weekday() in [6, 7]:
@@ -304,7 +318,7 @@ class Timetable(BasePage):
                 date = date_raw.date().isoformat()
                 new_dict[date] = []
                 for lecture in lectures:
-                    new_dict[date].append(lecture.text)
+                    new_dict[date].append(lecture)
 
                 # One day of timetable should have 10 lessons
                 if (n_timetable := len(new_dict[date])) != 10:
@@ -330,7 +344,8 @@ class Timetable(BasePage):
         permanent_tt = self._extract_tt(days_xpath=self.PERMANENT_TT_DAYS,
                    date_xpath=None,
                    lectures_xpath=self.PERMANENT_TT_LECTURES,
-                   last_date="2025-10-10") # TODO: FIX ME
+                   last_date="2025-10-10",
+                    dual=True) # TODO: FIX ME
 
         self.process_tt(current_tt)
         self.process_tt(next_tt)
