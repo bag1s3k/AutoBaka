@@ -11,9 +11,11 @@ setup_logging()
 logger = logging.getLogger(__name__)
 
 
-@validate_output(error_msg="Loading credentials failed",
-             success_msg="Loading credentials successfully completed",
-             level="critical")
+@validate_output(
+    error_msg="Loading credentials failed",
+    success_msg="Loading credentials successfully completed",
+    level="critical"
+)
 def load_credentials(parser) -> tuple:
     """
     Using argparse load login details
@@ -39,9 +41,11 @@ def load_credentials(parser) -> tuple:
     return arg.login_details
 
 
-@validate_output(error_msg="Retrieving credentials from file failed",
-             success_msg="Loading credentials from file successful",
-             level="critical")
+@validate_output(
+    error_msg="Retrieving credentials from file failed",
+    success_msg="Loading credentials from file successful",
+    level="critical"
+)
 def load_credentials_from_file() -> tuple:
     """
     Loading login details from .env file
