@@ -3,7 +3,6 @@ import argparse
 import time
 
 from internal.core.page_model import MarksPage, Login, Timetable
-from internal.core.web_processor import process_marks
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_utils import load_credentials
@@ -47,15 +46,16 @@ try:
     marks_page = MarksPage(driver=driver, url=config.get_auto_cast("URLS", "marks_url"))
     marks_page.get()
     marks_page.get_marks()
+    marks_page.process_marks()
 
-    print(".", end="", flush=True) 
+    print(".", end="", flush=True)
 
     # TIMETABLE PAGE
     timetable = Timetable(driver=driver, url=config.get_auto_cast("URLS", "timetable_url"))
     timetable.get()
-    timetable.get_timetable()
+    timetable.get_tt()
 
-    print(".", end="", flush=True) 
+    print(".", end="", flush=True)
 
     # --------------------------------------- TERMINATE WEBDRIVER ----------------------------- #
     if config.get_auto_cast("SETTINGS", "quit_driver"):  # let window open or close it
@@ -63,13 +63,8 @@ try:
         logger.info("driver was successfully quit")
     logger.info("Drive was successfully terminated")
 
-    # ------------------------------------ PROCESSING MARKS ------------------------------------ #
-    processed_marks = process_marks(marks_page.SUBJECTS)
-
-    print(".", end="", flush=True) # CLI PRINT
-
     # ------------------------------------ EXPORTING RESULTS ------------------------------------ #
-    export_results(processed_marks, config.get_auto_cast("PATHS", "result_path"))
+
 
     print(". Successfully", flush=True) # CLI PRINT
 

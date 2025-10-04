@@ -9,8 +9,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from unidecode import unidecode
 
-from internal.filesystem.export import export_json
-from internal.filesystem.paths_constants import JSON_RAW_OUTPUT_PATH
+from internal.filesystem.export import export_json, export_results
+from internal.filesystem.paths_constants import JSON_RAW_OUTPUT_PATH, JSON_OUTPUT_PATH
 from internal.utils.decorators import validate_output
 from internal.filesystem.ini_loader import config
 from internal.utils.logging_setup import setup_logging
@@ -131,7 +131,7 @@ class MarksPage(BasePage):
     @validate_output(error_msg="Getting marks failed",
                  success_msg="Getting marks successful",
                  level="critical")
-    def get_marks(self) -> bool | dict[str, list]:
+    def get_marks(self) -> dict[str, list[dict[str, str]]]:
         """
         Specific logic to get marks
         :return: if not empty dict successful otherwise empty dict
@@ -184,6 +184,68 @@ class MarksPage(BasePage):
             self.SUBJECTS = {}
             return self.SUBJECTS
 
+    @validate_output(error_msg="Processing marks failed or there are no marks",
+                     success_msg="Processing marks successful",
+                     level="error")
+    def process_marks(self) -> bool:
+        """
+        Specific logit to process marks
+
+        :return subjects: sorted dict of processed marks
+        """
+
+        if not self.SUBJECTS: return False
+
+        logger.info(f"Processing marks")
+
+        # (1- -> 1.5) or N don't add to the list and Calculate average
+        text_to_num = [4.5, 3.5, 2.5, 1.5]
+        for subject, list_subject in self.SUBJECTS.items():
+            logger.info(f"Processing subject: {subject}")
+            try:
+                marks = []
+                for dict_mark in list_subject:
+                    if "-" in dict_mark["mark"]:
+                        dict_mark["mark"] = text_to_num[-int(dict_mark["mark"][
+                                                                 0])]  # take 1. char of '2-' => 2 and 2 * (-1) => -2 is index of a list (text_to_num)
+                    elif dict_mark["mark"].isdigit():
+                        dict_mark["mark"] = int(dict_mark["mark"])
+                    else:
+                        continue
+
+                    marks.append([dict_mark["mark"], dict_mark["weight"]])
+
+                # Calculate averages
+                logger.info("Calculating average")
+
+                mark_times_weight = 0
+                weight_sum = 0
+
+                for mark in marks:
+                    mark_times_weight += float(mark[0]) * float(mark[1])
+                    weight_sum += float(mark[1])
+
+                average = 0
+                if weight_sum != 0:
+                    average = round(mark_times_weight / weight_sum, 2)
+                else:
+                    logger.warning(f"{subject} has no weight")
+
+                self.SUBJECTS[subject].append({"avg": average})
+
+                # Export marks to json file
+                export_json(self.SUBJECTS, JSON_OUTPUT_PATH)
+
+            except Exception as e:
+                logger.exception(f"Something happened during processing marks: {e}")
+                return False
+
+        self.SUBJECTS = dict(sorted(self.SUBJECTS.items()))
+        export_results(self.SUBJECTS, config.get_auto_cast("PATHS", "result_path"))
+
+        return True
+
+
 class Timetable(BasePage):
     """
     Inherits BasePage
@@ -204,7 +266,7 @@ class Timetable(BasePage):
         self.SEMESTER_END = datetime.strptime(config.get_auto_cast("DATES", "semester1_end"), "%Y-%m-%d").date()
         self.timetable = {}
 
-    def _extract_tt(self, days_xpath, date_xpath, lectures_xpath, last_date=None) -> bool:
+    def _extract_tt(self, days_xpath, date_xpath, lectures_xpath, last_date=None) -> dict:
         """
         Specific logic to get specific timetable
         :param days_xpath:
@@ -214,12 +276,13 @@ class Timetable(BasePage):
         :return: True if successful otherwise False
         """
         try:
+            new_dict = {}
             days = self._find_items((By.XPATH, days_xpath))
 
             if n_days := len(days) != 5:
                 logger.debug(f"Wrong amount of days: {n_days} there must be 5")
 
-            n = 3
+            n = 3 # TODO: FIX ME
             for day in days:
                 year = datetime.now().year
 
@@ -230,7 +293,7 @@ class Timetable(BasePage):
                 else:
                     new_last_date = datetime.strptime(str(f"{last_date}"), "%Y-%m-%d")
                     date_raw = new_last_date + timedelta(days=n)
-                    n += 1
+                    n += 1 # TODO: FIX ME
 
                 lectures = self._find_items((By.XPATH, lectures_xpath), parent=day)
 
@@ -239,32 +302,44 @@ class Timetable(BasePage):
                     continue
 
                 date = date_raw.date().isoformat()
-                self.timetable[date] = []
+                new_dict[date] = []
                 for lecture in lectures:
-                    self.timetable[date].append(lecture.text)
+                    new_dict[date].append(lecture.text)
 
                 # One day of timetable should have 10 lessons
-                if (n_timetable := len(self.timetable[date])) != 10:
+                if (n_timetable := len(new_dict[date])) != 10:
                     logger.debug(f"Wrong amount of lectures: {n_timetable} there must be 10")
 
-            return True
+            return new_dict
 
         except Exception as e:
             logger.exception(f"Something unexcepted happened: {e}")
-            return False
+            return {}
+
 
     # TODO: CHECK OUTPUT !!!
-
-    def get_timetable(self):
+    def get_tt(self):
         """
         It's help func, it calls other functions (extract_tt or find_item)
         :return: true if successful otherwise None
         """
-        self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
+        current_tt = self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
         self._find_item((By.XPATH, self.NEXT_TT_BTN)).click()
-        self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
+        next_tt= self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
         self._find_item((By.XPATH, self.PERMANENT_TT_BTN)).click()
-        self._extract_tt(days_xpath=self.PERMANENT_TT_DAYS,
+        permanent_tt = self._extract_tt(days_xpath=self.PERMANENT_TT_DAYS,
                    date_xpath=None,
                    lectures_xpath=self.PERMANENT_TT_LECTURES,
-                   last_date="2025-10-10")
+                   last_date="2025-10-10") # TODO: FIX ME
+
+        self.process_tt(current_tt)
+        self.process_tt(next_tt)
+        self.process_tt(permanent_tt)
+
+    def rework_permanent_tt(self):
+        pass
+
+    @staticmethod
+    def process_tt(timetable):
+        for k, v in timetable.items():
+            print(k, v)
