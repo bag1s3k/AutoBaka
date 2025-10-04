@@ -9,7 +9,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from unidecode import unidecode
 
-from internal.filesystem.export import export_json
+from internal.filesystem.export import export_json, export_results
 from internal.filesystem.paths_constants import JSON_RAW_OUTPUT_PATH, JSON_OUTPUT_PATH
 from internal.utils.decorators import validate_output
 from internal.filesystem.ini_loader import config
@@ -187,14 +187,14 @@ class MarksPage(BasePage):
     @validate_output(error_msg="Processing marks failed or there are no marks",
                      success_msg="Processing marks successful",
                      level="error")
-    def process_marks(self) -> dict[str, list[dict[str, object]]]:
+    def process_marks(self) -> bool:
         """
         Specific logit to process marks
 
         :return subjects: sorted dict of processed marks
         """
 
-        if not self.SUBJECTS: return self.SUBJECTS
+        if not self.SUBJECTS: return False
 
         logger.info(f"Processing marks")
 
@@ -238,10 +238,12 @@ class MarksPage(BasePage):
 
             except Exception as e:
                 logger.exception(f"Something happened during processing marks: {e}")
-                return {}
+                return False
 
         self.SUBJECTS = dict(sorted(self.SUBJECTS.items()))
-        return  self.SUBJECTS
+        export_results(self.SUBJECTS, config.get_auto_cast("PATHS", "result_path"))
+
+        return True
 
 
 class Timetable(BasePage):
@@ -264,7 +266,7 @@ class Timetable(BasePage):
         self.SEMESTER_END = datetime.strptime(config.get_auto_cast("DATES", "semester1_end"), "%Y-%m-%d").date()
         self.timetable = {}
 
-    def _extract_tt(self, days_xpath, date_xpath, lectures_xpath, last_date=None) -> bool:
+    def _extract_tt(self, days_xpath, date_xpath, lectures_xpath, last_date=None) -> dict:
         """
         Specific logic to get specific timetable
         :param days_xpath:
@@ -274,12 +276,13 @@ class Timetable(BasePage):
         :return: True if successful otherwise False
         """
         try:
+            new_dict = {}
             days = self._find_items((By.XPATH, days_xpath))
 
             if n_days := len(days) != 5:
                 logger.debug(f"Wrong amount of days: {n_days} there must be 5")
 
-            n = 3
+            n = 3 # TODO: FIX ME
             for day in days:
                 year = datetime.now().year
 
@@ -290,7 +293,7 @@ class Timetable(BasePage):
                 else:
                     new_last_date = datetime.strptime(str(f"{last_date}"), "%Y-%m-%d")
                     date_raw = new_last_date + timedelta(days=n)
-                    n += 1
+                    n += 1 # TODO: FIX ME
 
                 lectures = self._find_items((By.XPATH, lectures_xpath), parent=day)
 
@@ -299,19 +302,19 @@ class Timetable(BasePage):
                     continue
 
                 date = date_raw.date().isoformat()
-                self.timetable[date] = []
+                new_dict[date] = []
                 for lecture in lectures:
-                    self.timetable[date].append(lecture.text)
+                    new_dict[date].append(lecture.text)
 
                 # One day of timetable should have 10 lessons
-                if (n_timetable := len(self.timetable[date])) != 10:
+                if (n_timetable := len(new_dict[date])) != 10:
                     logger.debug(f"Wrong amount of lectures: {n_timetable} there must be 10")
 
-            return True
+            return new_dict
 
         except Exception as e:
             logger.exception(f"Something unexcepted happened: {e}")
-            return False
+            return {}
 
 
     # TODO: CHECK OUTPUT !!!
@@ -320,18 +323,23 @@ class Timetable(BasePage):
         It's help func, it calls other functions (extract_tt or find_item)
         :return: true if successful otherwise None
         """
-        self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
+        current_tt = self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
         self._find_item((By.XPATH, self.NEXT_TT_BTN)).click()
-        self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
+        next_tt= self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
         self._find_item((By.XPATH, self.PERMANENT_TT_BTN)).click()
-        self._extract_tt(days_xpath=self.PERMANENT_TT_DAYS,
+        permanent_tt = self._extract_tt(days_xpath=self.PERMANENT_TT_DAYS,
                    date_xpath=None,
                    lectures_xpath=self.PERMANENT_TT_LECTURES,
-                   last_date="2025-10-10")
-    
+                   last_date="2025-10-10") # TODO: FIX ME
+
+        self.process_tt(current_tt)
+        self.process_tt(next_tt)
+        self.process_tt(permanent_tt)
+
     def rework_permanent_tt(self):
         pass
-    
-    def process_tt(self):
-        for k, v in self.timetable.items():
+
+    @staticmethod
+    def process_tt(timetable):
+        for k, v in timetable.items():
             print(k, v)
