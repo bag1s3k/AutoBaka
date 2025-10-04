@@ -28,7 +28,10 @@ def export_results(subjects, path) -> bool:
         return False
 
 
-@validate_output("Exporting failed or nothing to export", "Exporting successful", "warning")
+@validate_output(
+    error_msg="Exporting failed or nothing to export",
+    success_msg="Exporting successful",
+    level="warning")
 def export_json(item, path) -> bool:
     """
     Export marks to JSON file
