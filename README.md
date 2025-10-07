@@ -73,19 +73,15 @@ The user enters their login credentials to Bakaláři system. The app uses Selen
 
 ```
 autobaka
- ┣ cli
- ┃ ┗ cli.py
  ┣ config
  ┃ ┣ .env
- ┃ ┣ .env.template
  ┃ ┣ config.ini
- ┃ ┗ config.ini.template
- ┣ gui
- ┃ ┗ gui.py
+ ┣ docs
+ ┃ ┣ autobaka_baner.png
+ ┃ ┗ screenshot_chronological.png
  ┣ internal
  ┃ ┣ core
- ┃ ┃ ┣ marks_processor.py
- ┃ ┃ ┗ web_navigation.py
+ ┃ ┃ ┗ page_model.py
  ┃ ┣ filesystem
  ┃ ┃ ┣ env_utils.py
  ┃ ┃ ┣ export.py
@@ -95,14 +91,13 @@ autobaka
  ┃ ┃ ┣ arg_parser.py
  ┃ ┃ ┣ decorators.py
  ┃ ┃ ┣ logging_setup.py
- ┃ ┃ ┣ selenium_setup.py
- ┃ ┃ ┗ var_validator.py
+ ┃ ┃ ┗ selenium_setup.py
  ┣ output
  ┃ ┣ marks.json
  ┃ ┣ project_log.log
- ┃ ┣ project_log.log.template
- ┃ ┗ raw_marks.json
- ┣ .gitignore
+ ┃ ┣ raw_absence.json
+ ┃ ┣ raw_marks.json
+ ┃ ┗ timetable.json
  ┣ LICENSE
  ┣ main.py
  ┣ README.md
