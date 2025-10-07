@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 def create_agr_parser(parser,
-                      arg_name, # "name" or ["--name", "-n"]
+                      arg_name,
                       action="store",
                       nargs=None,
                       const=None,
