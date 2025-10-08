@@ -1,16 +1,11 @@
 ﻿import logging
-from datetime import datetime, timedelta
-from typing import Tuple, Any
+from typing import Tuple
 from abc import ABC
 
-from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-from unidecode import unidecode
 
-from internal.filesystem.export import export_json, export_results
-from internal.filesystem.paths_constants import RAW_MARKS_OUTPUT, MARKS_OUTPUT, TIMETABLE_OUTPUT, RAW_ABSENCE_OUTPUT
 from internal.utils.decorators import validate_output
 from internal.filesystem.ini_loader import config
 from internal.utils.logging_setup import setup_logging
