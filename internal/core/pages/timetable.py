@@ -54,23 +54,23 @@ class Timetable(BasePage):
             if n_days := len(days) != 5:
                 logger.debug(f"Wrong amount of days: {n_days} there must be 5")
 
-            n = 3  # TODO: FIX ME
+            which_day = 1  # 1 stands for Monday...
             for day in days:
-                year = datetime.now().year
+                year: int = datetime.now().year
                 lectures = []
 
                 # ------- SINGLE TT ------ #
                 if not dual:
-                    date_raw = self._find_item((By.XPATH, date_xpath), parent=day)
-                    date_raw = datetime.strptime(f"{date_raw.text}/{year}", "%d/%m/%Y")
-                    lectures_t = self._find_items((By.XPATH, lectures_xpath), parent=day)
-                    lectures = [i.text for i in lectures_t]
+                    date_webelement = self._find_item((By.XPATH, date_xpath), parent=day)
+                    date = datetime.strptime(f"{date_webelement.text}/{year}", "%d/%m/%Y")
+                    lectures_webelement = self._find_items((By.XPATH, lectures_xpath), parent=day)
+                    lectures = [i.text for i in lectures_webelement]
 
                 # ------- DUAL TT ------- #
                 else:
-                    new_last_date = datetime.strptime(str(f"{last_date}"), "%Y-%m-%d")
-                    date_raw = new_last_date + timedelta(days=n)
-                    n += 1  # TODO: FIX ME
+                    new_last_date = datetime.strptime(str(f"{last_date}"), "%Y-%m-%d") + timedelta(days=2)
+                    date = new_last_date + timedelta(days=which_day)
+                    which_day += 1
 
                     double_lectures = self._find_items((By.XPATH, ".//div/div/span/div"), parent=day)
 
@@ -85,7 +85,7 @@ class Timetable(BasePage):
                         lectures.append(lectures_to_string)
 
                 # Fill dict
-                date = date_raw.date().isoformat()
+                date = date.date().isoformat()
                 self.timetable[date] = []
                 for lecture in lectures:
                     self.timetable[date].append(lecture)
