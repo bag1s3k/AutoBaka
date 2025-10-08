@@ -1,11 +1,17 @@
 [PATHS]
 result_path = path\result.txt
+
 [URLS]
 login_url = https://bakaweb.school.cz/login
 marks_url = https://bakaweb.school.cz/next/prubzna.aspx?s=chrono
+timetable_url = https://bakaweb.school.cz/next/rozvrh.aspx
+absence_url = https://bakaweb.school.cz/Absence/Continuous
 
 [SETTINGS]
 timeout = 15
 headless_mode = True
 quit_driver = True
 export_format = json
+
+[DATES]
+semester1_end = 2000-01-01
