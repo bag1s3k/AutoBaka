@@ -29,7 +29,7 @@ def load_credentials(parser) -> tuple:
         arg_name=["--login", "-l"],
         nargs=2,
         default=load_credentials_from_file(),
-        help_text="enter login details as USERNAME PASSWORD",
+        help_text="Enter login details in form USERNAME PASSWORD e.g. python main.py -l username password",
         metavar=("USERNAME", "PASSWORD"),
         dest="login_details",
     )
