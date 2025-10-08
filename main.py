@@ -2,8 +2,8 @@ import logging
 import argparse
 import time
 
-from internal.core import Absence
-from internal.core.page_model import MarksPage, Login, Timetable
+from internal.core import Absence, Marks
+from internal.core.page_model import Login, Timetable
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_utils import load_credentials
@@ -43,7 +43,7 @@ try:
     print(".", end="", flush=True)
 
     # ----- MARKS ------ #
-    marks_page = MarksPage(driver=driver, url=config.get_auto_cast("URLS", "marks_url"))
+    marks_page = Marks(driver=driver, url=config.get_auto_cast("URLS", "marks_url"))
     marks_page.get()
     marks_page.get_marks()
     marks_page.process_marks()
