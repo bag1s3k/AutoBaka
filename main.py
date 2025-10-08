@@ -2,8 +2,8 @@ import logging
 import argparse
 import time
 
-from internal.core import Absence, Marks
-from internal.core.page_model import Login, Timetable
+from internal.core import Absence, Marks, Timetable
+from internal.core.page_model import Login
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_utils import load_credentials
