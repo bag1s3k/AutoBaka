@@ -19,20 +19,19 @@ logger = logging.getLogger(__name__)
 if not PROJECT_ROOT.exists():
     logger.error("Project root folder doesn't exist")
 
+driver = setup_driver()
 
-driver = None
+# Load login details and create main_parser
+main_parser = argparse.ArgumentParser(
+    prog=__name__,
+    description="parses cmd-line args to extract user credentials (username and password)",
+)
+
+username, password = load_credentials(main_parser)
+
+print(".", end="", flush=True) # progress print
+
 try:
-    driver = setup_driver()
-
-    # Load login details and create main_parser
-    main_parser = argparse.ArgumentParser(
-        prog=__name__,
-        description="parses cmd-line args to extract user credentials (username and password)",
-    )
-    username, password = load_credentials(main_parser)
-
-    print(".", end="", flush=True) # progress print
-
     # ------------------------------------- ON WEBSITE -------------------------------------- #
     login = Login(driver=driver, url=config.get_auto_cast("URLS", "login_url"))
     login.get()
@@ -79,7 +78,7 @@ except Exception as e: logger.exception(f"Unexpectedly error... {str(e)}")
 #     if driver:
 #         try:
 #             logger.info("Terminate webdriver")
-#             if config.get_auto_cast_config("SETTINGS", "quit_driver"):  # let window open or close it
+#             if config.get_auto_cast("SETTINGS", "quit_driver"):  # let window open or close it
 #                 driver.quit()
 #                 logger.info("driver was successfully quit")
 #             logger.info("Drive was successfully terminated")
