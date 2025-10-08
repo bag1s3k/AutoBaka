@@ -2,7 +2,7 @@ import logging
 import argparse
 import time
 
-from internal.core.page_model import MarksPage, Login, Timetable, Absence
+from internal.core import Absence, Marks, Timetable, Login
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_utils import load_credentials
@@ -42,7 +42,7 @@ try:
     print(".", end="", flush=True)
 
     # ----- MARKS ------ #
-    marks_page = MarksPage(driver=driver, url=config.get_auto_cast("URLS", "marks_url"))
+    marks_page = Marks(driver=driver, url=config.get_auto_cast("URLS", "marks_url"))
     marks_page.get()
     marks_page.get_marks()
     marks_page.process_marks()
@@ -90,4 +90,4 @@ except Exception as e: logger.exception(f"Unexpectedly error... {str(e)}")
 
 print(f"{round(time.time() - start_time, 5)}s")
 
-run_buckup() # it's only for me, it creates copy of the whole project except some files and folders
+# run_buckup() # it's only for me, it creates copy of the whole project except some files and folders
