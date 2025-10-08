@@ -20,10 +20,8 @@ def load_credentials(parser) -> tuple:
     """
     Using argparse load login details
     (default option is load credentials from file)
-
     :return arg.login_details:  (username, password)
     """
-
     arg = create_agr_parser(
         parser,
         arg_name=["--login", "-l"],
@@ -33,7 +31,7 @@ def load_credentials(parser) -> tuple:
         metavar=("USERNAME", "PASSWORD"),
         dest="login_details",
     )
-
+    
     if not arg:
         logger.critical("Retrieving credentials failed")
         return None, None
@@ -52,32 +50,23 @@ def load_credentials_from_file() -> tuple:
 
     :return: username, password: (username, password) or (None, None) if failed
     """
-    try:
-        # Does the file exist
-        if not ENV_PATH.exists():
-            logger.error(f"ENV path doesn't exist: env path {ENV_PATH}")
-            return None, None
-
-        # Loading .env file
-        env_loaded = load_dotenv(ENV_PATH)
-
-        if not env_loaded:
-            logger.error("env file cannot be loaded")
-            return None, None
-
-        # Check variables
-        def check_env_var(var_name: str) -> str:
-            value = os.getenv(var_name)
-            if not value or not value.strip():
-                logger.error("Username or password not found in .env")
-
-            return value
-
-        username = check_env_var("BAKA_USERNAME")
-        password = check_env_var("BAKA_PASSWORD")
-
-        return username, password
-
-    except Exception as e:
-        logger.exception(f"Issue while loading login details: {str(e)}")
+    if not ENV_PATH.exists():
+        logger.error(f"ENV path doesn't exist: env path {ENV_PATH}")
         return None, None
+
+    if not load_dotenv(ENV_PATH):
+        logger.error("env file cannot be loaded")
+        return None, None
+
+    # Check variables
+    def check_env_var(var_name: str) -> str:
+        value = os.getenv(var_name)
+        if not value or not value.strip():
+            logger.error("Username or password not found in .env")
+
+        return value
+
+    username = check_env_var("BAKA_USERNAME")
+    password = check_env_var("BAKA_PASSWORD")
+
+    return username, password
