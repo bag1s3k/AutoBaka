@@ -2,11 +2,11 @@
 .venv/
 config/config.ini
 config/.env
-output/project_log.log
+output/log/project_log.log
 __pycache__/
 temp/
-output/marks.json
-output/raw_marks.json
+output/marks/marks.json
+output/marks/raw_marks.json
 tests
 internal/utils/cloud_backup
 .vscode/
