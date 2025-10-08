@@ -1,5 +1,11 @@
-﻿from internal.filesystem.paths_constants import INI_PATH
+﻿import logging
 import configparser
+
+from internal.filesystem.paths_constants import INI_PATH
+from internal.utils.logging_setup import setup_logging
+
+setup_logging()
+logger = logging.getLogger(__name__)
 
 
 class AutoCastConfigParser(configparser.ConfigParser):
@@ -10,8 +16,12 @@ class AutoCastConfigParser(configparser.ConfigParser):
         :param option: name of the option
         :return Union[int, bool, str]: best-match
         """
+        try:
+            value = super().get(section, option)
+        except Exception as e:
+            logger.exception(e)
+            return None
 
-        value = super().get(section, option)
 
         if value in ["True", "False"]:
             return True if value == "True" else False
