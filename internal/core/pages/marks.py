@@ -1,3 +1,20 @@
+import logging
+
+from selenium.webdriver.common.by import By
+from unidecode import unidecode
+
+from ..page_model import BasePage
+from internal.utils.decorators import validate_output
+from internal.utils.logging_setup import setup_logging
+from internal.filesystem.export import export_json, export_results
+from internal.filesystem.paths_constants import RAW_MARKS_OUTPUT, MARKS_OUTPUT
+from internal.filesystem.ini_loader import config
+
+
+setup_logging()
+logger = logging.getLogger(__name__)
+
+
 class MarksPage(BasePage):
     """
     Inherits from BasePage
