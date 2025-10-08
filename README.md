@@ -10,7 +10,6 @@
 Our school blocked access to our grade averages, so I came with an idea. After doing some research, I found two options: Selenium or BeautifulSoup. Thanks the responsive layout of the Baka page, I chose Selenium.
 
 
-
 ## Table of Contents
 
 - [AutoBaka App](#autobaka-app)
@@ -23,8 +22,6 @@ Our school blocked access to our grade averages, so I came with an idea. After d
   - [Installation](#installation)
   - [Requirements](#requirements)
   - [Usage](#usage)
-    - [Run main script](#run-main-script)
-      - [Procedure with WINDOWS 11](#procedure-with-windows-11)
   - [Examples](#examples)
   - [Features](#features)
   - [Contributing](#contributing)
@@ -46,42 +43,31 @@ The user enters their login credentials to Bakaláři system. The app uses Selen
 
     > Ideal for students whose school has hidden the average and who just don’t want to calculate them manually.
 
-[//]: # (2. Calculating absense)
-[//]: # ()
-[//]: # (    > It quickly shows you how many lessons you will miss, and gives your absence percentage — without using Bakaláři system. )
-[//]: # (    > ⚠️ **Note:** Be cautious - some lessons may be replaced, cancelled, or rescheduled. The data is based on your current timetable.)
-
 ### Variants
 
 | Variant    | Stable | Version |
 |------------|--------|--------|
 | Windows 11 |   ✅   | ✅   | 1.2.0 |
 
-[//]: # (| Android | ❌ | ❌ | ❌ | ❌ | 0 |)
-[//]: # (| Website | ❌ | ❌ | ❌ | ❌ | 0 |)
-- single script
-
-[//]: # (- UI desktop &#40;windows/linux/macOS&#41; Maybe!)
-
-[//]: # (- CLI &#40;windows/linux/macOS&#41; Maybe!)
-
-[//]: # (- Mobile &#40;android/IOS&#41; Maybe!)
-
-[//]: # (- Website <https://autobaka.cz> Maybe!)
-
 ### Structure
 
 ```
 autobaka
  ┣ config
- ┃ ┣ .env
- ┃ ┣ config.ini
+ ┃ ┣ .env.template
+ ┃ ┗ config.ini.template
  ┣ docs
  ┃ ┣ autobaka_baner.png
  ┃ ┗ screenshot_chronological.png
  ┣ internal
  ┃ ┣ core
- ┃ ┃ ┗ page_model.py
+ ┃ ┃ ┣ pages
+ ┃ ┃ ┃ ┣ absence.py
+ ┃ ┃ ┃ ┣ login.py
+ ┃ ┃ ┃ ┣ marks.py
+ ┃ ┃ ┃ ┗ timetable.py
+ ┃ ┃ ┣ page_model.py
+ ┃ ┃ ┗ __init__.py
  ┃ ┣ filesystem
  ┃ ┃ ┣ env_utils.py
  ┃ ┃ ┣ export.py
@@ -93,11 +79,16 @@ autobaka
  ┃ ┃ ┣ logging_setup.py
  ┃ ┃ ┗ selenium_setup.py
  ┣ output
- ┃ ┣ marks.json
- ┃ ┣ project_log.log
- ┃ ┣ raw_absence.json
- ┃ ┣ raw_marks.json
- ┃ ┗ timetable.json
+ ┃ ┣ absence
+ ┃ ┃ ┗ raw_absence.json.template
+ ┃ ┣ log
+ ┃ ┃ ┗ project_log.log.template
+ ┃ ┣ marks
+ ┃ ┃ ┣ marks.json.template
+ ┃ ┃ ┗ raw_marks.json.template
+ ┃ ┗ timetable
+ ┃ ┃ ┗ timetable.json.template
+ ┣ .gitignore
  ┣ LICENSE
  ┣ main.py
  ┣ README.md
@@ -128,11 +119,7 @@ You can try others, but compatibility is not guaranteed. **(I'm regularly updati
 
 ## Usage
 
-### Run main script
-
-Just get your average grades without any interface  
-
-#### Procedure with WINDOWS 
+Every file in repo which is template e.g. `.env.template` rename it by removing `.template`
 
 Set your login details to `config\.env`
 
@@ -155,22 +142,28 @@ result_path = c:\example\result.txt
 [URLS]
 login_url = https://baka.website/login # login page
 marks_url = https://baka.website/next/prubzna.aspx?s=chrono
+timetable_url = https://bakaweb.school.cz/next/rozvrh.aspx
+absence_url = https://bakaweb.school.cz/Absence/Continuous
 ```
 
-`marks_url` Login to your bakaláři website interface > Grade > Interim Grading > Chronological button and **copy url**
+To get url, login to your bakaláři website interface then go:
 
+`marks_url` Grade > Interim Grading > Chronological button`
 
 <p><img src="docs/screenshot_chronological.png" alt="Chronological button" style="width:100%;"/></p>
+
+`timetable_url` Schooling > ...
+
+`absence_url` ...
 
 ```ini
 [SETTINGS]
 timeout = 15 # default and required but you can try different
 headless_mode = True # Wanna see what is happening
-quit_driver = True # If you wanna close the window after the program end
-export_format = json # there are grades stored ["json", "txt", "xaml", "csv"]
+quit_driver = True # close the window after the program end
 ```
 
-- **Using virtual environment `.venv`**
+**Using virtual environment `.venv`**
 
 Download all required libraries from `requirements.txt` ⚠️*while you are installing requirements you have to be in project root*
 
@@ -200,15 +193,10 @@ python main.py
 - `"--login", "-l"` by using this one you have to enter your login details **username password**
 
 ```bash
-python main.py --login username password # --login or -l to use login details from cmd
+python main.py --login username password # --login or -l to use login details as options
 ```
 
 ## Examples
-
-```bash
-PS C:\local\work\Download> cd C:\local\work\autobaka # Move to the project root
-PS C:\local\work\autobaka> .\.venv\Scripts\activate.ps1 # Activate .venv
-````
 
 **Login details from `.env`**
 
