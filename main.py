@@ -8,7 +8,6 @@ from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_utils import load_credentials
 from internal.filesystem.paths_constants import PROJECT_ROOT
 from internal.filesystem.ini_loader import config
-from internal.utils.cloud_backup.backup import run_buckup
 
 start_time = time.time() # STOPWATCH start
 
@@ -89,5 +88,3 @@ except Exception as e: logger.exception(f"Unexpectedly error... {str(e)}")
 
 
 print(f"{round(time.time() - start_time, 5)}s")
-
-# run_buckup() # it's only for me, it creates copy of the whole project except some files and folders
