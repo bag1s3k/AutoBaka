@@ -1,3 +1,19 @@
+from datetime import datetime, timedelta
+import logging
+
+from selenium.webdriver.common.by import By
+
+from ..page_model import BasePage
+from internal.filesystem.ini_loader import config
+from internal.utils.decorators import validate_output
+from internal.utils.logging_setup import setup_logging
+from internal.filesystem.export import export_json
+from internal.filesystem.paths_constants import TIMETABLE_OUTPUT
+
+setup_logging()
+logger = logging.getLogger(__name__)
+
+
 class Timetable(BasePage):
     """
     Inherits BasePage
