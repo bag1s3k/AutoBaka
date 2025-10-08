@@ -1,7 +1,9 @@
-﻿from pathlib import Path
+﻿from functools import lru_cache
+from pathlib import Path
+
 from internal.utils.decorators import validate_output
 
-
+@lru_cache(maxsize=1)
 @validate_output(error_msg="No project root found", success_msg="Project root found", level="error")
 def find_project_root(target_folder: str = "autobaka") -> Path:
     """
@@ -19,10 +21,10 @@ def find_project_root(target_folder: str = "autobaka") -> Path:
 
 PROJECT_ROOT = find_project_root()
 INI_PATH = PROJECT_ROOT / "config" / "config.ini"
-LOG_PATH = PROJECT_ROOT / "output" / "project_log.log"
 ENV_PATH = PROJECT_ROOT / "config" / ".env"
-MARKS_OUTPUT = PROJECT_ROOT / "output" / "marks.json"
-RAW_MARKS_OUTPUT = PROJECT_ROOT / "output" / "raw_marks.json"
-TIMETABLE_OUTPUT = PROJECT_ROOT / "output" / "timetable.json"
-RAW_ABSENCE_OUTPUT = PROJECT_ROOT / "output" / "raw_absence.json"
-ABSENCE_OUTPUT = PROJECT_ROOT / "output" / "absence.json"
+LOG_PATH = PROJECT_ROOT / "output" / "log" / "project_log.log"
+MARKS_OUTPUT = PROJECT_ROOT / "output" / "marks" / "marks.json"
+RAW_MARKS_OUTPUT = PROJECT_ROOT / "output" / "marks" / "raw_marks.json"
+TIMETABLE_OUTPUT = PROJECT_ROOT / "output" / "timetable" / "timetable.json"
+RAW_ABSENCE_OUTPUT = PROJECT_ROOT / "output" / "absence" / "raw_absence.json"
+ABSENCE_OUTPUT = PROJECT_ROOT / "output" / "absence" / "absence.json"
