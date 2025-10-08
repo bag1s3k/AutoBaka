@@ -84,8 +84,6 @@ class Timetable(BasePage):
 
                         lectures.append(lectures_to_string)
 
-                if date_raw.weekday() in [6, 7]: continue  # skip Sat, Sun
-
                 # Fill dict
                 date = date_raw.date().isoformat()
                 self.timetable[date] = []
@@ -114,6 +112,6 @@ class Timetable(BasePage):
         self._find_item((By.XPATH, self.PERMANENT_TT_BTN)).click()
         self._extract_tt(
             days_xpath=self.PERMANENT_TT_DAYS,
-            last_date="2025-10-10",  # TODO: FIX ME
+            last_date=list(self.timetable.keys())[-1],  # last key is the last date
             dual=True
         )
