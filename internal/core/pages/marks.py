@@ -15,7 +15,7 @@ setup_logging()
 logger = logging.getLogger(__name__)
 
 
-class MarksPage(BasePage):
+class Marks(BasePage):
     """
     Inherits from BasePage
     Use for get marks
