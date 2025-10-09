@@ -11,20 +11,16 @@ setup_logging()
 logger = logging.getLogger(__name__)
 
 class Absence(BasePage):
-    """
-    Inherits BasePage
-    Use for get absence
-    """
+    """ Inherits BasePage
+        Use for get absence"""
     def __init__(self, driver, url):
         super().__init__(driver, url)
 
         self.absence = []
 
     def get_absence(self):
-        """
-        Specific logic to get absence
-        :return: empty dict if fail otherwise filled dict
-        """
+        """ Specific logic to get absence
+            :return: empty dict if fail otherwise filled dict"""
         subjects = self._find_items((By.XPATH, "//tr[@class='dx-row dx-data-row']"))
         for subject in subjects:
             subjects_l = self._find_items((By.XPATH, "td"), parent=subject)

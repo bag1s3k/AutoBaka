@@ -17,11 +17,9 @@ logger = logging.getLogger(__name__)
     level="critical"
 )
 def load_credentials(parser) -> tuple:
-    """
-    Using argparse load login details
-    (default option is load credentials from file)
-    :return arg.login_details:  (username, password)
-    """
+    """Using argparse load login details
+         - default option is load credentials from file
+        :return arg.login_details:  (username, password)"""
     arg = create_agr_parser(
         parser,
         arg_name=["--login", "-l"],
@@ -45,11 +43,8 @@ def load_credentials(parser) -> tuple:
     level="critical"
 )
 def load_credentials_from_file() -> tuple:
-    """
-    Loading login details from .env file
-
-    :return: username, password: (username, password) or (None, None) if failed
-    """
+    """Loading login details from .env file
+        :return: username, password: (username, password) or (None, None) if failed"""
     if not ENV_PATH.exists():
         logger.error(f"ENV path doesn't exist: env path {ENV_PATH}")
         return None, None

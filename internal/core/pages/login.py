@@ -11,10 +11,8 @@ logger = logging.getLogger(__name__)
 
 
 class Login(BasePage):
-    """
-    Inherits from BasePage
-    Use for login
-    """
+    """ Inherits from BasePage
+        Use for login"""
 
     @validate_output(
         error_msg="Login failed",
@@ -22,12 +20,11 @@ class Login(BasePage):
         level="critical"
     )
     def login(self, username, password) -> bool:
-        """
-        Specific login logic
+        """Specific login logic
         :param username: username (string)
         :param password: password (string)
-        :return: True if successful otherwise False
-        """
+        :return: True if successful otherwise False"""
+
         # Find required elements on website (username and password field, login button)
         username_field = self._find_item(target=(By.NAME, "username"))
         password_field = self._find_item(target=(By.NAME, "password"))

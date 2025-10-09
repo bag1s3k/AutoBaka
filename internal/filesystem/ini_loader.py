@@ -10,18 +10,16 @@ logger = logging.getLogger(__name__)
 
 class AutoCastConfigParser(configparser.ConfigParser):
     def get_auto_cast(self, section, option):
-        """
-        Try to convert string to int, bool or keep it as str
-        :param section: name of the section
-        :param option: name of the option
-        :return Union[int, bool, str]: best-match
-        """
+        """Try to convert string to int, bool or keep it as str
+            - override .get
+            :param section: name of the section
+            :param option: name of the option
+            :return Union[int, bool, str]: best-match"""
         try:
             value = super().get(section, option)
         except Exception as e:
             logger.exception(e)
             return None
-
 
         if value in ["True", "False"]:
             return True if value == "True" else False

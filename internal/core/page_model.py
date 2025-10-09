@@ -15,10 +15,8 @@ logger = logging.getLogger(__name__)
 
 
 class BasePage(ABC):
-    """
-    Abstract base class for using selenium (generally every interact with website)
-    - every subclass is specific for 1 interaction (e.g. class Login)
-    """
+    """ Abstract base class for using selenium (generally every interact with website)
+        - every subclass is specific for 1 interaction (e.g. class Login)"""
     def __init__(self, driver, url, timeout=config.get_auto_cast("SETTINGS", "timeout")):
         self.driver = driver
         self.timeout = timeout
@@ -36,6 +34,7 @@ class BasePage(ABC):
             return True
         except Exception as e:
             logger.exception(e)
+            self.driver.quit()
             return False
 
     @validate_output(
@@ -44,11 +43,10 @@ class BasePage(ABC):
         level="warning"
     )
     def _find_item(self, target: Tuple[str, str], parent=None) -> WebElement | None:
-        """
-        Find specific element on website
-        :param target: tuple selenium expression e.g (By.XPATH, "//div")
-        :param parent: Selenium WebElement; default self.driver If None
-        :return item: If true return matching element otherwise return None
+        """ Find specific element on website
+            :param target: tuple selenium expression e.g (By.XPATH, "//div")
+            :param parent: Selenium WebElement; default self.driver If None
+            :return item: If true return matching element otherwise return None
         """
         if parent is None:
             parent = self.driver
@@ -68,12 +66,10 @@ class BasePage(ABC):
         level="warning"
     )
     def _find_items(self, target: Tuple[str, str], parent=None) -> list[WebElement] | None:
-        """
-        Find specific elements on website
-        :param target: tuple selenium expression e.g (By.XPATH, "//div")
-        :param parent: Selenium WebElement; default self.driver If None
-        :return item: If true return matching elements otherwise return None
-        """
+        """ Find specific elements on website
+            :param target: tuple selenium expression e.g (By.XPATH, "//div")
+            :param parent: Selenium WebElement; default self.driver If None
+            :return item: If true return matching elements otherwise return None"""
         if parent is None:
             parent = self.driver
 
@@ -83,5 +79,5 @@ class BasePage(ABC):
             )
             return item
         except Exception as e:
-            logger.exception(e)
+            logger.warning(e)
             return None

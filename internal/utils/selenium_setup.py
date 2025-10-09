@@ -16,10 +16,8 @@ logger = logging.getLogger(__name__)
     level="error"
 )
 def setup_driver():
-    """
-    Setup chromedriver
-    :return: an instance of driver
-    """
+    """ Setup chromedriver
+        :return: an instance of driver"""
     options = Options()
 
     # Set default configuration if there is no data in .ini for quit_driver (True default)

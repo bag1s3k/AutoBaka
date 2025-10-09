@@ -16,10 +16,8 @@ logger = logging.getLogger(__name__)
 
 
 class Marks(BasePage):
-    """
-    Inherits from BasePage
-    Use for get marks
-    """
+    """ Inherits from BasePage
+        Use for get marks"""
     def __init__(self, driver, url):
         super().__init__(driver, url)
         self.SUBJECTS = {}
@@ -30,10 +28,8 @@ class Marks(BasePage):
         level="critical"
     )
     def get_marks(self) -> dict[str, list[dict[str, str]]]:
-        """
-        Specific logic to get marks
-        :return: empty dict if fail otherwise filled dict
-        """
+        """ Specific logic to get marks
+            :return: empty dict if fail otherwise filled dict"""
         logger.info("Looking for an element on page with marks")
 
         marks_line = self._find_items(target=(By.XPATH,
@@ -81,11 +77,8 @@ class Marks(BasePage):
         level="error"
     )
     def process_marks(self) -> bool:
-        """
-        Specific logit to process marks
-
-        :return subjects: sorted dict of processed marks
-        """
+        """ Specific logit to process marks
+            :return subjects: sorted dict of processed marks"""
 
         if not self.SUBJECTS: return False
 

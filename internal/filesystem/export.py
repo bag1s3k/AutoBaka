@@ -12,12 +12,10 @@ logger = logging.getLogger(__name__)
     success_msg="Exported successfully completed",
     level="warning")
 def export_results(subjects, path) -> bool:
-    """
-    Export averages to file
-    :param subjects: dict of marks
-    :param path: path to output file
-    :return bool: True on success False otherwise
-    """
+    """Export averages to file
+        :param subjects: dict of marks
+        :param path: path to output file
+        :return bool: True on success False otherwise"""
 
     if not subjects: return False
 
@@ -37,12 +35,10 @@ def export_results(subjects, path) -> bool:
     level="warning"
 )
 def export_json(item, path) -> bool:
-    """
-    Export marks to JSON file
-    :param item: dict of marks
-    :param path: absolut file path
-    :return bool: True if successful, False otherwise
-    """
+    """Export marks to JSON file
+        :param item: dict of marks
+        :param path: absolut file path
+        :return bool: True if successful, False otherwise"""
 
     logger.info(f"Current directory: {os.getcwd()}")
 

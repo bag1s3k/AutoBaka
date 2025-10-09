@@ -15,10 +15,8 @@ logger = logging.getLogger(__name__)
 
 
 class Timetable(BasePage):
-    """
-    Inherits BasePage
-    Use for get timetable (in code is used shortcut TT or tt for timetable)
-    """
+    """ Inherits BasePage
+        Use for get timetable (in code is used shortcut TT or tt for timetable)"""
 
     def __init__(self, driver, url):
         super().__init__(driver, url)
@@ -40,14 +38,12 @@ class Timetable(BasePage):
         level="error"
     )
     def _extract_tt(self, days_xpath, date_xpath=None, lectures_xpath=None, last_date=None, dual=False) -> dict:
-        """
-        Specific logic to get specific timetable
-        :param days_xpath:
-        :param date_xpath:
-        :param lectures_xpath:
-        :param last_date:
-        :return: Empty dict if fail otherwise filled dict
-        """
+        """Specific logic to get specific timetable
+            :param days_xpath:
+            :param date_xpath:
+            :param lectures_xpath:
+            :param last_date:
+            :return: Empty dict if fail otherwise filled dict"""
         days = self._find_items((By.XPATH, days_xpath))
 
         if n_days := len(days) != 5:
@@ -98,10 +94,8 @@ class Timetable(BasePage):
 
 
     def get_tt(self):
-        """
-        It's help func, it calls other functions (extract_tt or find_item)
-        :return: true if successful otherwise None
-        """
+        """ It's help func, it calls other functions (extract_tt or find_item)
+            :return: true if successful otherwise None"""
         self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
         self._find_item((By.XPATH, self.NEXT_TT_BTN)).click()
         self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)

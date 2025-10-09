@@ -1,15 +1,11 @@
-﻿from functools import lru_cache
-from pathlib import Path
+﻿from pathlib import Path
 
 from internal.utils.decorators import validate_output
 
-@lru_cache(maxsize=1)
 @validate_output(error_msg="No project root found", success_msg="Project root found", level="error")
 def find_project_root(target_folder: str = "autobaka") -> Path:
-    """
-    It finds project root folder
-    :return path: absolute path of the project root
-    """
+    """Find project root folder
+        :return path: absolute path of the project root"""
     path = Path(__file__).resolve() # get current absolut path of this file
 
     while path.name != target_folder:
