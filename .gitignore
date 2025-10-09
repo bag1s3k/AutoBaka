@@ -1,15 +1,21 @@
+# Editor's
 .idea/
 .venv/
+__pycache__/
+.vscode/
+
+# Private info
 config/config.ini
 config/.env
+
+# Output files
 output/log/project_log.log
-__pycache__/
-temp/
 output/marks/marks.json
 output/marks/raw_marks.json
-tests
-internal/utils/cloud_backup
-.vscode/
-raw_timetable.json
-timetable.json
-raw_absence.json
+output/timetable/timetable.json
+output/absence/raw_absence.json
+
+# Local help folders
+temp/
+tests/
+help/
