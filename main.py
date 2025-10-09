@@ -31,59 +31,40 @@ username, password = load_credentials(main_parser)
 
 print(".", end="", flush=True) # progress print
 
-try:
-    # ------------------------------------- ON WEBSITE -------------------------------------- #
-    login = Login(driver=driver, url=config.get_auto_cast("URLS", "login_url"))
-    login.get()
-    login.login(username, password)
+# ------------------------------------- ON WEBSITE -------------------------------------- #
+login = Login(driver=driver, url=config.get_auto_cast("URLS", "login_url"))
+login.get()
+login.login(username, password)
 
-    print(".", end="", flush=True)
+print(".", end="", flush=True)
 
-    # ----- MARKS ------ #
-    marks_page = Marks(driver=driver, url=config.get_auto_cast("URLS", "marks_url"))
-    marks_page.get()
-    marks_page.get_marks()
-    marks_page.process_marks()
+# ----- MARKS ------ #
+marks_page = Marks(driver=driver, url=config.get_auto_cast("URLS", "marks_url"))
+marks_page.get()
+marks_page.get_marks()
+marks_page.process_marks()
 
-    print(".", end="", flush=True)
+print(".", end="", flush=True)
 
-    # ----- TIMETABLE ------ #
-    timetable = Timetable(driver=driver, url=config.get_auto_cast("URLS", "timetable_url"))
-    timetable.get()
-    timetable.get_tt()
+# ----- TIMETABLE ------ #
+timetable = Timetable(driver=driver, url=config.get_auto_cast("URLS", "timetable_url"))
+timetable.get()
+timetable.get_tt()
 
-    print(".", end="", flush=True)
+print(".", end="", flush=True)
 
-    # ----- ABSENCE ------ #
-    absence = Absence(driver=driver, url=config.get_auto_cast("URLS", "absence_url"))
-    absence.get()
-    absence.get_absence()
+# ----- ABSENCE ------ #
+absence = Absence(driver=driver, url=config.get_auto_cast("URLS", "absence_url"))
+absence.get()
+absence.get_absence()
 
-    print(".", end="", flush=True) 
+print(".", end="", flush=True)
 
-    # --------------------------------------- TERMINATE WEBDRIVER ----------------------------- #
-    if config.get_auto_cast("SETTINGS", "quit_driver"):  # let window open or close it
-        driver.quit()
-        logger.info("driver was successfully quit")
-    logger.info("Drive was successfully terminated")
+# --------------------------------------- TERMINATE WEBDRIVER ----------------------------- #
+if config.get_auto_cast("SETTINGS", "quit_driver") is not False:  # let window open or close it
+    driver.quit()
+    logger.info("driver was successfully quit")
 
-    print(". Successfully", flush=True) # CLI PRINT
-
-except KeyboardInterrupt:logger.warning("Program was terminate by pressing ctrl+c")
-
-except Exception as e: logger.exception(f"Unexpectedly error... {str(e)}")
-
-# finally:
-#     # End Driver if the program crash
-#     if driver:
-#         try:
-#             logger.info("Terminate webdriver")
-#             if config.get_auto_cast("SETTINGS", "quit_driver"):  # let window open or close it
-#                 driver.quit()
-#                 logger.info("driver was successfully quit")
-#             logger.info("Drive was successfully terminated")
-#         except Exception as e:
-#             logger.error(f"Error during terminating program: {str(e)}")
-
+print(". Successfully", flush=True) # CLI PRINT
 
 print(f"{round(time.time() - start_time, 5)}s")

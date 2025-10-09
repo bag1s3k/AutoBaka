@@ -60,7 +60,6 @@ def export_json(item, path) -> bool:
         with open(path, "w", encoding="utf-8") as file:
             json.dump(item, file, indent=4, ensure_ascii=False)
         return True
-
     except Exception as e:
         logger.exception(f"Something happened during exporting: {e}")
         return False

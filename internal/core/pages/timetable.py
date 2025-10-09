@@ -48,58 +48,54 @@ class Timetable(BasePage):
         :param last_date:
         :return: Empty dict if fail otherwise filled dict
         """
-        try:
-            days = self._find_items((By.XPATH, days_xpath))
+        days = self._find_items((By.XPATH, days_xpath))
 
-            if n_days := len(days) != 5:
-                logger.debug(f"Wrong amount of days: {n_days} there must be 5")
+        if n_days := len(days) != 5:
+            logger.debug(f"Wrong amount of days: {n_days} there must be 5")
 
-            which_day = 1  # 1 stands for Monday...
-            for day in days:
-                year: int = datetime.now().year
-                lectures = []
+        which_day = 1  # 1 stands for Monday...
+        for day in days:
+            year: int = datetime.now().year
+            lectures = []
 
-                # ------- SINGLE TT ------ #
-                if not dual:
-                    date_webelement = self._find_item((By.XPATH, date_xpath), parent=day)
-                    date = datetime.strptime(f"{date_webelement.text}/{year}", "%d/%m/%Y")
-                    lectures_webelement = self._find_items((By.XPATH, lectures_xpath), parent=day)
-                    lectures = [i.text for i in lectures_webelement]
+            # ------- SINGLE TT ------ #
+            if not dual:
+                date_webelement = self._find_item((By.XPATH, date_xpath), parent=day)
+                date = datetime.strptime(f"{date_webelement.text}/{year}", "%d/%m/%Y")
+                lectures_webelement = self._find_items((By.XPATH, lectures_xpath), parent=day)
+                lectures = [i.text for i in lectures_webelement]
 
-                # ------- DUAL TT ------- #
-                else:
-                    new_last_date = datetime.strptime(str(f"{last_date}"), "%Y-%m-%d") + timedelta(days=2)
-                    date = new_last_date + timedelta(days=which_day)
-                    which_day += 1
+            # ------- DUAL TT ------- #
+            else:
+                skip_weekend = datetime.strptime(str(f"{last_date}"), "%Y-%m-%d") + timedelta(days=2)
+                date = skip_weekend + timedelta(days=which_day)
+                which_day += 1
 
-                    double_lectures = self._find_items((By.XPATH, ".//div/div/span/div"), parent=day)
+                double_lectures = self._find_items((By.XPATH, ".//div/div/span/div"), parent=day)
 
-                    for single_lectures in double_lectures:
-                        double_lecture = self._find_items(
-                            (By.XPATH, ".//div[@class='empty'] | .//div/div/div[2]"),
-                            parent=single_lectures)
-                        lectures_to_string = [t.text for t in double_lecture]
-                        for i, x in enumerate(lectures_to_string[:]):
-                            if i % 2 == 0: lectures_to_string.remove(x)
+                for single_lectures in double_lectures:
+                    double_lecture = self._find_items(
+                        (By.XPATH, ".//div[@class='empty'] | .//div/div/div[2]"),
+                        parent=single_lectures)
+                    lectures_to_string = [t.text for t in double_lecture]
+                    for i, x in enumerate(lectures_to_string[:]):
+                        if i % 2 == 0: lectures_to_string.remove(x)
 
-                        lectures.append(lectures_to_string)
+                    lectures.append(lectures_to_string)
 
-                # Fill dict
-                date = date.date().isoformat()
-                self.timetable[date] = []
-                for lecture in lectures:
-                    self.timetable[date].append(lecture)
+            # Fill dict
+            date = date.date().isoformat()
+            self.timetable[date] = []
+            for lecture in lectures:
+                self.timetable[date].append(lecture)
 
-                # One day of timetable should have 10 lessons
-                if (n_timetable := len(self.timetable[date])) != 10:
-                    logger.debug(f"Wrong amount of lectures: {n_timetable} there must be 10")
+            # One day of timetable should have 10 lessons
+            if (n_timetable := len(self.timetable[date])) != 10:
+                logger.debug(f"Wrong amount of lectures: {n_timetable} there must be 10")
 
-            export_json(self.timetable, TIMETABLE_OUTPUT)
-            return self.timetable
+        export_json(self.timetable, TIMETABLE_OUTPUT)
+        return self.timetable
 
-        except Exception as e:
-            logger.exception(f"Something unexcepted happened: {e}")
-            return {}
 
     def get_tt(self):
         """

@@ -25,23 +25,18 @@ class Absence(BasePage):
         Specific logic to get absence
         :return: empty dict if fail otherwise filled dict
         """
-        try:
-            subjects = self._find_items((By.XPATH, "//tr[@class='dx-row dx-data-row']"))
-            for subject in subjects:
-                subjects_l = self._find_items((By.XPATH, "td"), parent=subject)
-                subject_str = [t.text for t in subjects_l]
+        subjects = self._find_items((By.XPATH, "//tr[@class='dx-row dx-data-row']"))
+        for subject in subjects:
+            subjects_l = self._find_items((By.XPATH, "td"), parent=subject)
+            subject_str = [t.text for t in subjects_l]
 
-                self.absence.append({
-                    "subject": subject_str[0],
-                    "passed_lectures": int(subject_str[1]),
-                    "absence": int(subject_str[2]),
-                    "%": subject_str[3]
-                })
+            self.absence.append({
+                "subject": subject_str[0],
+                "passed_lectures": int(subject_str[1]),
+                "absence": int(subject_str[2]),
+                "%": subject_str[3]
+            })
 
-            export_json(self.absence, RAW_ABSENCE_OUTPUT)
+        export_json(self.absence, RAW_ABSENCE_OUTPUT)
 
-            return self.absence
-
-        except Exception as e:
-            logger.exception(e)
-            return {}
+        return self.absence

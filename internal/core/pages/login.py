@@ -28,12 +28,12 @@ class Login(BasePage):
         :param password: password (string)
         :return: True if successful otherwise False
         """
-        try:
-            # Find required elements on website (username and password field, login button)
-            username_field = self._find_item(target=(By.NAME, "username"))
-            password_field = self._find_item(target=(By.NAME, "password"))
-            login_button = self._find_item(target=(By.NAME, "login"))
+        # Find required elements on website (username and password field, login button)
+        username_field = self._find_item(target=(By.NAME, "username"))
+        password_field = self._find_item(target=(By.NAME, "password"))
+        login_button = self._find_item(target=(By.NAME, "login"))
 
+        try:
             username_field.clear()
             username_field.send_keys(username)
             password_field.clear()
@@ -41,7 +41,6 @@ class Login(BasePage):
             login_button.click()
 
             return True
-
         except Exception as e:
             logger.exception(e)
             return False
