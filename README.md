@@ -136,8 +136,6 @@ result_path = c:\example\result.txt
 ```
 >💡 **idea**: You can export the result file to your cloud, so you can access it on your phone as well.
 
-
-
 ```ini
 [URLS]
 login_url = https://baka.website/login # login page
@@ -223,10 +221,9 @@ python main.py --login username password # --login or -l to use login details as
 Contributions are welcome! Open an issue, fork the repository, make improvements, and create a pull request.
 
 
-
 ## Known Issues
 
-- while running only a main script it shows `DevTools listening on ws://127.0.0.1:xxxxx/devtools/browser/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`, and there is 1 dot before this message, I wanna delete it
+- while running script it shows `DevTools listening on ws://127.0.0.1:xxxxx/devtools/browser/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`, and there is 1 dot before this message, I wanna delete it
 - there are for sure a lot of improvements and issues in the repository, but I'm still adding new features, I'm not interested in finding bugs and improvements
 
 ## Planned
@@ -238,6 +235,10 @@ Contributions are welcome! Open an issue, fork the repository, make improvements
 
 
 ## FAQ
+
+#### I run the program over and over again, and instantly I  get error: `net::ERR_NAME_NOT_RESOLVED` or `Moving to the target page failed`
+- Check your internet connection; some types of internet connections are blocked for some reason, try to change to another one
+- Try to log in manually, if the page doesn't load, it's not our app; the website might be down or being updated
 
 
 ## License
