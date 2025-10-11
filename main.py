@@ -3,10 +3,12 @@ import argparse
 import time
 
 from internal.core import Absence, Marks, Timetable, Login
+from internal.filesystem.export import export_json, export_results
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_utils import load_credentials
-from internal.filesystem.paths_constants import PROJECT_ROOT
+from internal.filesystem.paths_constants import PROJECT_ROOT, RAW_MARKS_OUTPUT, MARKS_OUTPUT, TIMETABLE_OUTPUT, \
+    RAW_ABSENCE_OUTPUT
 from internal.filesystem.ini_loader import config
 
 start_time = time.time() # STOPWATCH start
@@ -31,59 +33,45 @@ username, password = load_credentials(main_parser)
 
 print(".", end="", flush=True) # progress print
 
-try:
-    # ------------------------------------- ON WEBSITE -------------------------------------- #
-    login = Login(driver=driver, url=config.get_auto_cast("URLS", "login_url"))
-    login.get()
-    login.login(username, password)
+# ------------------------------------- ON WEBSITE -------------------------------------- #
+login = Login(driver=driver)
+login.get(config.get_auto_cast("URLS", "login_url"))
+login.scrape(username, password)
 
-    print(".", end="", flush=True)
+print(".", end="", flush=True)
 
-    # ----- MARKS ------ #
-    marks_page = Marks(driver=driver, url=config.get_auto_cast("URLS", "marks_url"))
-    marks_page.get()
-    marks_page.get_marks()
-    marks_page.process_marks()
+# ----- MARKS ------ #
+marks_page = Marks(driver=driver)
+marks_page.get(config.get_auto_cast("URLS", "marks_url"))
+marks_page.scrape()
+export_json(marks_page.subjects, RAW_MARKS_OUTPUT)
+marks_page.process_marks()
+export_json(marks_page.subjects, MARKS_OUTPUT)
+export_results(marks_page.subjects, config.get_auto_cast("PATHS", "result_path"))
 
-    print(".", end="", flush=True)
+print(".", end="", flush=True)
 
-    # ----- TIMETABLE ------ #
-    timetable = Timetable(driver=driver, url=config.get_auto_cast("URLS", "timetable_url"))
-    timetable.get()
-    timetable.get_tt()
+# ----- TIMETABLE ------ #
+timetable = Timetable(driver=driver)
+timetable.get(config.get_auto_cast("URLS", "timetable_url"))
+timetable.scrape()
+export_json(timetable.timetable, TIMETABLE_OUTPUT)
 
-    print(".", end="", flush=True)
+print(".", end="", flush=True)
 
-    # ----- ABSENCE ------ #
-    absence = Absence(driver=driver, url=config.get_auto_cast("URLS", "absence_url"))
-    absence.get()
-    absence.get_absence()
+# ----- ABSENCE ------ #
+absence = Absence(driver=driver)
+absence.get(config.get_auto_cast("URLS", "absence_url"))
+absence.scrape()
+export_json(absence.absence, RAW_ABSENCE_OUTPUT)
 
-    print(".", end="", flush=True) 
+print(".", end="", flush=True)
 
-    # --------------------------------------- TERMINATE WEBDRIVER ----------------------------- #
-    if config.get_auto_cast("SETTINGS", "quit_driver"):  # let window open or close it
-        driver.quit()
-        logger.info("driver was successfully quit")
-    logger.info("Drive was successfully terminated")
+# --------------------------------------- TERMINATE WEBDRIVER ----------------------------- #
+if config.get_auto_cast("SETTINGS", "quit_driver") is not False:  # let window open or close it
+    driver.quit()
+    logger.info("driver was successfully quit")
 
-    print(". Successfully", flush=True) # CLI PRINT
-
-except KeyboardInterrupt:logger.warning("Program was terminate by pressing ctrl+c")
-
-except Exception as e: logger.exception(f"Unexpectedly error... {str(e)}")
-
-# finally:
-#     # End Driver if the program crash
-#     if driver:
-#         try:
-#             logger.info("Terminate webdriver")
-#             if config.get_auto_cast("SETTINGS", "quit_driver"):  # let window open or close it
-#                 driver.quit()
-#                 logger.info("driver was successfully quit")
-#             logger.info("Drive was successfully terminated")
-#         except Exception as e:
-#             logger.error(f"Error during terminating program: {str(e)}")
-
+print(". Successfully", flush=True) # CLI PRINT
 
 print(f"{round(time.time() - start_time, 5)}s")

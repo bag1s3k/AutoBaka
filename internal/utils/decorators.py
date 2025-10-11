@@ -7,25 +7,23 @@ logger = logging.getLogger(__name__)
 
 
 def validate_output(error_msg: str = "Failed", success_msg: str = "Successful", level: str = "error"):
-    """
-    Decorator that logs a message depending on the return value of the decorated function.
-    - If the function returns a falsy value (e.g. None, False, empty string),
-      an error message is logged.
-    - If the function returns a truthy value, a success message is logged.
-    :param error_msg: Message to log if the decorated function returns a falsy value.
-    :param success_msg: Message to log if the decorated function returns a truthy value.
-    :param level: Logging level to use when the decorated function returns a falsy value
+    """ Decorator that logs a message depending on the return value of the decorated function.
+        - If the function returns a falsy value (e.g. None, False, empty string),
+          an error message is logged.
+        - If the function returns a truthy value, a success message is logged.
+        :param error_msg: Message to log if the decorated function returns a falsy value.
+        :param success_msg: Message to log if the decorated function returns a truthy value.
+        :param level: Logging level to use when the decorated function returns a falsy value
                  (e.g. "error", "warning", "info"). Defaults to "error".
-    :return Any: The original return value of the decorated function.
+        :return Any: The original return value of the decorated function.
 
-    Example:
-        >>> @validate_output(error_msg="Login failed", success_msg="Login successful", level="critical")
-        ... def login(user, password):
-        ...     return user == "admin" and password == "secret"
-        >>> login("correct", "wrong")
-        # logs: "Login failed" (CRITICAL)
-        False
-    """
+        Example:
+            >>> @validate_output(error_msg="Login failed", success_msg="Login successful", level="critical")
+            ... def login(user, password):
+            ...     return user == "admin" and password == "secret"
+            >>> login("correct", "wrong")
+            # logs: "Login failed" (CRITICAL)
+            False"""
 
     def decorator(func):
         @functools.wraps(func)
