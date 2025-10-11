@@ -19,7 +19,7 @@ class Login(BasePage):
         success_msg="Login successful",
         level="critical"
     )
-    def login(self, username, password) -> bool:
+    def scrape(self, username, password) -> bool:
         """Specific login logic
         :param username: username (string)
         :param password: password (string)

@@ -1,6 +1,6 @@
 ﻿import logging
 from typing import Tuple
-from abc import ABC
+from abc import ABC, abstractmethod
 
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.wait import WebDriverWait
@@ -17,20 +17,19 @@ logger = logging.getLogger(__name__)
 class BasePage(ABC):
     """ Abstract base class for using selenium (generally every interact with website)
         - every subclass is specific for 1 interaction (e.g. class Login)"""
-    def __init__(self, driver, url, timeout=config.get_auto_cast("SETTINGS", "timeout")):
+    def __init__(self, driver, timeout=config.get_auto_cast("SETTINGS", "timeout")):
         self.driver = driver
         self.timeout = timeout
-        self.url = url
 
     @validate_output(
         error_msg=f"Moving to the target page failed url",
         success_msg=f"Moving to the target page successful url:",
         level="critical"
     )
-    def get(self):
+    def get(self, url: str):
         """Move to target page"""
         try:
-            self.driver.get(self.url)
+            self.driver.get(url)
             return True
         except Exception as e:
             logger.exception(e)
@@ -46,8 +45,7 @@ class BasePage(ABC):
         """ Find specific element on website
             :param target: tuple selenium expression e.g (By.XPATH, "//div")
             :param parent: Selenium WebElement; default self.driver If None
-            :return item: If true return matching element otherwise return None
-        """
+            :return item: If true return matching element otherwise return None"""
         if parent is None:
             parent = self.driver
 
@@ -81,3 +79,9 @@ class BasePage(ABC):
         except Exception as e:
             logger.warning(e)
             return None
+
+    @abstractmethod
+    @validate_output()
+    def scrape(self):
+        """Specific scrape logic"""
+        pass
