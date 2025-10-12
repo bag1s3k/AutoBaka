@@ -32,8 +32,8 @@ class BasePage(ABC):
             self.driver.get(url)
             return True
         except Exception as e:
-            logger.exception(e)
-            self.driver.quit()
+            logger.critical(e)
+            self.driver = None
             return False
 
     @validate_output(
@@ -41,7 +41,7 @@ class BasePage(ABC):
         success_msg="Item on website found",
         level="warning"
     )
-    def _find_item(self, target: Tuple[str, str], parent=None) -> WebElement | None:
+    def _find_item(self, target: Tuple[str, str], parent=None, mult=False) -> WebElement | list[WebElement] | None:
         """ Find specific element on website
             :param target: tuple selenium expression e.g (By.XPATH, "//div")
             :param parent: Selenium WebElement; default self.driver If None
@@ -49,32 +49,18 @@ class BasePage(ABC):
         if parent is None:
             parent = self.driver
 
-        try:
-            item = WebDriverWait(parent, self.timeout).until(
-                ec.presence_of_element_located(target)
-            )
-            return item
-        except Exception as e:
-            logger.warning(e)
+        if self.driver is None:
             return None
 
-    @validate_output(
-        error_msg="Items not found",
-        success_msg="Items found",
-        level="warning"
-    )
-    def _find_items(self, target: Tuple[str, str], parent=None) -> list[WebElement] | None:
-        """ Find specific elements on website
-            :param target: tuple selenium expression e.g (By.XPATH, "//div")
-            :param parent: Selenium WebElement; default self.driver If None
-            :return item: If true return matching elements otherwise return None"""
-        if parent is None:
-            parent = self.driver
-
         try:
-            item = WebDriverWait(parent, self.timeout).until(
-                ec.presence_of_all_elements_located(target)
-            )
+            if mult:
+                item = WebDriverWait(parent, self.timeout).until(
+                    ec.presence_of_all_elements_located(target)
+                )
+            else:
+                item = WebDriverWait(parent, self.timeout).until(
+                    ec.presence_of_element_located(target)
+                )
             return item
         except Exception as e:
             logger.warning(e)

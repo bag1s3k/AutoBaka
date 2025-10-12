@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 @validate_output(
     error_msg="Loading credentials failed",
-    success_msg="Loading credentials successfully completed",
+    success_msg="Loading credentials successful",
     level="critical"
 )
 def load_credentials(parser) -> tuple:

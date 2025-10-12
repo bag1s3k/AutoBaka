@@ -48,7 +48,7 @@ def create_agr_parser(parser,
             dest=dest,
         )
     except Exception as e:
-        logger.exception(f"Error while trying to add argument... {str(e)}")
+        logger.critical(f"Error while trying to add argument... {str(e)}")
         return None
 
     return parser.parse_args()

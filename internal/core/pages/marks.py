@@ -29,21 +29,17 @@ class Marks(BasePage):
             :return: empty dict if fail otherwise filled dict"""
         logger.info("Looking for an element on page with marks")
 
-        marks_line = self._find_items(target=(By.XPATH,
+        if not (marks_line := self._find_item(target=(By.XPATH,
                                                     "//tbody//tr[//td "
                                                     "and contains(@class, 'dx-row') "
                                                     "and contains(@class, 'dx-data-row') "
-                                                    "and contains(@class, 'dx-row-lines')]"))
-
-        # Load whole marks (date, mark, value...) it's line of these data
-        if not marks_line:
-            logger.error(f"Marks not found url: {self.driver.current_url} title: {self.driver.title}")
+                                                    "and contains(@class, 'dx-row-lines')]"),
+                                     mult=True)):
+            logger.error(f"Marks not found url")
             return self._subjects
 
         for single_line in marks_line:
-            subject = self._find_items(target=(By.TAG_NAME, "td"), parent=single_line)
-
-            if not subject:
+            if not (subject := self._find_item(target=(By.TAG_NAME, "td"), parent=single_line, mult=True)):
                 logger.warning("No subject")
                 return self._subjects
 
@@ -86,8 +82,7 @@ class Marks(BasePage):
                 marks = []
                 for dict_mark in list_subject:
                     if "-" in dict_mark["mark"]:
-                        dict_mark["mark"] = text_to_num[-int(dict_mark["mark"][
-                                                                 0])]  # take 1. char of '2-' => 2 and 2 * (-1) => -2 is index of a list (text_to_num)
+                        dict_mark["mark"] = text_to_num[-int(dict_mark["mark"][0])]  # take 1. char of '2-' => 2 and 2 * (-1) => -2 is index of a list (text_to_num)
                     elif dict_mark["mark"].isdigit():
                         dict_mark["mark"] = int(dict_mark["mark"])
                     else:
@@ -114,7 +109,7 @@ class Marks(BasePage):
                 self._subjects[subject].append({"avg": average})
 
             except Exception as e:
-                logger.exception(f"Something happened during processing marks: {e}")
+                logger.critical(f"Something happened during processing marks: {e}")
                 return False
 
         self._subjects = dict(sorted(self._subjects.items()))
