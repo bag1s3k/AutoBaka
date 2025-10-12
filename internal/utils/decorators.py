@@ -31,7 +31,7 @@ def validate_output(error_msg: str = "Failed", success_msg: str = "Successful", 
         def wrapper(*args, **kwargs) -> Any:
             result = func(*args, **kwargs)
 
-            if not result and not False:
+            if not result and not allow_empty:
                 logger_method = getattr(logger, level.lower(), logger.error) # getattr instead writing if statements for each logger level
                 logger_method(error_msg)
                 # if level.lower() in ["error", "critical"]:
