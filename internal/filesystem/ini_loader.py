@@ -18,7 +18,7 @@ class AutoCastConfigParser(configparser.ConfigParser):
         try:
             value = super().get(section, option)
         except Exception as e:
-            logger.exception(e)
+            logger.critical(e)
             return None
 
         if value in ["True", "False"]:

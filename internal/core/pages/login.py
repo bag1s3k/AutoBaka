@@ -30,14 +30,17 @@ class Login(BasePage):
         password_field = self._find_item(target=(By.NAME, "password"))
         login_button = self._find_item(target=(By.NAME, "login"))
 
-        try:
-            username_field.clear()
-            username_field.send_keys(username)
-            password_field.clear()
-            password_field.send_keys(password)
-            login_button.click()
-
-            return True
-        except Exception as e:
-            logger.exception(e)
+        if (
+            not username_field or
+            not password_field or
+            not login_button
+        ):
             return False
+
+        username_field.clear()
+        username_field.send_keys(username)
+        password_field.clear()
+        password_field.send_keys(password)
+        login_button.click()
+
+        return True

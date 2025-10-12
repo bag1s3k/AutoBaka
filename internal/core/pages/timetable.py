@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import logging
 
 from selenium.webdriver.common.by import By
+from unidecode import unidecode
 
 from ..page_model import BasePage
 from internal.filesystem.ini_loader import config
@@ -42,7 +43,8 @@ class Timetable(BasePage):
             :param lectures_xpath:
             :param last_date:
             :return: Empty dict if fail otherwise filled dict"""
-        days = self._find_items((By.XPATH, days_xpath))
+        if not (days := self._find_item((By.XPATH, days_xpath), mult=True)):
+            return self._timetable
 
         if n_days := len(days) != 5:
             logger.debug(f"Wrong amount of days: {n_days} there must be 5")
@@ -54,10 +56,12 @@ class Timetable(BasePage):
 
             # ------- SINGLE TT ------ #
             if not dual:
-                date_webelement = self._find_item((By.XPATH, date_xpath), parent=day)
+                if not (date_webelement := self._find_item((By.XPATH, date_xpath), parent=day)):
+                    return self._timetable
                 date = datetime.strptime(f"{date_webelement.text}/{year}", "%d/%m/%Y")
-                lectures_webelement = self._find_items((By.XPATH, lectures_xpath), parent=day)
-                lectures = [i.text for i in lectures_webelement]
+                if not(lectures_webelement := self._find_item((By.XPATH, lectures_xpath), parent=day, mult=True)):
+                    return self._timetable
+                lectures = [unidecode(i.text) for i in lectures_webelement]
 
             # ------- DUAL TT ------- #
             else:
@@ -65,13 +69,18 @@ class Timetable(BasePage):
                 date = skip_weekend + timedelta(days=which_day)
                 which_day += 1
 
-                double_lectures = self._find_items((By.XPATH, ".//div/div/span/div"), parent=day)
+                if not (double_lectures := self._find_item((By.XPATH, ".//div/div/span/div"), parent=day, mult=True)):
+                    return self._timetable
 
                 for single_lectures in double_lectures:
-                    double_lecture = self._find_items(
+                    if not (double_lecture := self._find_item(
                         (By.XPATH, ".//div[@class='empty'] | .//div/div/div[2]"),
-                        parent=single_lectures)
-                    lectures_to_string = [t.text for t in double_lecture]
+                        parent=single_lectures,
+                        mult=True
+                    )):
+                        return self._timetable
+
+                    lectures_to_string = [unidecode(t.text) for t in double_lecture]
                     for i, x in enumerate(lectures_to_string[:]):
                         if i % 2 == 0: lectures_to_string.remove(x)
 
@@ -93,14 +102,17 @@ class Timetable(BasePage):
         """ It's help func, it calls other functions (extract_tt or find_item)
             :return: true if successful otherwise None"""
         self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
-        self._find_item((By.XPATH, self.NEXT_TT_BTN)).click()
+        if tmp := self._find_item((By.XPATH, self.NEXT_TT_BTN)):
+            tmp.click()
         self._extract_tt(self.NORMAL_TT_DAYS, self.NORMAL_TT_DATES, self.NORMAL_TT_LECTURES)
-        self._find_item((By.XPATH, self.PERMANENT_TT_BTN)).click()
-        self._extract_tt(
-            days_xpath=self.PERMANENT_TT_DAYS,
-            last_date=list(self._timetable.keys())[-1],  # last key is the last date
-            dual=True
-        )
+        if tmp := self._find_item((By.XPATH, self.PERMANENT_TT_BTN)):
+            tmp.click()
+        if self._timetable:
+            self._extract_tt(
+                days_xpath=self.PERMANENT_TT_DAYS,
+                last_date=list(self._timetable.keys())[-1],  # last key is the last date
+                dual=True
+            )
 
     @property
     def timetable(self):

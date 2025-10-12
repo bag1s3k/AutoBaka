@@ -60,4 +60,4 @@ def setup_driver():
         )
         return driver
     except Exception as e:
-        logger.exception(f"Issue while installing or setting webdriver: {e}")
+        logger.critical(f"Issue while installing or setting webdriver: {e}")

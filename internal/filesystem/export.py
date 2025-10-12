@@ -25,7 +25,7 @@ def export_results(subjects, path) -> bool:
                 file.write(f"{subject:30} {marks[-1]["avg"]}\n")
         return True
     except Exception as e:
-        logger.exception(f"Issue during exporting: {e}")
+        logger.critical(f"Issue during exporting: {e}")
         return False
 
 
@@ -57,5 +57,5 @@ def export_json(item, path) -> bool:
             json.dump(item, file, indent=4, ensure_ascii=False)
         return True
     except Exception as e:
-        logger.exception(f"Something happened during exporting: {e}")
+        logger.critical(f"Something happened during exporting: {e}")
         return False
