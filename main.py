@@ -4,6 +4,7 @@ import logging
 from internal.core.brain import main_process
 from internal.core import Absence, Marks, Timetable, Login
 from internal.filesystem.paths_constants import MARKS_OUTPUT, TIMETABLE_OUTPUT, RAW_ABSENCE_OUTPUT
+from internal.utils.decorators import validate_output
 from internal.utils.logging_setup import setup_logging
 
 setup_logging()
@@ -12,16 +13,23 @@ logger = logging.getLogger(__name__)
 if not (failure := main_process()):
    logger.info("Main process ended with no error")
 
-
+@validate_output(
+    error_msg="Getting local data failed",
+    success_msg="Getting local data successful",
+    level="error"
+)
 def get_local_json_data(path: str, encode="utf-8"):
     """Get local data when interaction on website fail
     :param path: source path
     :param encode: encoding
     :return json as a python readable format"""
-    with open(path, "r", encoding=encode) as f:
-        f_data = json.load(f)
-        return f_data
-
+    try:
+        with open(path, "r", encoding=encode) as f:
+            f_data = json.load(f)
+            return f_data
+    except Exception as e:
+        logger.error(e)
+        return None
 
 for scraper in failure:
     # ----- LOGIN ----- #
