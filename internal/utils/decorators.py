@@ -19,11 +19,11 @@ def validate_output(error_msg: str = "Failed", success_msg: str = "Successful", 
         :return Any: The original return value of the decorated function.
 
         Example:
-            >>> @validate_output(error_msg="Login failed", success_msg="Login successful", level="critical")
+            >>> @validate_output(error_msg="Login failed", success_msg="Login successful", level="error")
             ... def login(user, password):
             ...     return user == "admin" and password == "secret"
             >>> login("correct", "wrong")
-            # logs: "Login failed" (CRITICAL)
+            # logs: "Login failed" (error)
             False"""
 
     def decorator(func):
@@ -34,10 +34,8 @@ def validate_output(error_msg: str = "Failed", success_msg: str = "Successful", 
             if not result and not False:
                 logger_method = getattr(logger, level.lower(), logger.error) # getattr instead writing if statements for each logger level
                 logger_method(error_msg)
-                # if level.lower() in ["error", "critical"]:
-                #     sys.exit(-1)
-                # TODO: ===============================
-                # critical exit -1
+                if level.lower() in ["critical"]:
+                    sys.exit(-1)
             else:
                 logger.info(success_msg)
 

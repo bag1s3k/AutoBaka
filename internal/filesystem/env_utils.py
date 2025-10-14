@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 @validate_output(
     error_msg="Loading credentials failed",
     success_msg="Loading credentials successful",
-    level="critical"
+    level="error"
 )
 def load_credentials(parser) -> tuple:
     """Using argparse load login details
@@ -31,7 +31,7 @@ def load_credentials(parser) -> tuple:
     )
     
     if not arg:
-        logger.critical("Retrieving credentials failed")
+        logger.error("Retrieving credentials failed")
         return None, None
 
     return arg.login_details
@@ -40,7 +40,7 @@ def load_credentials(parser) -> tuple:
 @validate_output(
     error_msg="Retrieving credentials from file failed",
     success_msg="Loading credentials from file successful",
-    level="critical"
+    level="error"
 )
 def load_credentials_from_file() -> tuple:
     """Loading login details from .env file

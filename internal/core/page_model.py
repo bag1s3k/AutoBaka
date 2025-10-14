@@ -24,7 +24,7 @@ class BasePage(ABC):
     @validate_output(
         error_msg=f"Moving to the target page failed url",
         success_msg=f"Moving to the target page successful url:",
-        level="critical"
+        level="error"
     )
     def get(self, url: str):
         """Move to target page"""
@@ -32,7 +32,7 @@ class BasePage(ABC):
             self.driver.get(url)
             return True
         except Exception as e:
-            logger.critical(e)
+            logger.error(e)
             self.driver = None
             return False
 
