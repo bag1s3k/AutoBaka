@@ -1,0 +1,89 @@
+/* 
+#23a0df - hlavní modrá
+#e9f8fb - světle modré pozadí
+#6FB0D3
+#8AD5FA
+*/
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  background-color: #e9f8fb;
+}
+
+.login_field {
+  width: 450px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 10px 24px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 80px;
+  color: #23a0df;
+  text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.field {
+  width: 80%;
+  color: #6a6d6e;
+  border: none;
+  border-bottom: 5px solid transparent;
+  border-radius: 10px;
+  margin: 10px 0;
+  padding: 15px 10px 10px 10px;
+  font-size: 25px;
+  box-shadow: 0 5px 20px 5px rgba(0, 0, 0, 0.2);
+  outline: none;
+  transition: border-color 0.2s, background-color 0.2s, transform 0.1s;
+}
+
+.field:hover,
+.field:focus {
+  border-bottom-color: #23a0df;
+  background-color: #e9f8fb;
+}
+
+.field:active {
+  transform: scale(0.98);
+}
+
+.field:disabled {
+    background-color: #f2f7f8;
+    border-bottom-color: #d6e7ea;
+    color: #9ea9ac;
+}
+
+.button {
+  margin: 10px 0;
+  width: 40%;
+  padding: 15px 0;
+  border-radius: 10px;
+  font-size: 20px;
+  background-image: linear-gradient(45deg, #23a0df, #8AD5FA);
+  border: none;
+  box-shadow: 0 5px 20px 5px rgba(0, 0, 0, 0.2);
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px 6px rgba(0, 0, 0, 0.2);
+}
