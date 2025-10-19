@@ -22,7 +22,7 @@ class Marks(BasePage):
     @validate_output(
         error_msg="Getting marks failed",
         success_msg="Getting marks successful",
-        level="critical"
+        level="error"
     )
     def scrape(self) -> dict[str, list[dict[str, str]]]:
         """ Specific logic to get marks
@@ -109,7 +109,7 @@ class Marks(BasePage):
                 self._subjects[subject].append({"avg": average})
 
             except Exception as e:
-                logger.critical(f"Something happened during processing marks: {e}")
+                logger.error(f"Something happened during processing marks: {e}")
                 return False
 
         self._subjects = dict(sorted(self._subjects.items()))
