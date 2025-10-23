@@ -5,7 +5,6 @@ from selenium.webdriver.common.by import By
 from unidecode import unidecode
 
 from ..page_model import BasePage
-from internal.filesystem.ini_loader import config
 from internal.utils.decorators import validate_output
 from internal.utils.logging_setup import setup_logging
 
@@ -28,7 +27,6 @@ class Timetable(BasePage):
         self.PERMANENT_TT_BTN = '//*[@id="cphmain_linkpevny"]'
         self.PERMANENT_TT_DAYS = "//div[@class='day-row double']"
 
-        self.SEMESTER_END = datetime.strptime(config.get_auto_cast("DATES", "semester1_end"), "%Y-%m-%d").date()
         self._timetable = {}
 
     @validate_output(
@@ -36,12 +34,11 @@ class Timetable(BasePage):
         success_msg="Extracting timetable successful",
         level="error"
     )
-    def _extract_tt(self, days_xpath, date_xpath=None, lectures_xpath=None, last_date=None, dual=False) -> dict:
+    def _extract_tt(self, days_xpath, date_xpath=None, lectures_xpath=None, dual=False) -> dict:
         """Specific logic to get specific timetable
             :param days_xpath:
             :param date_xpath:
             :param lectures_xpath:
-            :param last_date:
             :return: Empty dict if fail otherwise filled dict"""
         if not (days := self._find_item((By.XPATH, days_xpath), mult=True)):
             return self._timetable
@@ -65,10 +62,8 @@ class Timetable(BasePage):
 
             # ------- DUAL TT ------- #
             else:
-                skip_weekend = datetime.strptime(str(f"{last_date}"), "%Y-%m-%d") + timedelta(days=2)
-                date = skip_weekend + timedelta(days=which_day)
+                date = which_day
                 which_day += 1
-
                 if not (double_lectures := self._find_item((By.XPATH, ".//div/div/span/div"), parent=day, mult=True)):
                     return self._timetable
 
@@ -87,7 +82,8 @@ class Timetable(BasePage):
                     lectures.append(lectures_to_string)
 
             # Fill dict
-            date = date.date().isoformat()
+            if not dual:
+                date = date.date().isoformat()
             self._timetable[date] = []
             for lecture in lectures:
                 self._timetable[date].append(lecture)
@@ -96,6 +92,58 @@ class Timetable(BasePage):
             if (n_timetable := len(self._timetable[date])) != 10:
                 logger.debug(f"Wrong amount of lectures: {n_timetable} there must be 10")
 
+        return self._timetable
+
+    @staticmethod
+    def _delete_empty(dct: dict):
+        """Delete empty lists in the dictionary
+        :param dct: processed dictionary"""
+        for k, v in list(dct.items()):
+            if not v:
+                dct.pop(k)
+
+    @validate_output(
+        error_msg="Processing timetable failed",
+        success_msg="Processing successful",
+        level="error"
+    )
+    def _process_timetable(self):
+        """Create dictionary of timetable for current week, next week, odd week, even week
+        :return: Empty dict if fail otherwise filled dict"""
+        even, odd, current2weeks = {}, {}, {}
+        for date, lectures in self._timetable.items():
+            even[date] = []
+            odd[date] = []
+            current2weeks[date] = []
+
+            for lecture in lectures:
+                if not isinstance(lecture, list):
+                    current2weeks[date].append(lecture)
+                    continue
+                if not lecture:
+                    even[date].append('')
+                    odd[date].append('')
+                else:
+                    for even_or_odd in lecture:
+                        if even_or_odd.startswith("S"):
+                            odd[date].append(even_or_odd[3:])
+                        else:
+                            even[date].append(even_or_odd[3:])
+
+        self._delete_empty(even)
+        self._delete_empty(odd)
+        self._delete_empty(current2weeks)
+
+        last_school_day = datetime.strptime(tuple(current2weeks)[-1], "%Y-%m-%d")
+        nextweekday = last_school_day + timedelta(days=7 - last_school_day.weekday())
+
+        is_even_week = nextweekday.isocalendar().week % 2 == 0
+        first, second = (odd, even) if is_even_week else (even, odd)
+        for i in list(odd.keys()):
+            first[(nextweekday + timedelta(days=i - 1)).strftime("%Y-%m-%d")] = odd.pop(i)
+            second[(nextweekday + timedelta(days=i + 6)).strftime("%Y-%m-%d")] = even.pop(i)
+
+        self._timetable = dict(tuple(current2weeks.items()) + tuple(first.items()) + tuple(second.items()))
         return self._timetable
 
     def scrape(self):
@@ -110,9 +158,9 @@ class Timetable(BasePage):
         if self._timetable:
             self._extract_tt(
                 days_xpath=self.PERMANENT_TT_DAYS,
-                last_date=list(self._timetable.keys())[-1],  # last key is the last date
                 dual=True
             )
+        self._process_timetable()
 
     @property
     def timetable(self):
