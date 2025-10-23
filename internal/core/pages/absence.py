@@ -41,7 +41,11 @@ class Absence(BasePage):
             })
 
         return self._absence
-    
+
+    @validate_output()
+    def absence_predict(self, timetable):
+        """Predict absence"""
+
     @property
     def absence(self):
         """getter"""
