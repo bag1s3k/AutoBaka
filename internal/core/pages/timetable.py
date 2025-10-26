@@ -7,6 +7,8 @@ from unidecode import unidecode
 from ..page_model import BasePage
 from internal.utils.decorators import validate_output
 from internal.utils.logging_setup import setup_logging
+from internal.filesystem.export import export_json
+from internal.filesystem.paths_constants import RAW_TIMETABLE_OUTPUT
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -20,9 +22,10 @@ class Timetable(BasePage):
         super().__init__(driver)
         self.NORMAL_TT_DAYS = "//div[@class='day-row normal']"
         self.NORMAL_TT_DATES = ".//div/div/div/div/span"
-        self.NORMAL_TT_LECTURES = (".//div/div/span/div/div[@class='empty']"
-                                   " | .//div/div/span/div/div/div[@class='top clearfix']"
-                                   " | .//div/div/span/div/div/div/div[2]")
+        self.NORMAL_TT_LECTURES = ("./div/div/span/div/div[@class='empty']" # Free lecture
+                                   " | ./div/div/span/div/div/div[@class='top clearfix']" # Non-lecture
+                                   " | ./div/div/span/div/div/div/div[2]" # Lecture
+                                   " | ./div/div/div[2]/div") # Free day
         self.NEXT_TT_BTN = '//*[@id="cphmain_linkpristi"]'
         self.PERMANENT_TT_BTN = '//*[@id="cphmain_linkpevny"]'
         self.PERMANENT_TT_DAYS = "//div[@class='day-row double']"
@@ -55,7 +58,7 @@ class Timetable(BasePage):
             if not dual:
                 if not (date_webelement := self._find_item((By.XPATH, date_xpath), parent=day)):
                     return self._timetable
-                date = datetime.strptime(f"{date_webelement.text}/{year}", "%d/%m/%Y")
+                date = datetime.strptime(f"{date_webelement.text}/{year}", "%d/%m/%Y") # TODO: support multi language
                 if not(lectures_webelement := self._find_item((By.XPATH, lectures_xpath), parent=day, mult=True)):
                     return self._timetable
                 lectures = [unidecode(i.text) for i in lectures_webelement]
@@ -160,6 +163,7 @@ class Timetable(BasePage):
                 days_xpath=self.PERMANENT_TT_DAYS,
                 dual=True
             )
+        export_json(self.timetable, RAW_TIMETABLE_OUTPUT)
         self._process_timetable()
 
     @property
