@@ -10,8 +10,8 @@ from internal.utils.logging_setup import setup_logging
 setup_logging()
 logger = logging.getLogger(__name__)
 
-if not (failure := main_process()):
-   logger.info("Main process ended with no error")
+if failure := main_process():
+   logger.info(f"Main process ended with an error: {failure}")
 
 @validate_output(
     error_msg="Getting local data failed",

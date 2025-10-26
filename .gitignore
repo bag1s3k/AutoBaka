@@ -9,11 +9,9 @@ config/config.ini
 config/.env
 
 # Output files
-output/log/project_log.log
-output/marks/marks.json
-output/marks/raw_marks.json
-output/timetable/timetable.json
-output/absence/raw_absence.json
+/output/**
+!output/**/
+!output/**/*.template
 
 # Local help folders
 temp/
