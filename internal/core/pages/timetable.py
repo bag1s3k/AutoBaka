@@ -122,13 +122,10 @@ class Timetable(BasePage):
         success_msg="Processing successful",
         level="error"
     )
-    def _processtimetable(self):
+    def _process_timetable(self):
         """Create dictionary of timetable for current week, next week, odd week, even week
         :return: Empty dict if fail otherwise filled dict for a month in advance"""
         even, odd, current2weeks = {}, {}, {}
-        for k,v  in self.timetable.items():
-            print(k,v)
-        print("*"*20)
         for day, lectures in self.timetable.items():
             even[day] = []
             odd[day] = []
@@ -178,4 +175,4 @@ class Timetable(BasePage):
                 dual=True
             )
         export_json(self.timetable, RAW_TIMETABLE_OUTPUT)
-        self._processtimetable()
+        self._process_timetable()
