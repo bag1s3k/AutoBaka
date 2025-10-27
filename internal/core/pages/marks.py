@@ -17,7 +17,7 @@ class Marks(BasePage):
         Use for get marks"""
     def __init__(self, driver):
         super().__init__(driver)
-        self._subjects = {}
+        self.subjects = {}
 
     @validate_output(
         error_msg="Getting marks failed",
@@ -36,12 +36,12 @@ class Marks(BasePage):
                                                     "and contains(@class, 'dx-row-lines')]"),
                                      mult=True)):
             logger.error(f"Marks not found url")
-            return self._subjects
+            return self.subjects
 
         for single_line in marks_line:
             if not (subject := self._find_item(target=(By.TAG_NAME, "td"), parent=single_line, mult=True)):
                 logger.warning("No subject")
-                return self._subjects
+                return self.subjects
 
             mark = subject[1].text
             topic = unidecode(subject[2].text)
@@ -51,14 +51,14 @@ class Marks(BasePage):
 
             logger.info(f"Extracting: {mark} {topic} {weight} {date} {subject_name}")
 
-            self._subjects.setdefault(subject_name, []).append({
+            self.subjects.setdefault(subject_name, []).append({
                 "mark": mark,
                 "topic": topic,
                 "weight": weight,
                 "date": date
             })
 
-        return self._subjects
+        return self.subjects
 
 
     @validate_output(
@@ -68,15 +68,15 @@ class Marks(BasePage):
     )
     def process_marks(self) -> bool:
         """ Specific logit to process marks
-            :return _subjects: sorted dict of processed marks"""
+            :return subjects: sorted dict of processed marks"""
 
-        if not self._subjects: return False
+        if not self.subjects: return False
 
         logger.info(f"Processing marks")
 
         # (1- -> 1.5) or N don't add to the list and Calculate average
         text_to_num = [4.5, 3.5, 2.5, 1.5]
-        for subject, list_subject in self._subjects.items():
+        for subject, list_subject in self.subjects.items():
             logger.info(f"Processing subject: {subject}")
             try:
                 marks = []
@@ -106,18 +106,12 @@ class Marks(BasePage):
                 else:
                     logger.warning(f"{subject} has no weight")
 
-                self._subjects[subject].append({"avg": average})
+                self.subjects[subject].append({"avg": average})
 
             except Exception as e:
                 logger.error(f"Something happened during processing marks: {e}")
                 return False
 
-        self._subjects = dict(sorted(self._subjects.items()))
+        self.subjects = dict(sorted(self.subjects.items()))
 
         return True
-
-
-    @property
-    def subjects(self):
-        """Getter"""
-        return self._subjects
