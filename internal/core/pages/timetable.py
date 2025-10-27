@@ -51,14 +51,24 @@ class Timetable(BasePage):
 
         which_day = 1  # 1 stands for Monday...
         for day in days:
-            year: int = datetime.now().year
             lectures = []
 
             # ------- SINGLE TT ------ #
             if not dual:
                 if not (date_webelement := self._find_item((By.XPATH, date_xpath), parent=day)):
                     return self._timetable
-                date = datetime.strptime(f"{date_webelement.text}/{year}", "%d/%m/%Y") # TODO: support multi language
+                datetime_formats = [
+                    "%d/%m",
+                    "%d.%m."
+                ]
+                date = None
+                for date_format in datetime_formats:
+                    try:
+                        date = datetime.strptime(f"{date_webelement.text}", date_format)
+                    except:
+                        continue
+                date = datetime(datetime.now().year, date.month, date.day)
+
                 if not(lectures_webelement := self._find_item((By.XPATH, lectures_xpath), parent=day, mult=True)):
                     return self._timetable
                 lectures = [unidecode(i.text) for i in lectures_webelement]
