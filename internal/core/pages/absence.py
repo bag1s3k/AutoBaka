@@ -50,7 +50,6 @@ class Absence(BasePage):
         level="error"
     )
     def calc_lectures(timetable: dict, even: dict, odd: dict) -> dict:
-        # TODO: EXCLUDE HOLIDAYS ATD, AUTO CALC END OF SEMESTER
         """ Calculate amount of each lecture to end of semester
             :param timetable: Current 2 weeks timetable
             :param even: Even timetable

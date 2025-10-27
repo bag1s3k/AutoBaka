@@ -153,7 +153,6 @@ class Timetable(BasePage):
         self.odd_timetable = odd
         self.even_timetable = even
 
-        # TODO: DELETE (TMP)
         export_json(odd, "C:\\Users\\mate1\\Downloads\\odd.json")
         export_json(even, "C:\\Users\\mate1\\Downloads\\even.json")
         export_json(current2weeks, "C:\\Users\\mate1\\Downloads\\current2weeks.json")
