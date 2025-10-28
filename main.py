@@ -22,7 +22,7 @@ def get_local_json_data(path: str, encode="utf-8"):
     """Get local data when interaction on website fail
     :param path: source path
     :param encode: encoding
-    :return json as a python readable format"""
+    :return: json as a python readable format"""
     try:
         with open(path, "r", encoding=encode) as f:
             f_data = json.load(f)
