@@ -104,8 +104,8 @@ class Timetable(BasePage):
                 self.timetable[date].append(lecture)
 
             # One day of timetable should have 10 lessons
-            if (ntimetable := len(self.timetable[date])) != 10:
-                logger.debug(f"Wrong amount of lectures: {ntimetable} there must be 10")
+            if (n_timetable := len(self.timetable[date])) != 10:
+                logger.debug(f"Wrong amount of lectures: {n_timetable} there must be 10")
 
         return self.timetable
 
@@ -153,7 +153,6 @@ class Timetable(BasePage):
         self.odd_timetable = odd
         self.even_timetable = even
 
-        # TODO: DELETE (TMP)
         export_json(odd, "C:\\Users\\mate1\\Downloads\\odd.json")
         export_json(even, "C:\\Users\\mate1\\Downloads\\even.json")
         export_json(current2weeks, "C:\\Users\\mate1\\Downloads\\current2weeks.json")

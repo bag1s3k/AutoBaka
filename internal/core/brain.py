@@ -63,7 +63,7 @@ def main_process() -> set | Tuple[set, bool]:
     export_json(marks_page.subjects, RAW_MARKS_OUTPUT)
     marks_page.process_marks()
     export_json(marks_page.subjects, MARKS_OUTPUT)
-    export_results(marks_page.subjects, config.get_auto_cast("PATHS", "result_path")) # TODO: ADD ABSENCE
+    export_results(marks_page.subjects, config.get_auto_cast("PATHS", "result_path"))
 
     print(".", end="", flush=True)
 
