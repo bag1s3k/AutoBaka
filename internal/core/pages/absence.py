@@ -8,6 +8,7 @@ from ..page_model import BasePage
 from internal.utils.logging_setup import setup_logging
 from internal.utils.decorators import validate_output
 from internal.filesystem.ini_loader import config
+from internal.utils.lecture_dict import short
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -37,7 +38,7 @@ class Absence(BasePage):
             subject_str = [t.text for t in subjects_l]
 
             self.absence.append({
-                "subject": unidecode(subject_str[0]),
+                "subject": short(unidecode(subject_str[0])),
                 "passed_lectures": int(subject_str[1]),
                 "absence": int(subject_str[2]),
                 "%": subject_str[3]

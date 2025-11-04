@@ -6,6 +6,7 @@ from unidecode import unidecode
 from ..page_model import BasePage
 from internal.utils.decorators import validate_output
 from internal.utils.logging_setup import setup_logging
+from internal.utils.lecture_dict import short
 
 
 setup_logging()
@@ -47,7 +48,7 @@ class Marks(BasePage):
             topic = unidecode(subject[2].text)
             weight = subject[5].text
             date = subject[6].text
-            subject_name = unidecode(subject[0].text)
+            subject_name = short(unidecode(subject[0].text))
 
             logger.info(f"Extracting: {mark} {topic} {weight} {date} {subject_name}")
 
