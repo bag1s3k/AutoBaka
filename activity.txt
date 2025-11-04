@@ -1,0 +1,1 @@
+4.11.2025 - Working on absence predict, currently end is user input
