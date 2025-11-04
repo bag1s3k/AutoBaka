@@ -19,6 +19,7 @@ class Absence(BasePage):
         super().__init__(driver)
         
         self.absence = []
+        self.counts = {}
 
     @validate_output(
         error_msg="Absence failed",
@@ -44,12 +45,11 @@ class Absence(BasePage):
 
         return self.absence
 
-    @staticmethod
     @validate_output(
         error_msg="No lectures in counts",
         level="error"
     )
-    def calc_lectures(timetable: dict, even: dict, odd: dict) -> dict:
+    def calc_lectures(self, timetable: dict, even: dict, odd: dict) -> dict:
         """ Calculate amount of each lecture to end of semester
             :param timetable: Current 2 weeks timetable
             :param even: Even timetable
@@ -76,14 +76,13 @@ class Absence(BasePage):
             day += timedelta(days=1)
 
         # Get remaining lectures
-        counts = {}
         for lectures in timetable.values():
             for lecture in lectures:
                 if not lecture or len(lecture) > 4:
                     continue
-                if lecture in counts:
-                    counts[lecture] += 1
+                if lecture in self.counts:
+                    self.counts[lecture] += 1
                 else:
-                    counts[lecture] = 1
+                    self.counts[lecture] = 1
 
-        return counts
+        return self.counts
