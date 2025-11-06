@@ -82,6 +82,7 @@ def main_process() -> set | Tuple[set, bool]:
         failure.add(Absence)
     absence.scrape()
     absence.calc_lectures(timetable.timetable, timetable.even_timetable, timetable.odd_timetable)
+    absence.calc_absence()
     export_json(absence.absence, RAW_ABSENCE_OUTPUT)
 
     print(".", end="", flush=True)

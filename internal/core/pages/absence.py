@@ -87,3 +87,53 @@ class Absence(BasePage):
                     self.counts[lecture] = 1
 
         return self.counts
+
+    @validate_output(
+        error_msg="Calculating absence failed",
+        level="error"
+    )
+    def calc_absence(self):
+        for subject in self.absence:
+            self.counts[subject["subject"]] += subject["passed_lectures"]
+            subject["%"] = round(subject["absence"] / self.counts[subject["subject"]], 2)
+
+        # user_absence = input("Enter your absence in format: 1.1.2025 8:00 - 1.1.2025 13:00").split(":")[1]
+        # user_absence.split("-")
+
+        t_start = "11.11.2025 8:59"
+        t_end = "11.11.2025 12:33"
+
+        lecture_time = [
+            {"7:10": "7:55"},
+            {"8:00": "8:45"},
+            {"8:55": "9:40"},
+            {"10:00": "10:45"},
+            {"10:55": "11:40"},
+            {"11:50": "12:35"},
+            {"12:45": "13:30"},
+            {"13:40": "14:25"},
+            {"14:35": "15:20"},
+            {"15:30": "16:15"}
+        ]
+
+        converter_lectures = []
+        for lecture in lecture_time:
+            for start_time, end_time in lecture.items():
+                start = datetime.strptime(start_time, "%H:%M")
+                end = datetime.strptime(end_time, "%H:%M")
+                converter_lectures.append((start, end))
+                # print(k,v)
+
+        t_start = datetime.strptime(t_start, "%d.%m.%Y %H:%M")
+        t_end = datetime.strptime(t_end, "%d.%m.%Y %H:%M")
+
+        found_indices = set()
+        for index, (start, end) in enumerate(converter_lectures):
+            if start.time() <= t_start.time() <= end.time():
+                found_indices.add(index)
+
+            if start.time() <= t_end.time() <= end.time():
+                found_indices.add(index)
+
+            if t_start.time() <= start.time() and end.time() <= t_end.time():
+                found_indices.add(index)
