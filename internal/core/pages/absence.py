@@ -129,10 +129,10 @@ class Absence(BasePage):
 
         found_indices = set()
         for index, (start, end) in enumerate(converter_lectures):
-            if start.time() <= t_start.time() <= end.time():
+            if start.time() <= t_start.time() <= end.time() and timedelta(minutes=15) < t_start - start: # todo: amount of minutes from config
                 found_indices.add(index)
 
-            if start.time() <= t_end.time() <= end.time():
+            if start.time() <= t_end.time() <= end.time() and timedelta(minutes=15) < t_end - start:
                 found_indices.add(index)
 
             if t_start.time() <= start.time() and end.time() <= t_end.time():
