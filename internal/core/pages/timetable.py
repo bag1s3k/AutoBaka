@@ -104,8 +104,8 @@ class Timetable(BasePage):
                 self.timetable[date].append(lecture)
 
             # One day of timetable should have 10 lessons
-            if (ntimetable := len(self.timetable[date])) != 10:
-                logger.debug(f"Wrong amount of lectures: {ntimetable} there must be 10")
+            if (n_timetable := len(self.timetable[date])) != 10:
+                logger.debug(f"Wrong amount of lectures: {n_timetable} there must be 10")
 
         return self.timetable
 
