@@ -1,2 +1,3 @@
 4.11.2025 - Working on absence predict, currently end is user input
 29.11.2025 - Working on absence predict, calculate absence
+2.12.2025 - Calculation works, but it really needs to refactor
