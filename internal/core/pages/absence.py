@@ -95,7 +95,7 @@ class Absence(BasePage):
     def calc_absence(self, timetable: dict):
         for subject in self.absence:
             self.counts[subject["subject"]] += subject["passed_lectures"]
-            subject["%"] = round(subject["absence"] / self.counts[subject["subject"]], 2)
+            subject["%"] = round((subject["absence"] / self.counts[subject["subject"]]) * 100, 2)
 
         LECTURE_TIME_RANGE = {
             "7:10": "7:55",
