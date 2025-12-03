@@ -138,4 +138,9 @@ class Absence(BasePage):
                 if not absence_to <= lect_start or absence_from >= lect_end:
                     missed[subject] = missed.get(subject, 0) + 1
 
-        return missed
+        for subject in self.absence:
+            for lesson in missed.keys():
+                if subject["subject"] == lesson:
+                    subject["passed_lectures"] += missed[lesson]
+                    subject["absence"] += missed[lesson]
+                    subject["%"] = round((subject["absence"] / subject["passed_lectures"]) * 100, 2)
