@@ -18,7 +18,7 @@ class Absence(BasePage):
         Use for get absence"""
     def __init__(self, driver):
         super().__init__(driver)
-        
+
         self.absence = []
         self.counts = {}
 
@@ -92,48 +92,50 @@ class Absence(BasePage):
         error_msg="Calculating absence failed",
         level="error"
     )
-    def calc_absence(self):
+    def calc_absence(self, timetable: dict):
         for subject in self.absence:
             self.counts[subject["subject"]] += subject["passed_lectures"]
             subject["%"] = round(subject["absence"] / self.counts[subject["subject"]], 2)
 
-        # user_absence = input("Enter your absence in format: 1.1.2025 8:00 - 1.1.2025 13:00").split(":")[1]
-        # user_absence.split("-")
+        LECTURE_TIME_RANGE = {
+            "7:10": "7:55",
+            "8:00": "8:45",
+            "8:55": "9:40",
+            "10:00": "10:45",
+            "10:55": "11:40",
+            "11:50": "12:35",
+            "12:45": "13:30",
+            "13:40": "14:25",
+            "14:35": "15:20",
+            "15:30": "16:15"
+        }
 
-        t_start = "11.11.2025 8:59"
-        t_end = "11.11.2025 12:33"
+        absence_from = datetime.strptime("2025-12-04 08:00", "%Y-%m-%d %H:%M") # TODO: user input
+        absence_to = datetime.strptime("2025-12-04 13:30", "%Y-%m-%d %H:%M") # TODO: user input
 
-        lecture_time = [
-            {"7:10": "7:55"},
-            {"8:00": "8:45"},
-            {"8:55": "9:40"},
-            {"10:00": "10:45"},
-            {"10:55": "11:40"},
-            {"11:50": "12:35"},
-            {"12:45": "13:30"},
-            {"13:40": "14:25"},
-            {"14:35": "15:20"},
-            {"15:30": "16:15"}
-        ]
+        missed = {}
 
-        converter_lectures = []
-        for lecture in lecture_time:
-            for start_time, end_time in lecture.items():
-                start = datetime.strptime(start_time, "%H:%M")
-                end = datetime.strptime(end_time, "%H:%M")
-                converter_lectures.append((start, end))
-                # print(k,v)
+        lecture_starts = list(LECTURE_TIME_RANGE.keys())
+        lecture_ends = list(LECTURE_TIME_RANGE.values())
 
-        t_start = datetime.strptime(t_start, "%d.%m.%Y %H:%M")
-        t_end = datetime.strptime(t_end, "%d.%m.%Y %H:%M")
+        for day_str, subjects in timetable.items():
+            day_date = datetime.strptime(day_str, "%Y-%m-%d")
 
-        found_indices = set()
-        for index, (start, end) in enumerate(converter_lectures):
-            if start.time() <= t_start.time() <= end.time() and timedelta(minutes=15) < t_start - start: # todo: amount of minutes from config
-                found_indices.add(index)
+            # Skip passed days
+            if day_date + timedelta(hours=23, minutes=59) < absence_from:
+                continue
 
-            if start.time() <= t_end.time() <= end.time() and timedelta(minutes=15) < t_end - start:
-                found_indices.add(index)
+            for idx, subject in enumerate(subjects):
+                if subject == "":
+                    continue
 
-            if t_start.time() <= start.time() and end.time() <= t_end.time():
-                found_indices.add(index)
+                start_time_str = lecture_starts[idx]
+                end_time_str = lecture_ends[idx]
+
+                lect_start = datetime.strptime(f"{day_str} {start_time_str}", "%Y-%m-%d %H:%M")
+                lect_end = datetime.strptime(f"{day_str} {end_time_str}", "%Y-%m-%d %H:%M")
+
+                if not absence_to <= lect_start or absence_from >= lect_end:
+                    missed[subject] = missed.get(subject, 0) + 1
+
+        return missed
