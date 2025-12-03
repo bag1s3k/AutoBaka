@@ -10,7 +10,7 @@ from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_utils import load_credentials
 from internal.filesystem.paths_constants import PROJECT_ROOT, RAW_MARKS_OUTPUT, MARKS_OUTPUT, TIMETABLE_OUTPUT, \
-    RAW_ABSENCE_OUTPUT
+    RAW_ABSENCE_OUTPUT, ABSENCE_OUTPUT
 from internal.filesystem.ini_loader import config
 
 @validate_output(
@@ -82,8 +82,9 @@ def main_process() -> set | Tuple[set, bool]:
         failure.add(Absence)
     absence.scrape()
     absence.calc_lectures(timetable.timetable, timetable.even_timetable, timetable.odd_timetable)
-    absence.calc_absence()
     export_json(absence.absence, RAW_ABSENCE_OUTPUT)
+    absence.calc_absence(timetable.timetable)
+    export_json(absence.absence, ABSENCE_OUTPUT)
 
     print(".", end="", flush=True)
 

@@ -111,7 +111,7 @@ class Absence(BasePage):
         }
 
         absence_from = datetime.strptime("2025-12-04 08:00", "%Y-%m-%d %H:%M") # TODO: user input
-        absence_to = datetime.strptime("2025-12-04 13:30", "%Y-%m-%d %H:%M") # TODO: user input
+        absence_to = datetime.strptime("2025-12-12 13:30", "%Y-%m-%d %H:%M") # TODO: user input
 
         missed = {}
 
@@ -144,3 +144,5 @@ class Absence(BasePage):
                     subject["passed_lectures"] += missed[lesson]
                     subject["absence"] += missed[lesson]
                     subject["%"] = round((subject["absence"] / subject["passed_lectures"]) * 100, 2)
+                    
+        return self.absence
