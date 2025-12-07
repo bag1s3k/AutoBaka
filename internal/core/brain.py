@@ -58,7 +58,7 @@ def main_process() -> set | Tuple[set, bool]:
     export_json(marks_page.subjects, PATHS.raw_marks)
     marks_page.process_marks()
     export_json(marks_page.subjects, PATHS.processed_marks)
-    export_results(marks_page.subjects, config.get_auto_cast("PATHS", "result_path"))
+    export_results(marks_page.subjects, config.get_auto_cast("PATHS", "result_path_marks"))
 
     print(".", end="", flush=True)
 
@@ -80,6 +80,10 @@ def main_process() -> set | Tuple[set, bool]:
     export_json(absence.absence, PATHS.raw_absence)
     absence.calc_absence(timetable.timetable)
     export_json(absence.absence, PATHS.calculated_absence)
+    with open(config.get_auto_cast("PATHS", "result_path_absence"), "w") as f:
+        for subject in absence.absence:
+            for k,v in subject.items():
+                f.write(f"{k}: {v}\n-----\n")
 
     print(".", end="", flush=True)
 
