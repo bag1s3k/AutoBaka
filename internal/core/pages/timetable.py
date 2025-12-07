@@ -8,7 +8,7 @@ from ..page_model import BasePage
 from internal.utils.decorators import validate_output
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.export import export_json
-from paths_constants import RAW_TIMETABLE_OUTPUT
+from paths_constants import PATHS
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -173,5 +173,5 @@ class Timetable(BasePage):
                 days_xpath=self.PERMANENT_TT_DAYS,
                 dual=True
             )
-        export_json(self.timetable, RAW_TIMETABLE_OUTPUT)
+        export_json(self.timetable, PATHS.raw_timetable)
         self._process_timetable()

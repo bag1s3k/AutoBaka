@@ -1,7 +1,7 @@
 ﻿import logging
 import configparser
 
-from paths_constants import INI_PATH
+from paths_constants import PATHS
 from internal.utils.logging_setup import setup_logging
 
 setup_logging()
@@ -29,4 +29,4 @@ class AutoCastConfigParser(configparser.ConfigParser):
             return value
 
 config = AutoCastConfigParser()
-config.read(INI_PATH, "utf-8")
+config.read(PATHS.ini, "utf-8")

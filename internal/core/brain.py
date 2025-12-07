@@ -8,8 +8,7 @@ from internal.utils.decorators import validate_output, timer
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_utils import load_credentials
-from paths_constants import PROJECT_ROOT, RAW_MARKS_OUTPUT, MARKS_OUTPUT, TIMETABLE_OUTPUT, \
-    RAW_ABSENCE_OUTPUT, ABSENCE_OUTPUT
+from paths_constants import PATHS
 from internal.filesystem.ini_loader import config
 
 @validate_output(
@@ -57,9 +56,9 @@ def main_process() -> set | Tuple[set, bool]:
     if not marks_page.get(config.get_auto_cast("URLS", "marks_url")):
         failure.add(Marks)
     marks_page.scrape()
-    export_json(marks_page.subjects, RAW_MARKS_OUTPUT)
+    export_json(marks_page.subjects, PATHS.raw_marks)
     marks_page.process_marks()
-    export_json(marks_page.subjects, MARKS_OUTPUT)
+    export_json(marks_page.subjects, PATHS.processed_marks)
     export_results(marks_page.subjects, config.get_auto_cast("PATHS", "result_path"))
 
     print(".", end="", flush=True)
@@ -69,7 +68,7 @@ def main_process() -> set | Tuple[set, bool]:
     if not timetable.get(config.get_auto_cast("URLS", "timetable_url")):
         failure.add(Timetable)
     timetable.scrape()
-    export_json(timetable.timetable, TIMETABLE_OUTPUT)
+    export_json(timetable.timetable, PATHS.two_weeks_timetable)
 
     print(".", end="", flush=True)
 
@@ -79,9 +78,9 @@ def main_process() -> set | Tuple[set, bool]:
         failure.add(Absence)
     absence.scrape()
     absence.calc_lectures(timetable.timetable, timetable.even_timetable, timetable.odd_timetable)
-    export_json(absence.absence, RAW_ABSENCE_OUTPUT)
+    export_json(absence.absence, PATHS.raw_absence)
     absence.calc_absence(timetable.timetable)
-    export_json(absence.absence, ABSENCE_OUTPUT)
+    export_json(absence.absence, PATHS.calculated_absence)
 
     print(".", end="", flush=True)
 

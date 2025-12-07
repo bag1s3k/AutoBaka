@@ -1,16 +1,6 @@
 ﻿from pathlib import Path
 from internal.utils.decorators import validate_output
 
-PROJECT_ROOT = Path(__file__).parent
-INI_PATH = PROJECT_ROOT / "config" / "config.ini"
-ENV_PATH = PROJECT_ROOT / "config" / ".env"
-LOG_PATH = PROJECT_ROOT / "output" / "log" / "project_log.log"
-MARKS_OUTPUT = PROJECT_ROOT / "output" / "marks" / "processed_marks.json"
-RAW_MARKS_OUTPUT = PROJECT_ROOT / "output" / "marks" / "raw_marks.json"
-TIMETABLE_OUTPUT = PROJECT_ROOT / "output" / "timetable" / "two_weeks_timetable.json"
-RAW_TIMETABLE_OUTPUT = PROJECT_ROOT / "output" / "timetable" / "raw_timetable.json"
-RAW_ABSENCE_OUTPUT = PROJECT_ROOT / "output" / "absence" / "raw_absence.json"
-ABSENCE_OUTPUT = PROJECT_ROOT / "output" / "absence" / "absence.json"
 class PathConfig:
 
     def __init__(self):
@@ -38,7 +28,7 @@ class PathConfig:
     @property
     @validate_output(error_msg="Log file doesn't exist", level="info")
     def log(self):
-        return self._root / "output" / "config" / "project_log.log"
+        return self._root / "output" / "project_log.log"
 
     @property
     @validate_output(error_msg="File with processed marks doesn't exist", level="info")

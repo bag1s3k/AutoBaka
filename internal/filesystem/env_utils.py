@@ -4,7 +4,7 @@ import logging
 from dotenv import load_dotenv
 from internal.utils.logging_setup import setup_logging
 from internal.utils.arg_parser import create_agr_parser
-from paths_constants import ENV_PATH
+from paths_constants import PATHS
 from internal.utils.decorators import validate_output
 
 setup_logging()
@@ -45,11 +45,8 @@ def load_credentials(parser) -> tuple:
 def load_credentials_from_file() -> tuple:
     """Loading login details from .env file
         :return: username, password: (username, password) or (None, None) if failed"""
-    if not ENV_PATH.exists():
-        logger.error(f"ENV path doesn't exist: env path {ENV_PATH}")
-        return None, None
 
-    if not load_dotenv(ENV_PATH):
+    if not load_dotenv(PATHS.env):
         logger.error("env file cannot be loaded")
         return None, None
 

@@ -3,7 +3,7 @@ import logging
 
 from internal.core.brain import main_process
 from internal.core import Absence, Marks, Timetable, Login
-from paths_constants import MARKS_OUTPUT, TIMETABLE_OUTPUT, RAW_ABSENCE_OUTPUT
+from paths_constants import PATHS
 from internal.utils.decorators import validate_output
 from internal.utils.logging_setup import setup_logging
 
@@ -35,20 +35,20 @@ for scraper in failure:
     # ----- LOGIN ----- #
     if scraper is Login:
         logger.error("Loading last local data")
-        marks = get_local_json_data(MARKS_OUTPUT)
-        timetable = get_local_json_data(TIMETABLE_OUTPUT)
-        absence = get_local_json_data(RAW_ABSENCE_OUTPUT)
+        marks = get_local_json_data(PATHS.processed_marks)
+        timetable = get_local_json_data(PATHS.two_weeks_timetable)
+        absence = get_local_json_data(PATHS.raw_absence)
     # ----- MARKS ----- #
     if scraper is Marks:
         logger.error("Loading last local marks data")
-        marks = get_local_json_data(MARKS_OUTPUT)
+        marks = get_local_json_data(PATHS.processed_marks)
 
     # ----- ABSENCE ----- #
     if scraper is Absence:
         logger.error("Loading last local absence data")
-        absence = get_local_json_data(RAW_ABSENCE_OUTPUT)
+        absence = get_local_json_data(PATHS.raw_absence)
 
     # ----- TIMETABLE ----- #
     if scraper is Timetable:
         logger.error("Loading last local timetable data")
-        timetable = get_local_json_data(TIMETABLE_OUTPUT)
+        timetable = get_local_json_data(PATHS.two_weeks_timetable)
