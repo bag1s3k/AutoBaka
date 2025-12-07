@@ -17,24 +17,22 @@ logger = logging.getLogger(__name__)
     level="error"
 )
 def load_credentials(parser) -> tuple:
-    """Using argparse load login details
-         - default option is load credentials from file
+    """ Using argparse load login details,
+        default option is to use login details from file
         :return arg.login_details:  (username, password)"""
     arg = create_agr_parser(
         parser,
         arg_name=["--login", "-l"],
         nargs=2,
-        default=load_credentials_from_file(),
         help_text="Enter login details in form USERNAME PASSWORD e.g. python main.py -l username password",
         metavar=("USERNAME", "PASSWORD"),
         dest="login_details",
     )
     
-    if not arg:
-        logger.error("Retrieving credentials failed")
-        return None, None
+    if arg.login_details:
+        return arg.login_details
 
-    return arg.login_details
+    return load_credentials_from_file()
 
 
 @validate_output(
@@ -46,9 +44,8 @@ def load_credentials_from_file() -> tuple:
     """Loading login details from .env file
         :return: username, password: (username, password) or (None, None) if failed"""
 
-    if not load_dotenv(PATHS.env):
-        logger.error("env file cannot be loaded")
-        return None, None
+    if PATHS.env:
+        load_dotenv(PATHS.env)
 
     # Check variables
     def check_env_var(var_name: str) -> str:
