@@ -1,6 +1,7 @@
 ﻿import functools
 import logging
 import sys
+from pathlib import Path
 from typing import Any
 from time import time
 
@@ -19,7 +20,7 @@ def validate_output(
         :param error_msg: Message to log if the decorated function returns a falsy value.
         :param success_msg: Message to log if the decorated function returns a truthy value.
         :param level: Logging level to use when the decorated function returns a falsy value
-                 (e.g. "error", "warning", "info"). Defaults to "error".
+                 (e.g. "error", "warning", "info"). Defaults to "error". To exit the program use 'critical'
         :param allow_empty: output can be empty
         :return Any: The original return value of the decorated function.
 
@@ -36,12 +37,19 @@ def validate_output(
         def wrapper(*args, **kwargs) -> Any:
             result = func(*args, **kwargs)
 
-            if not result and not allow_empty:
+            def execute():
+                """ Show logger or exit the program """
+
                 # getattr instead writing if statements for each logger level
                 logger_method = getattr(logger, level.lower(), logger.error)
                 logger_method(error_msg)
                 if level.lower() in ["critical"]:
                     sys.exit(-1)
+
+            if not result and not allow_empty:
+                execute()
+            elif isinstance(result, Path) and not result.exists():
+                execute()
             else:
                 if success_msg:
                     logger.info(success_msg)

@@ -3,7 +3,7 @@ import logging
 
 from internal.core.brain import main_process
 from internal.core import Absence, Marks, Timetable, Login
-from internal.filesystem.paths_constants import MARKS_OUTPUT, TIMETABLE_OUTPUT, RAW_ABSENCE_OUTPUT
+from paths_constants import MARKS_OUTPUT, TIMETABLE_OUTPUT, RAW_ABSENCE_OUTPUT
 from internal.utils.decorators import validate_output
 from internal.utils.logging_setup import setup_logging
 

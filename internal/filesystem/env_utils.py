@@ -4,7 +4,7 @@ import logging
 from dotenv import load_dotenv
 from internal.utils.logging_setup import setup_logging
 from internal.utils.arg_parser import create_agr_parser
-from internal.filesystem.paths_constants import ENV_PATH
+from paths_constants import ENV_PATH
 from internal.utils.decorators import validate_output
 
 setup_logging()

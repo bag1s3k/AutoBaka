@@ -1,7 +1,7 @@
 ﻿import logging
 import configparser
 
-from internal.filesystem.paths_constants import INI_PATH
+from paths_constants import INI_PATH
 from internal.utils.logging_setup import setup_logging
 
 setup_logging()
