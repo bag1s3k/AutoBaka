@@ -6,7 +6,11 @@ from typing import Any
 logger = logging.getLogger(__name__)
 
 
-def validate_output(error_msg: str = "Failed", success_msg: str = "Successful", level: str = "error", allow_empty=False):
+def validate_output(
+        error_msg: str = "Something went wrong",
+        success_msg: str = "",
+        level: str = "error",
+        allow_empty=False):
     """ Decorator that logs a message depending on the return value of the decorated function.
         - If the function returns a falsy value (e.g. None, False, empty string),
           an error message is logged.
@@ -32,12 +36,14 @@ def validate_output(error_msg: str = "Failed", success_msg: str = "Successful", 
             result = func(*args, **kwargs)
 
             if not result and not allow_empty:
-                logger_method = getattr(logger, level.lower(), logger.error) # getattr instead writing if statements for each logger level
+                # getattr instead writing if statements for each logger level
+                logger_method = getattr(logger, level.lower(), logger.error)
                 logger_method(error_msg)
                 if level.lower() in ["critical"]:
                     sys.exit(-1)
             else:
-                logger.info(success_msg)
+                if success_msg:
+                    logger.info(success_msg)
 
             return result
 
