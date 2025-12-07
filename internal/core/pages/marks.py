@@ -28,15 +28,16 @@ class Marks(BasePage):
     def scrape(self) -> dict[str, list[dict[str, str]]]:
         """ Specific logic to get marks
             :return: empty dict if fail otherwise filled dict"""
-        logger.info("Looking for an element on page with marks")
 
-        if not (marks_line := self._find_item(target=(By.XPATH,
-                                                    "//tbody//tr[//td "
-                                                    "and contains(@class, 'dx-row') "
-                                                    "and contains(@class, 'dx-data-row') "
-                                                    "and contains(@class, 'dx-row-lines')]"),
-                                     mult=True)):
+        if not (marks_line := self._find_item(
+                target=(By.XPATH,
+                "//tbody//tr[//td "
+                    "and contains(@class, 'dx-row') "
+                    "and contains(@class, 'dx-data-row') "
+                    "and contains(@class, 'dx-row-lines')]"),
+                mult=True)):
             logger.error(f"Marks not found url")
+            print(self.subjects)
             return self.subjects
 
         for single_line in marks_line:
@@ -71,9 +72,8 @@ class Marks(BasePage):
         """ Specific logit to process marks
             :return subjects: sorted dict of processed marks"""
 
-        if not self.subjects: return False
-
-        logger.info(f"Processing marks")
+        if not self.subjects:
+            return False
 
         # (1- -> 1.5) or N don't add to the list and Calculate average
         text_to_num = [4.5, 3.5, 2.5, 1.5]

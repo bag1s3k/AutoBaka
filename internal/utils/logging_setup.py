@@ -1,5 +1,7 @@
 ﻿import logging
-from internal.filesystem.paths_constants import LOG_PATH
+from pathlib import Path
+
+from paths_constants import PATHS
 
 
 def setup_logging():
@@ -19,8 +21,11 @@ def setup_logging():
         datefmt="%d.%m.%Y %H:%M:%S",
     )
 
+    if not PATHS.log:
+        Path(PATHS.log).touch()
+
     # File handler
-    file_handler = logging.FileHandler(LOG_PATH, mode="w", encoding="utf-8")
+    file_handler = logging.FileHandler(PATHS.log, mode="w", encoding="utf-8")
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(formatter)
 
