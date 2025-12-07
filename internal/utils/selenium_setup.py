@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 @validate_output(
     error_msg="Webdriver setup failed",
-    success_msg="Webdriver setup successfully completed",
+    success_msg="Webdriver setup successfully set",
     level="error"
 )
 def setup_driver():
