@@ -39,18 +39,18 @@ def main_process() -> set | Tuple[set, bool]:
 
     print(".", end="", flush=True) # progress print
 
-    # ------------------------------------- ON WEBSITE -------------------------------------- #
+    # === ON WEBSITE === #
+    # --- login --- #
     login = Login(driver=driver)
     if not login.get(config.get_auto_cast("URLS", "login_url")):
         failure.add(Login)
         driver.quit()
-        logger.info("driver was successfully quit")
         return failure
     login.scrape(username, password)
 
     print(".", end="", flush=True)
 
-    # ----- MARKS ------ #
+    # --- marks --- #
     marks_page = Marks(driver=driver)
     if not marks_page.get(config.get_auto_cast("URLS", "marks_url")):
         failure.add(Marks)
@@ -62,7 +62,7 @@ def main_process() -> set | Tuple[set, bool]:
 
     print(".", end="", flush=True)
 
-    # ----- TIMETABLE ------ #
+    # --- timetable --- #
     timetable = Timetable(driver=driver)
     if not timetable.get(config.get_auto_cast("URLS", "timetable_url")):
         failure.add(Timetable)
@@ -71,7 +71,7 @@ def main_process() -> set | Tuple[set, bool]:
 
     print(".", end="", flush=True)
 
-    # ----- ABSENCE ------ #
+    # --- absence --- #
     absence = Absence(driver=driver)
     if not absence.get(config.get_auto_cast("URLS", "absence_url")):
         failure.add(Absence)
@@ -83,7 +83,7 @@ def main_process() -> set | Tuple[set, bool]:
 
     print(".", end="", flush=True)
 
-    # --------------------------------------- TERMINATE WEBDRIVER ----------------------------- #
+    # === TERMINATE WEBDRIVER === #
     if config.get_auto_cast("SETTINGS", "quit_driver") is not False:  # let window open or close it
         driver.quit()
         logger.info("driver was successfully quit")

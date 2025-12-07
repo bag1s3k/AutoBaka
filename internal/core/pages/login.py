@@ -17,7 +17,7 @@ class Login(BasePage):
     @validate_output(
         error_msg="Login failed",
         success_msg="Login successful",
-        level="error"
+        level="critical"
     )
     def scrape(self, username, password) -> bool:
         """Specific login logic
