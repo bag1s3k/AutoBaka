@@ -14,20 +14,24 @@ logger = logging.getLogger(__name__)
 @validate_output(
     error_msg="Loading credentials failed",
     success_msg="Loading credentials successful",
-    level="error"
+    level="critical"
 )
 def load_credentials(parser) -> tuple:
     """ Using argparse load login details,
         default option is to use login details from file
         :return arg.login_details:  (username, password)"""
-    arg = create_agr_parser(
-        parser,
-        arg_name=["--login", "-l"],
-        nargs=2,
-        help_text="Enter login details in form USERNAME PASSWORD e.g. python main.py -l username password",
-        metavar=("USERNAME", "PASSWORD"),
-        dest="login_details",
-    )
+    try:
+        arg = create_agr_parser(
+            parser,
+            arg_name=["--login", "-l"],
+            nargs=2,
+            help_text="Enter login details in form USERNAME PASSWORD e.g. python main.py -l username password",
+            metavar=("USERNAME", "PASSWORD"),
+            dest="login_details",
+        )
+    except:
+        return tuple()
+
     
     if arg.login_details:
         return arg.login_details
