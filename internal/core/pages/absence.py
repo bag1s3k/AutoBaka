@@ -85,7 +85,7 @@ class Absence(BasePage):
                     self.counts[lecture] += 1
                 else:
                     self.counts[lecture] = 1
-
+        # print(self.counts)
         return self.counts
 
     @validate_output(
@@ -95,7 +95,7 @@ class Absence(BasePage):
     def calc_absence(self, timetable: dict):
         for subject in self.absence:
             self.counts[subject["subject"]] += subject["passed_lectures"]
-            subject["%"] = round((subject["absence"] / self.counts[subject["subject"]]) * 100, 2)
+            subject["%"] = round((subject["absence"] / subject["passed_lectures"]) * 100, 2)
 
         LECTURE_TIME_RANGE = {
             "7:10": "7:55",
@@ -109,9 +109,12 @@ class Absence(BasePage):
             "14:35": "15:20",
             "15:30": "16:15"
         }
-
-        absence_from = datetime.strptime("2025-12-04 08:00", "%Y-%m-%d %H:%M") # TODO: user input
-        absence_to = datetime.strptime("2025-12-12 13:30", "%Y-%m-%d %H:%M") # TODO: user input
+        user_abs_start = input("Enter start of your absence 2025-12-04 08:00: ")
+        user_abs_end = input("Enter start of your absence 2025-12-12 13:30: ")
+        absence_from = datetime.strptime(user_abs_start.strip(), "%Y-%m-%d %H:%M")
+        absence_to = datetime.strptime(user_abs_end.strip(), "%Y-%m-%d %H:%M")
+        # absence_from = datetime.strptime("2025-12-08 08:00", "%Y-%m-%d %H:%M")
+        # absence_to = datetime.strptime("2025-12-08 13:30", "%Y-%m-%d %H:%M")
 
         missed = {}
 
@@ -144,5 +147,6 @@ class Absence(BasePage):
                     subject["passed_lectures"] += missed[lesson]
                     subject["absence"] += missed[lesson]
                     subject["%"] = round((subject["absence"] / subject["passed_lectures"]) * 100, 2)
+                    # print(subject)
                     
         return self.absence

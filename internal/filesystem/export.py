@@ -22,7 +22,7 @@ def export_results(subjects, path) -> bool:
     try:
         with open(path, "w") as file:
             for subject, marks in subjects.items():
-                file.write(f"{subject:30} {marks[-1]["avg"]}\n")
+                file.write(f"{subject:10} {marks[-1]["avg"]}\n")
         return True
     except Exception as e:
         logger.error(f"Issue during exporting: {e}")
