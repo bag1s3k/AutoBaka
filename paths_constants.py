@@ -28,7 +28,7 @@ class PathConfig:
     @property
     @validate_output(error_msg="Log file doesn't exist", level="info")
     def log(self):
-        return self._root / "output" / "project_log.log"
+        return self._root / "output" / "log" / "project_log.log"
 
     @property
     @validate_output(error_msg="File with processed marks doesn't exist", level="info")

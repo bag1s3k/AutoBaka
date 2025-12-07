@@ -24,10 +24,9 @@ def main_process() -> set | Tuple[set, bool]:
     setup_logging()
     logger = logging.getLogger(__name__)
 
-    # -------------------------------- BEFORE TO ENTER THE WEBSITE ---------------------------------- #
-    if not PROJECT_ROOT.exists():
-        logger.error("Project root folder doesn't exist")
-
+    # === BEFORE TO ENTER THE WEBSITE === #
+    # - setup driver for selenium
+    # - create main parse for case user want to use CLI to login instead .env
     driver = setup_driver()
 
     # Load login details and create main_parser

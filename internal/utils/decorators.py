@@ -50,6 +50,7 @@ def validate_output(
                 execute()
             elif isinstance(result, Path) and not result.exists():
                 execute()
+                return False
             else:
                 if success_msg:
                     logger.info(success_msg)

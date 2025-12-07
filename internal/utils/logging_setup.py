@@ -1,4 +1,6 @@
 ﻿import logging
+from pathlib import Path
+
 from paths_constants import PATHS
 
 
@@ -18,6 +20,9 @@ def setup_logging():
         fmt="%(levelname)-8s %(asctime)s - %(name)s - %(message)s",
         datefmt="%d.%m.%Y %H:%M:%S",
     )
+
+    if not PATHS.log:
+        Path(PATHS.log).touch()
 
     # File handler
     file_handler = logging.FileHandler(PATHS.log, mode="w", encoding="utf-8")
