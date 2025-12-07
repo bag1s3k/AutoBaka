@@ -1,11 +1,10 @@
 ﻿import logging
 import argparse
-import time
 from typing import Tuple
 
 from internal.core import Absence, Marks, Timetable, Login
 from internal.filesystem.export import export_json, export_results
-from internal.utils.decorators import validate_output
+from internal.utils.decorators import validate_output, timer
 from internal.utils.selenium_setup import setup_driver
 from internal.utils.logging_setup import setup_logging
 from internal.filesystem.env_utils import load_credentials
@@ -14,14 +13,12 @@ from internal.filesystem.paths_constants import PROJECT_ROOT, RAW_MARKS_OUTPUT, 
 from internal.filesystem.ini_loader import config
 
 @validate_output(
-    error_msg="Main process failed",
-    success_msg="Main process successful",
-    level="error",
+    error_msg="Main function execution failed",
+    level="critical",
     allow_empty=True
 )
+@timer
 def main_process() -> set | Tuple[set, bool]:
-    start_time = time.time() # STOPWATCH start
-
     failure = set() # List of failed scrapers
 
     # Set up logging
@@ -94,7 +91,5 @@ def main_process() -> set | Tuple[set, bool]:
         logger.info("driver was successfully quit")
 
     print(".", flush=True) # CLI PRINT
-
-    print(f"{round(time.time() - start_time, 5)}s")
 
     return failure

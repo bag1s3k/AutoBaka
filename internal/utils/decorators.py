@@ -2,6 +2,7 @@
 import logging
 import sys
 from typing import Any
+from time import time
 
 logger = logging.getLogger(__name__)
 
@@ -50,3 +51,17 @@ def validate_output(
         return wrapper
 
     return decorator
+
+
+def timer(func):
+    """It shows the execution time of the function object passed"""
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs) -> Any:
+        t1 = time()
+        result = func(*args, **kwargs)
+        print(f"Function {func.__name__!r} executed in {(time() - t1):.2f}s")
+
+        return result
+
+    return wrapper
