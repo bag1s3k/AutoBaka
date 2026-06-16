@@ -2,6 +2,10 @@
   <img src="docs/autobaka_baner.png" alt="AutoBaka Banner" style="width:100%;"/>
 </p>
 
+> [!IMPORTANT]
+> This is the 1st version of the project and is **no longer supported**. \
+> Please move to the 2nd version: [light_autobaka](https://github.com/bag1s3k/light_autobaka)
+
 # AutoBaka App
 
 **AutoBaka** is a simple script that calculates your average grades from Bakaláři.
@@ -9,9 +13,6 @@
 ## How it started
 Our school blocked access to our grade averages, so I came with an idea. After doing some research, I found two options: Selenium or BeautifulSoup. Thanks the responsive layout of the Baka page, I chose Selenium.
 
-## ⚠️ Project Status Notice
-
-I'm stopping work on this project due to time constraints. I want to focus on things more relevant to my career and life goals. While there's much room for improvement, the core features are functional. This repository was mainly for learning Git and managing larger projects. It's my original idea - not just another calculator, but something actually usable. I might fix minor issues occasionally.
 
 ## Table of Contents
 
